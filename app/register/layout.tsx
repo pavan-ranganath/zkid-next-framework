@@ -2,6 +2,7 @@
 import { Container, Grid, ThemeProvider, useTheme } from "@mui/material";
 import "./register.css";
 import ThemeButton from "../ThemeButton";
+import Providers from "../Providers";
 export default function RootLayout({
   children,
 }: {
@@ -10,8 +11,7 @@ export default function RootLayout({
   const theme = useTheme();
   return (
     <>
-      {/* <ThemeButton /> */}
-      <ThemeProvider theme={theme}>
+      <Providers>
         <Grid
           container
           spacing={0}
@@ -24,7 +24,7 @@ export default function RootLayout({
             {children}
           </Grid>
         </Grid>
-      </ThemeProvider>
+      </Providers>
     </>
   );
 }

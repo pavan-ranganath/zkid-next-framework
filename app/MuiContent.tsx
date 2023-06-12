@@ -9,7 +9,6 @@ import { DEFAULT_THEME } from "@/app/theme";
 import Link from "next/link";
 
 const MuiContent = () => {
-  const { theme } = useTheme();
   const [themeName, setThemeName] = useState(DEFAULT_THEME);
 
   return (
