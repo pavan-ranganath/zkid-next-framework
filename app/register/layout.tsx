@@ -10,7 +10,7 @@ export default function RootLayout({
   const theme = useTheme();
   return (
     <>
-      <ThemeButton />
+      {/* <ThemeButton /> */}
       <ThemeProvider theme={theme}>
         <Grid
           container
