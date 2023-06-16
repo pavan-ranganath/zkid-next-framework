@@ -9,11 +9,26 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  
   function handleSubmit(event: { preventDefault: () => void }) {
     event.preventDefault();
     console.log(firstName, lastName, email, password);
+    addUserToServer();
   }
-
+  function addUserToServer() {
+    // Add user to the database using a POST request
+    const d = {
+      fName : firstName,
+      lName: lastName,
+      email: email,
+      password: password
+    }
+    fetch("/api/user",{method:"POST",body:JSON.stringify(d)}).then((r)=>{
+      r.json()
+    },(err)=>{
+      console.error(err);
+    });
+  }
   return (
     <>
       <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>

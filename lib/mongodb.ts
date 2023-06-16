@@ -1,33 +1,22 @@
-import { MongoClient } from "mongodb";
+import { connect, connection,ConnectionStates } from "mongoose";
 
-if (!process.env.MONGODB_URI) {
-  throw new Error("Please add your Mongo URI to .env.local");
-}
+const conn = {
+  isConnected: ConnectionStates.disconnected,
+};
 
-const uri: string = process.env.MONGODB_URI;
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-if (process.env.NODE_ENV === "development") {
-  // In development mode, use a global variable so that the value
-  // is preserved across module reloads caused by HMR (Hot Module Replacement).
-
-  let globalWithMongoClientPromise = global as typeof globalThis & {
-    _mongoClientPromise: Promise<MongoClient>;
-  };
-
-  if (!globalWithMongoClientPromise._mongoClientPromise) {
-    client = new MongoClient(uri);
-    globalWithMongoClientPromise._mongoClientPromise = client.connect();
+export async function dbConnect() {
+  if (!process.env.MONGODB_URI) {
+    throw new Error("Please add your Mongo URI to .env.local");
+  }
+  if (conn.isConnected) {
+    return;
   }
 
-  clientPromise = globalWithMongoClientPromise._mongoClientPromise;
-} else {
-  // In production mode, it's best to not use a global variable.
-  client = new MongoClient(uri);
-  clientPromise = client.connect();
+  const db = await connect(process.env.MONGODB_URI);
+  console.log(db.connection.db.databaseName);
+  conn.isConnected = db.connections[0].readyState;
 }
 
-// Export a module-scoped MongoClient promise. By doing this in a
-// separate module, the client can be shared across functions.
-export default clientPromise;
+connection.on("connected", () => console.log("Mongodb connected to db"));
+
+connection.on("error", (err) => console.error("Mongodb Errro:", err.message));

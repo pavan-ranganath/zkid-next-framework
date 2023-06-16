@@ -1,23 +1,19 @@
-import clientPromise from "@/lib/mongodb";
+import {dbConnect} from "@/lib/mongodb";
 import { NextRequest, NextResponse } from 'next/server'
-
+import  User  from "@/lib/models/User";
+import { Model } from "mongoose";
+dbConnect()
 export async function POST(req: NextRequest) {
   try {
-    const client = await clientPromise;
-    const db = client.db("zkid-next");
+    
     const { fName, lName, email, password } = await req.json();
-
-    const user = await db.collection("users").insertOne({
-      fName,
-      lName,
-      email,
-      password,
-    });
-
-    return NextResponse.json(user);
+    let u = new User({fName, lName, email, password})
+    await u.encryptPassword();
+    let t = await u.save();
+    return NextResponse.json(t);
   } catch (e) {
     console.error(e);
-    // throw new Error().message;
+    throw new Error("Error adding data to table");
   }
 };
 
