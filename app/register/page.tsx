@@ -1,64 +1,80 @@
 "use client";
-import { Stack, TextField, Button, Typography } from "@mui/material";
+import { Stack, TextField, Button, Typography, Alert } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const registerForm = {
+    fName: yup.string().required("First name is required"),
+    lName: yup.string().required("Last name is required"),
+    email: yup
+      .string()
+      .required("Email is required")
+      .email("Invalid email format"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(6, "Minimum 6 characters"),
+  };
 
-  
-  function handleSubmit(event: { preventDefault: () => void }) {
-    event.preventDefault();
-    console.log(firstName, lastName, email, password);
-    addUserToServer();
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors, touchedFields },
+  } = useForm({
+    resolver: yupResolver(yup.object().shape(registerForm)),
+  });
+
+  function onSubmit(data: any) {
+    fetch("/api/user", { method: "POST", body: JSON.stringify(data) }).then(
+      (response) => {
+        if (response.status === 200) {
+          router.push("/login");
+        }
+      },
+      (err) => {
+        console.error(err);
+      }
+    );
   }
-  function addUserToServer() {
-    // Add user to the database using a POST request
-    const d = {
-      fName : firstName,
-      lName: lastName,
-      email: email,
-      password: password
-    }
-    fetch("/api/user",{method:"POST",body:JSON.stringify(d)}).then((r)=>{
-      r.json()
-    },(err)=>{
-      console.error(err);
-    });
-  }
+
   return (
     <>
       <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
         Registration
       </Typography>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Stack
           direction={{ xs: "column", sm: "row" }}
           spacing={{ xs: 1, sm: 2, md: 4 }}
           sx={{ marginBottom: 4 }}
         >
           <TextField
+            id="fName"
             type="text"
             variant="outlined"
             color="primary"
             label="First Name"
-            onChange={(e) => setFirstName(e.target.value)}
-            value={firstName}
             fullWidth
-            required
+            {...register("fName")}
+            error={touchedFields.fName && errors.fName ? true : false}
+            helperText={touchedFields.fName ? errors.fName?.message : ""}
           />
           <TextField
             type="text"
             variant="outlined"
             color="primary"
             label="Last Name"
-            onChange={(e) => setLastName(e.target.value)}
-            value={lastName}
+            {...register("lName")}
+            error={touchedFields.lName && Boolean(errors.lName)}
+            helperText={touchedFields.lName ? errors.lName?.message : ""}
             fullWidth
-            required
           />
         </Stack>
         <TextField
@@ -66,10 +82,10 @@ export default function Register() {
           variant="outlined"
           color="primary"
           label="Email"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
+          {...register("email")}
+          error={touchedFields.email && Boolean(errors.email)}
+          helperText={touchedFields.email ? errors.email?.message : ""}
           fullWidth
-          required
           sx={{ mb: 4 }}
         />
         <TextField
@@ -77,9 +93,9 @@ export default function Register() {
           variant="filled"
           color="primary"
           label="Password"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          required
+          {...register("password")}
+          error={touchedFields.password && Boolean(errors.password)}
+          helperText={touchedFields.password ? errors.password?.message : ""}
           fullWidth
           sx={{ mb: 4 }}
         />
