@@ -18,11 +18,12 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 export default function Login() {
+  
   const loginForm = {
     email: yup
       .string()
@@ -62,6 +63,16 @@ export default function Login() {
     })
   };
 
+  const {data: session, status} = useSession();
+  if(status === 'loading') {
+    return <p>Loading...</p>
+  }
+  if(status === 'authenticated') {
+    // toast("Already user session exists")
+    return <Button variant="contained" color="success" onClick={()=>signOut()} >
+    Logout
+  </Button>
+  }
   return (
     <>
       <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
