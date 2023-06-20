@@ -3,6 +3,7 @@ import { Container, Grid, ThemeProvider, useTheme } from "@mui/material";
 import "./login.css";
 import ThemeButton from "../ThemeButton";
 import Providers from "../Providers";
+import { Toaster } from "react-hot-toast";
 export default function RootLayout({
   children,
 }: {
@@ -20,6 +21,7 @@ export default function RootLayout({
           justifyContent="center"
           sx={{ minHeight: "100vh" }}
         >
+          <Toaster />
           <Grid item xs={3}>
             {children}
           </Grid>

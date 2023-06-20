@@ -3,10 +3,28 @@ import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
   {
-    fName: String,
-    lName: String,
-    email: String,
-    password: String,
+    fName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    lName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
   {
     timestamps: true,
@@ -18,7 +36,7 @@ userSchema.methods.encryptPassword = async function () {
   this.password = await bcrypt.hash(this.password, salt);
 };
 
-userSchema.statics.comparePassword = async function (password: string, hash: string) {
+userSchema.methods.comparePassword = async function (password: string, hash: string) {
   return await bcrypt.compare(password, hash);
 };
 

@@ -32,7 +32,7 @@ export default function Register() {
   });
 
   function onSubmit(data: any) {
-    fetch("/api/user", { method: "POST", body: JSON.stringify(data) }).then(
+    fetch("/api/auth/register", { method: "POST", body: JSON.stringify(data) }).then(
       (response) => {
         if (response.status === 200) {
           router.push("/login");
