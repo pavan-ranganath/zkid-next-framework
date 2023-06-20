@@ -21,6 +21,7 @@
     "bcrypt": "^5.1.0",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.5",
+    "http-errors": "^2.0.0",
     "mongoose": "^7.3.0",
     "next": "13.4.5",
     "next-auth": "^4.22.1",
@@ -35,6 +36,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.0"
+    "@types/bcrypt": "^5.0.0",
+    "@types/http-errors": "^2.0.1"
   }
 }

@@ -1,7 +1,8 @@
 import {dbConnect} from "@/lib/mongodb";
 import { NextRequest, NextResponse } from 'next/server'
 import  User  from "@/lib/models/User";
-import { Model } from "mongoose";
+import createHttpError from "http-errors";
+
 dbConnect()
 export async function POST(req: NextRequest) {
   try {
@@ -11,10 +12,19 @@ export async function POST(req: NextRequest) {
     await u.encryptPassword();
     let t = await u.save();
     return NextResponse.json(t);
-  } catch (e) {
-    console.error(e);
-    throw new Error("Error adding data to table");
-  }
+  } catch (err:any) {
+
+      if (err && err.name === 'MongoServerError' && err.code === 11000) {
+        return NextResponse.json({ error: 'Email already registered' }, { status: 400 })
+      }
+      else if(err.message) {
+        return NextResponse.json({ error: err.message }, { status: 400 });
+      } else {
+        console.error(err);
+        return NextResponse.json({ error: err.message }, { status: 500 });
+        
+      }
+    }
 };
 
 export async function GET(req: any) {

@@ -6,6 +6,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 export default function Register() {
   const router = useRouter();
@@ -33,13 +34,19 @@ export default function Register() {
 
   function onSubmit(data: any) {
     fetch("/api/auth/register", { method: "POST", body: JSON.stringify(data) }).then(
-      (response) => {
+      async (response) => {
+        console.log(response);
         if (response.status === 200) {
+          toast.success("Registration succesfull");
           router.push("/login");
+        }
+        if(response.status === 400) {
+         let resp = await response.json()
+         toast.error(resp.error)
         }
       },
       (err) => {
-        console.error(err);
+        toast.error(err)
       }
     );
   }
