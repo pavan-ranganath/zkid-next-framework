@@ -8,7 +8,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const theme = useTheme();
+  // const theme = useTheme();
   return (
     <>
       <Providers>
