@@ -6,7 +6,10 @@ import { useForm } from "react-hook-form";
 import {
   Alert,
   AlertTitle,
+  Backdrop,
+  Box,
   Button,
+  CircularProgress,
   Container,
   DialogTitle,
   Divider,
@@ -76,7 +79,14 @@ export default function Login() {
 
   // if the user refreshed the page or somehow navigated to the protected page
   if (loading) {
-    return <>Loading app...</>;
+    return <>
+      <Backdrop
+        open={true}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    </>;
   }
   return (
     <>

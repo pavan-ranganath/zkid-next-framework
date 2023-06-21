@@ -4,7 +4,7 @@ import ThemeButton from "./ThemeButton";
 
 const Index = () => (
   <>
-    <ThemeButton />
+    {/* <ThemeButton /> */}
     <MuiContent />
   </>
 );

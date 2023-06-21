@@ -1,4 +1,5 @@
 "use client";
+import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { RedirectType } from "next/dist/client/components/redirect";
 import { useRouter, redirect } from "next/navigation";
@@ -27,7 +28,14 @@ export const ProtectedLayout = ({
 
   // if the user refreshed the page or somehow navigated to the protected page
   if (loading) {
-    return <>Loading app...</>;
+    return <>
+      <Backdrop
+        open={true}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    </>;
   }
 
   // if the user is authorized, render the page

@@ -1,11 +1,13 @@
 "use client"
 
 import { AppBar, Toolbar, Typography, Box, IconButton, Menu, MenuItem, Button, Tooltip, Avatar, Container } from "@mui/material";
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useEffect } from "react";
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
+import { DEFAULT_THEME, getOtherTheme } from "@/app/theme";
 const pages: {
     id: number;
     friendlyName: string;
@@ -14,12 +16,11 @@ const pages: {
         { id: 1, friendlyName: "Dashboard", href: '/dashboard' },
         { id: 2, friendlyName: "Users", href: '/dashboard/users' }
     ];
-const settings: {
-    id: number;
-    friendlyName: string;
-    onClick: () => Promise<void>;
-}[] = [{ id: 1, friendlyName: "Logout", onClick: async () => { await signOut() } }];
+
+
 export default function NavigationBar() {
+    const { theme: themeState, setTheme } = useTheme();
+    const [themeName, setThemeName] = useState(DEFAULT_THEME);
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const [selectedList, setSelectedList] = useState<number[]>([]);
@@ -38,6 +39,17 @@ export default function NavigationBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    useEffect(() => setThemeName(getOtherTheme(themeState)), [themeState]);
+
+    const settings: {
+        id: number;
+        friendlyName: string;
+        onClick: () => Promise<void>;
+    }[] = [
+            { id: 1, friendlyName: "Logout", onClick: async () => { await signOut() } },
+            { id: 2, friendlyName: `Activate ${themeName} Theme`, onClick: async () => setTheme(getOtherTheme(themeState)) }
+        ];
 
     return (
         <AppBar position="static">
