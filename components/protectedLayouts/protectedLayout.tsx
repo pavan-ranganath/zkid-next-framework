@@ -5,10 +5,10 @@ import { useRouter, redirect } from "next/navigation";
 import { useEffect } from "react";
 
 export const ProtectedLayout = ({
-  children,
+  children
 }: {
-  children: React.ReactElement;
-}): React.ReactElement => {
+  children: React.ReactNode;
+}): React.ReactNode => {
   const { status: sessionStatus } = useSession();
   const authorized = sessionStatus === "authenticated";
   const unAuthorized = sessionStatus === "unauthenticated";
@@ -21,7 +21,7 @@ export const ProtectedLayout = ({
     // if the user is not authorized, redirect to the login page
     // with a return url to the current page
     if (unAuthorized) {
-      redirect("/login",RedirectType.push);
+      redirect("/login", RedirectType.push);
     }
   }, [loading, unAuthorized, sessionStatus]);
 
