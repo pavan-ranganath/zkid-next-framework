@@ -4,13 +4,19 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 First, run the development server:
 
+install mongodb
+
 ```bash
+cp example.env.local .env.local
+npm install
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
 ```
+
+configure .env.local
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
