@@ -47,8 +47,8 @@ export default function NavigationBar() {
         friendlyName: string;
         onClick: () => Promise<void>;
     }[] = [
-            { id: 1, friendlyName: "Logout", onClick: async () => { await signOut() } },
-            { id: 2, friendlyName: `Activate ${themeName} Theme`, onClick: async () => setTheme(getOtherTheme(themeState)) }
+            { id: 1, friendlyName: "Logout", onClick: async () => { await signOut(); handleCloseUserMenu() } },
+            { id: 2, friendlyName: `Activate ${themeName} Theme`, onClick: async () => { setTheme(getOtherTheme(themeState)); handleCloseUserMenu() } }
         ];
 
     return (
@@ -87,7 +87,7 @@ export default function NavigationBar() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page.id} component={Link} href={page.href}>
+                                <MenuItem key={page.id} component={Link} href={page.href} onClick={handleCloseNavMenu}>
                                     <Typography textAlign="center">{page.friendlyName}</Typography>
                                 </MenuItem>
                             ))}

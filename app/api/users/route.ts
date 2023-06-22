@@ -1,41 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-
+import { Sort } from "mongodb";
+import { dbConnect } from "@/lib/mongodb";
+import { ColumnSort, ColumnFilter } from "@tanstack/table-core";
+dbConnect();
+export type filter = {
+  id: string;
+  value: string;
+};
 export async function GET(req: NextRequest, context: any) {
   try {
     const {
       page = 1,
       limit = 10,
-      sortBy = "createdAt",
-      sortOrder = "desc",
-      searchQuery = "",
-      searchFields = ["email"],
+      sorting = "",
+      filters = "",
     } = Object.fromEntries(req.nextUrl.searchParams.entries());
     const collection = mongoose.connection.db.collection("users");
 
-    const skip = (+page - 1) * +limit;
+    const skip = +page * +limit;
     let query = {};
-    const fieldList = Array.isArray(searchFields)
-      ? searchFields
-      : [searchFields];
-
+    const searchQuery: ColumnFilter[] = JSON.parse(filters);
     // Apply search query
-    if (searchQuery) {
+    if (searchQuery.length) {
       query = {
-        $or: fieldList.map((field: any) => ({
-          [field]: { $regex: searchQuery, $options: "i" },
+        $or: searchQuery.map((field: ColumnFilter) => ({
+          [field.id]: { $regex: field.value, $options: "i" },
         })),
       };
     }
-
-    const sortOptions = { [sortBy as string]: sortOrder === "asc" ? 1 : -1 };
+    const sortOptions: ColumnSort[] = JSON.parse(sorting);
+    let sortingObj: Sort = {};
+    if (sortOptions.length) {
+      //   sortOptions.map((field: ColumnSort) => ({
+      //   [field.id]: !field.desc,
+      // }));
+      for (let i = 0; i < sortOptions.length; i++) {
+        sortingObj[sortOptions[i].id] = !sortOptions[i].desc ? 1 : -1;
+      }
+    }
 
     const totalCount = await collection.countDocuments(query);
     const totalPages = Math.ceil(totalCount / +limit);
 
     const data = await collection
       .find(query)
-      .sort(sortOptions as any)
+      .sort(sortingObj)
       .skip(skip)
       .limit(+limit)
       .toArray();

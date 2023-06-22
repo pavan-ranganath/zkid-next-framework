@@ -88,6 +88,7 @@ export default function Login() {
       </Backdrop>
     </>;
   }
+  toast.dismiss()
   return (
     <>
       <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
