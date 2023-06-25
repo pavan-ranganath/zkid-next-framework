@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, context: any) {
       sorting = "",
       filters = "",
     } = Object.fromEntries(req.nextUrl.searchParams.entries());
-    const collection = mongoose.connection.db.collection("users");
+    const collection = mongoose.connection.db.collection("credentials");
 
     const skip = +page * +limit;
     let query = {};

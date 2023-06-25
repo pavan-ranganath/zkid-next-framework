@@ -11,23 +11,19 @@ const UsersTable = () => {
 
     const columns = useMemo<MRT_ColumnDef<User>[]>(
         () => [
+
             {
-                accessorKey: 'fName',
-                header: 'First Name',
-            },
-            {
-                accessorKey: 'lName',
-                header: 'Last Name',
-            },
-            {
-                accessorKey: 'email',
+                accessorKey: 'userID',
                 header: 'Email',
             },
             {
-                accessorKey: 'createdAt',
-                header: 'Created At',
+                accessorKey: 'credentialID',
+                header: 'Credential ID',
+            },
+            {
+                accessorKey: 'credentialPublicKey',
+                header: 'Public Key'
             }
-
         ],
         [],
     );

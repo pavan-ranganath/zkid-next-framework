@@ -10,6 +10,7 @@ export type User = {
   email?: string;
   createdAt?: string;
   _id?: string;
+  credentialPublicKey?: any[];
 };
 
 export async function getData(query?: any): Promise<dataFromServer> {
