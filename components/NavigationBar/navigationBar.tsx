@@ -47,7 +47,7 @@ export default function NavigationBar() {
         friendlyName: string;
         onClick: () => Promise<void>;
     }[] = [
-            { id: 1, friendlyName: "Logout", onClick: async () => { await signOut(); handleCloseUserMenu() } },
+            { id: 1, friendlyName: "Logout", onClick: async () => { await signOut({ callbackUrl: '/signin' }); handleCloseUserMenu() } },
             { id: 2, friendlyName: `Activate ${themeName} Theme`, onClick: async () => { setTheme(getOtherTheme(themeState)); handleCloseUserMenu() } }
         ];
 

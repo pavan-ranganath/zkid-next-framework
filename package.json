@@ -15,20 +15,25 @@
     "@hookform/resolvers": "^3.1.1",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.5",
+    "@simplewebauthn/browser": "^7.2.0",
+    "@simplewebauthn/server": "^7.3.1",
     "@tanstack/react-query": "^4.29.15",
     "@types/node": "20.3.0",
     "@types/react": "18.2.11",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
+    "base64url": "^3.0.1",
     "bcrypt": "^5.1.0",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.5",
     "http-errors": "^2.0.0",
+    "jsonwebtoken": "^9.0.0",
     "material-react-table": "^1.14.0",
     "mongoose": "^7.3.0",
     "next": "13.4.5",
     "next-auth": "^4.22.1",
     "next-themes": "^0.2.1",
+    "next-transpile-modules": "^10.0.0",
     "postcss": "8.4.24",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -40,6 +45,8 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
-    "@types/http-errors": "^2.0.1"
+    "@types/cookie": "^0.5.1",
+    "@types/http-errors": "^2.0.1",
+    "@types/jsonwebtoken": "^9.0.2"
   }
 }

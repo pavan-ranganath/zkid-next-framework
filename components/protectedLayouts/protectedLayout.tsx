@@ -31,8 +31,8 @@ export const ProtectedLayout = ({
     // if the user is not authorized, redirect to the login page
     // with a return url to the current page
     if (unAuthorized) {
-      toast.loading("Please login to view this page")
-      redirect("/login", RedirectType.push);
+      toast.loading("Please signin to view this page")
+      redirect("/signin", RedirectType.push);
     }
   }, [sessionStatus]);
 
