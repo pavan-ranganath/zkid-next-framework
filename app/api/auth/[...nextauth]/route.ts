@@ -6,7 +6,7 @@ import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 
 import User from "@/lib/models/User";
 import { DbCredential, getChallenge } from "@/lib/webauthn";
-import { RequestInternal, Awaitable } from "next-auth";
+import { RequestInternal, Awaitable, AuthOptions } from "next-auth";
 import mongoose from "mongoose";
 import base64url from "base64url";
 
@@ -14,7 +14,7 @@ dbConnect();
 const domain = process.env.APP_DOMAIN!;
 const origin = process.env.APP_ORIGIN!;
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       id: "credentials",
@@ -70,29 +70,31 @@ export const authOptions = {
           },
         };
         const authenticator = await mongoose.connection.db
-          .collection<DbCredential & Document>("credentials")
+          .collection<DbCredential>("credentials")
           .findOne({
-            credentialID: credential.id,
+            userID: credential.response.userHandle,
           });
         if (!authenticator) {
-          return null;
+          throw new Error("Authenticator not found");
         }
         const challenge = await getChallenge(authenticator.userID);
         if (!challenge) {
-          return null;
+          throw new Error("Challenge not found");
         }
         try {
+          let t = authenticator.passkeyInfo[0];
           const { verified, authenticationInfo: info } =
             await verifyAuthenticationResponse({
-              // credential: credential,
               expectedChallenge: challenge.value,
               expectedOrigin: origin,
               expectedRPID: domain,
               authenticator: {
-                credentialPublicKey: authenticator.credentialPublicKey
-                  .buffer as Buffer,
-                credentialID: base64url.toBuffer(authenticator.credentialID),
-                counter: authenticator.counter,
+                credentialPublicKey: t.registrationInfo.registrationInfo
+                  ?.credentialPublicKey.buffer as Buffer,
+                credentialID: base64url.toBuffer(
+                  authenticator.passkeyInfo[0].credentialId
+                ),
+                counter: t.registrationInfo.registrationInfo!.counter,
               },
               response: {
                 id: id,
@@ -124,7 +126,7 @@ export const authOptions = {
             );
         } catch (error) {
           console.log(error);
-          return null;
+          throw new Error("Verification failed");
         }
         return { email: authenticator.userID };
       },
@@ -132,6 +134,9 @@ export const authOptions = {
   ],
   pages: {
     error: "/signin",
+  },
+  session: {
+    strategy: "jwt",
   },
 };
 

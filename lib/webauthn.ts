@@ -1,13 +1,24 @@
 import { Binary } from "mongodb";
 import { dbConnect } from "./mongodb";
 import mongoose from "mongoose";
+import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
+import { VerifiedRegistrationResponse } from "@simplewebauthn/server";
 
+export interface passkeyObj {
+  credentialId: string;
+  friendlyName: string;
+  credential: RegistrationResponseJSON;
+  registrationInfo: VerifiedRegistrationResponse;
+}
 export interface DbCredential {
-  credentialID: string;
   userID: string;
-  transports: AuthenticatorTransport[];
-  credentialPublicKey: Binary | Buffer;
-  counter: number;
+  passkeyInfo: passkeyObj[];
+  userInfo?: {
+    firstName: string;
+    email: string;
+    emailVerified: string;
+    lastName: string;
+  };
 }
 dbConnect();
 
@@ -48,20 +59,34 @@ export async function getChallenge(userID: string) {
  * saveCredentials stores the user's public key in the database.
  * @param cred user's public key
  */
-export async function saveCredentials(cred: {
-  transports: AuthenticatorTransport[];
-  credentialID: string;
-  counter: number;
-  userID: string;
-  key: Binary | Buffer;
-}) {
+// export async function saveCredentials(cred: {
+//   transports: AuthenticatorTransport[];
+//   credentialID: string;
+//   counter: number;
+//   userID: string;
+//   key: Binary | Buffer;
+// }) {
+//   await mongoose.connection.db
+//     .collection<DbCredential>("credentials")
+//     .insertOne({
+//       credentialID: cred.credentialID,
+//       transports: cred.transports,
+//       userID: cred.userID,
+//       credentialPublicKey: cred.key,
+//       counter: cred.counter,
+//     });
+// }
+
+/**
+ * saveCredentials stores the user's public key in the database.
+ * @param cred user's public key
+ */
+export async function saveCredentials(cred: DbCredential) {
   await mongoose.connection.db
     .collection<DbCredential>("credentials")
     .insertOne({
-      credentialID: cred.credentialID,
-      transports: cred.transports,
       userID: cred.userID,
-      credentialPublicKey: cred.key,
-      counter: cred.counter,
+      passkeyInfo: cred.passkeyInfo,
+      userInfo: cred.userInfo,
     });
 }

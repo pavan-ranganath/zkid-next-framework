@@ -17,18 +17,19 @@ export async function GET(req: NextRequest) {
   }
   const credentials = await mongoose.connection.db
     .collection<DbCredential>("credentials")
-    .find({
+    .findOne({
       userID: email,
-    })
-    .toArray();
+    });
   const options = generateAuthenticationOptions({
     userVerification: "preferred",
   });
-
-  options.allowCredentials = credentials.map((c) => ({
-    id: c.credentialID,
+  if (!credentials) {
+    return NextResponse.json({ error: "Email not found" }, { status: 400 });
+  }
+  options.allowCredentials = credentials?.passkeyInfo.map((c) => ({
+    id: c.credentialId,
     type: "public-key",
-    transports: c.transports,
+    transports: c.credential.response.transports,
   }));
   try {
     await saveChallenge({ userID: email, challenge: options.challenge });

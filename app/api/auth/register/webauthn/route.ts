@@ -2,6 +2,7 @@ import { dbConnect } from "@/lib/mongodb";
 import {
   DbCredential,
   getChallenge,
+  passkeyObj,
   saveChallenge,
   saveCredentials,
 } from "@/lib/webauthn";
@@ -46,8 +47,14 @@ export async function GET(req: NextRequest, context: any) {
     userDisplayName: `${fName} ${lName}`,
     attestationType: "none",
     authenticatorSelection: {
+      residentKey: "preferred",
+      requireResidentKey: false,
       userVerification: "preferred",
     },
+
+    // This Relying Party will accept either an ES256 or RS256 credential, but
+    // prefers an ES256 credential.
+    supportedAlgorithmIDs: [-7, -257],
   });
   try {
     await saveChallenge({ userID: email, challenge: options.challenge });
@@ -96,11 +103,17 @@ export async function POST(req: NextRequest, context: any) {
   }
   try {
     await saveCredentials({
-      credentialID: credential.id,
-      transports: (credential.response.transports as []) ?? ["internal"],
       userID: email,
-      key: Buffer.from(info.credentialPublicKey.buffer),
-      counter: info.counter,
+      passkeyInfo: [
+        {
+          friendlyName: `Passkey-${Math.floor(
+            100000 + Math.random() * 900000
+          )}`,
+          credential: { ...credential },
+          registrationInfo: { verified: verified, registrationInfo: info },
+          credentialId: credential.id,
+        },
+      ],
     });
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (err) {
