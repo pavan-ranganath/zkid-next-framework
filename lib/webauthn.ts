@@ -91,3 +91,22 @@ export async function saveCredentials(cred: DbCredential) {
       userInfo: cred.userInfo,
     });
 }
+
+/**
+ * updateCredentials stores the user's public key in the database.
+ * @param cred user's public key
+ */
+export async function updateCredentials(cred: passkeyObj, userID: string) {
+  await mongoose.connection.db
+    .collection<DbCredential>("credentials")
+    .updateOne(
+      {
+        userID: userID,
+      },
+      {
+        $push: {
+          passkeyInfo: cred,
+        },
+      }
+    );
+}
