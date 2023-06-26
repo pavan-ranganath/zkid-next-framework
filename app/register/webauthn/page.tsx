@@ -1,16 +1,22 @@
 "use client";
-import { Stack, TextField, Button, Typography, Alert } from "@mui/material";
+import { Stack, TextField, Button, Typography, Alert, Backdrop, CircularProgress } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { startRegistration } from "@simplewebauthn/browser";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+import { useSession } from "next-auth/react";
+import { RedirectType } from "next/dist/client/components/redirect";
 
 export default function Register() {
+    const { data: session, status } = useSession();
+    const authorized = status === "authenticated";
+    const unAuthorized = status === "unauthenticated";
+    const loading = status === "loading";
     const router = useRouter()
     const registerForm = {
         fName: yup.string().required("First name is required"),
@@ -49,7 +55,26 @@ export default function Register() {
         //     }
         // );
     }
-
+    useEffect(() => {
+        // check if the session is loading or the router is not ready
+        if (loading) return;
+        // if the user is  authorized, redirect to the dashboard page
+        if (authorized) {
+            redirect("/dashboard", RedirectType.push);
+        }
+    }, [loading, unAuthorized, status]);
+    // if the user refreshed the page or somehow navigated to the protected page
+    if (loading) {
+        return <>
+            <Backdrop
+                open={true}
+                sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+        </>;
+    }
+    toast.dismiss()
     return (
         <>
             <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>

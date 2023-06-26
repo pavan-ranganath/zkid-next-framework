@@ -3,6 +3,7 @@ import { DbCredential, saveChallenge } from "@/lib/webauthn";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+const domain = process.env.APP_DOMAIN!;
 
 /**
  * handles GET /api/auth/webauthn/authenticate.
@@ -21,6 +22,7 @@ export async function GET(req: NextRequest) {
       userID: email,
     });
   const options = generateAuthenticationOptions({
+    rpID: domain,
     userVerification: "preferred",
   });
   if (!credentials) {

@@ -55,6 +55,11 @@ export async function GET(req: NextRequest, context: any) {
       // prefers an ES256 credential.
       supportedAlgorithmIDs: [-7, -257],
     });
+    options.excludeCredentials = credentials?.passkeyInfo.map((c) => ({
+      id: c.credentialId,
+      type: "public-key",
+      transports: c.credential.response.transports,
+    }));
     try {
       await saveChallenge({ userID: email, challenge: options.challenge });
     } catch (err) {

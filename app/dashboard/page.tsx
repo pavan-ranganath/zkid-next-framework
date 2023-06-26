@@ -49,6 +49,7 @@ async function registerWebauthn() {
       // router.push('/signin');
     }
   } catch (err) {
+    console.error(err);
     toast.error(`Registration failed. ${(err as Error).message}`);
   }
 

@@ -72,7 +72,7 @@ export const authOptions: AuthOptions = {
         const authenticator = await mongoose.connection.db
           .collection<DbCredential>("credentials")
           .findOne({
-            userID: credential.response.userHandle,
+            "passkeyInfo.credentialId": credential.id,
           });
         if (!authenticator) {
           throw new Error("Authenticator not found");
@@ -82,19 +82,22 @@ export const authOptions: AuthOptions = {
           throw new Error("Challenge not found");
         }
         try {
-          let t = authenticator.passkeyInfo[0];
+          let passkeyInfo = authenticator.passkeyInfo.find((obj) => {
+            return obj.credentialId === credential.id;
+          });
+          if (!passkeyInfo) {
+            throw new Error("Keys not found");
+          }
           const { verified, authenticationInfo: info } =
             await verifyAuthenticationResponse({
               expectedChallenge: challenge.value,
               expectedOrigin: origin,
               expectedRPID: domain,
               authenticator: {
-                credentialPublicKey: t.registrationInfo.registrationInfo
-                  ?.credentialPublicKey.buffer as Buffer,
-                credentialID: base64url.toBuffer(
-                  authenticator.passkeyInfo[0].credentialId
-                ),
-                counter: t.registrationInfo.registrationInfo!.counter,
+                credentialPublicKey: passkeyInfo.registrationInfo
+                  .registrationInfo?.credentialPublicKey.buffer as Buffer,
+                credentialID: base64url.toBuffer(passkeyInfo.credentialId),
+                counter: passkeyInfo.registrationInfo.registrationInfo!.counter,
               },
               response: {
                 id: id,
@@ -110,7 +113,7 @@ export const authOptions: AuthOptions = {
               },
             });
           if (!verified || !info) {
-            return null;
+            throw new Error("Verification failed");
           }
           // await mongoose.connection.db
           //   .collection<DbCredential>("credentials")
