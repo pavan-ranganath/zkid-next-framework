@@ -104,6 +104,7 @@ async function signInWithWebauthn(email: any) {
     const optionsResponse = await fetch(url.toString());
 
     if (optionsResponse.status !== 200) {
+        toast.error('Could not get authentication options from server')
         throw new Error('Could not get authentication options from server');
     }
     const opt: PublicKeyCredentialRequestOptionsJSON = await optionsResponse.json();

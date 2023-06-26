@@ -11,12 +11,13 @@ export interface passkeyObj {
   registrationInfo: VerifiedRegistrationResponse;
 }
 export interface DbCredential {
+  _id?: string;
   userID: string;
   passkeyInfo: passkeyObj[];
   userInfo?: {
     firstName: string;
     email: string;
-    emailVerified: string;
+    emailVerified: boolean;
     lastName: string;
   };
 }

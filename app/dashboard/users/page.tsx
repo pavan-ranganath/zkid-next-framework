@@ -5,24 +5,33 @@ import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-quer
 import { Tooltip, IconButton, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { ProtectedLayout } from '@/components/protectedLayouts/protectedLayout';
-import { User, dataFromServer } from './service';
+import { User, credentailsFromTb, dataFromServer } from './service';
 
 const UsersTable = () => {
 
-    const columns = useMemo<MRT_ColumnDef<User>[]>(
+    const columns = useMemo<MRT_ColumnDef<credentailsFromTb>[]>(
         () => [
 
             {
                 accessorKey: 'userID',
                 header: 'Email',
+                enableHiding: false
             },
             {
-                accessorKey: 'credentialID',
-                header: 'Credential ID',
+                accessorFn(originalRow) {
+                    return originalRow?.userInfo?.firstName
+                },
+                enableColumnFilter: false,
+                enableSorting: false,
+                header: 'First Name',
             },
             {
-                accessorKey: 'credentialPublicKey',
-                header: 'Public Key'
+                accessorFn(originalRow) {
+                    return originalRow?.userInfo?.lastName
+                },
+                enableColumnFilter: false,
+                enableSorting: false,
+                header: 'Last Name'
             }
         ],
         [],
@@ -42,7 +51,7 @@ const UsersTable = () => {
             queryKey: [
                 'table-data',
                 columnFilters, //refetch when columnFilters changes
-                globalFilter, //refetch when globalFilter changes
+                // globalFilter, //refetch when globalFilter changes
                 pagination.pageIndex, //refetch when pagination.pageIndex changes
                 pagination.pageSize, //refetch when pagination.pageSize changes
                 sorting, //refetch when sorting changes
@@ -91,7 +100,7 @@ const UsersTable = () => {
                     : undefined
             }
             onColumnFiltersChange={setColumnFilters}
-            onGlobalFilterChange={setGlobalFilter}
+            // onGlobalFilterChange={setGlobalFilter}
             onPaginationChange={setPagination}
             onSortingChange={setSorting}
             renderTopToolbarCustomActions={() => (

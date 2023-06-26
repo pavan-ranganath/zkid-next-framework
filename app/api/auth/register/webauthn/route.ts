@@ -24,62 +24,113 @@ const appName = process.env.APP_NAME!;
 dbConnect();
 export async function GET(req: NextRequest, context: any) {
   const session = await getServerSession(authOptions);
-  const { fName, lName, email } = Object.fromEntries(
-    req.nextUrl.searchParams.entries()
-  );
-  const credentials = await mongoose.connection.db
-    .collection<DbCredential>("credentials")
-    .find({
+  if (session) {
+    const email = session?.user?.email;
+    if (!email) {
+      return NextResponse.json(
+        { error: "Authentication is required" },
+        { status: 401 }
+      );
+    }
+    const credentials = await mongoose.connection.db
+      .collection<DbCredential>("credentials")
+      .findOne({
+        userID: email,
+      });
+    const options = generateRegistrationOptions({
+      rpID: domain,
+      rpName: appName,
       userID: email,
-    })
-    .toArray();
-  if (credentials.length) {
-    return NextResponse.json(
-      { error: "Email already registered" },
-      { status: 500 }
-    );
-  }
-  const options = generateRegistrationOptions({
-    rpID: domain,
-    rpName: appName,
-    userID: email,
-    userName: email,
-    userDisplayName: `${fName} ${lName}`,
-    attestationType: "none",
-    authenticatorSelection: {
-      residentKey: "preferred",
-      requireResidentKey: false,
-      userVerification: "preferred",
-    },
+      userName: email,
+      userDisplayName: `${credentials?.userInfo?.firstName} ${credentials?.userInfo?.lastName}`,
+      attestationType: "none",
+      authenticatorSelection: {
+        residentKey: "preferred",
+        requireResidentKey: false,
+        userVerification: "preferred",
+      },
 
-    // This Relying Party will accept either an ES256 or RS256 credential, but
-    // prefers an ES256 credential.
-    supportedAlgorithmIDs: [-7, -257],
-  });
-  try {
-    await saveChallenge({ userID: email, challenge: options.challenge });
-  } catch (err) {
-    return NextResponse.json(
-      { error: "Could not set up challenge." },
-      { status: 500 }
+      // This Relying Party will accept either an ES256 or RS256 credential, but
+      // prefers an ES256 credential.
+      supportedAlgorithmIDs: [-7, -257],
+    });
+    try {
+      await saveChallenge({ userID: email, challenge: options.challenge });
+    } catch (err) {
+      return NextResponse.json(
+        { error: "Could not set up challenge." },
+        { status: 500 }
+      );
+    }
+    let t = NextResponse.json(options);
+    // setSession(t, { user: { email, fName, lName } });
+    return t;
+  } else {
+    const { fName, lName, email } = Object.fromEntries(
+      req.nextUrl.searchParams.entries()
     );
+    const credentials = await mongoose.connection.db
+      .collection<DbCredential>("credentials")
+      .findOne({
+        userID: email,
+      });
+
+    if (credentials) {
+      return NextResponse.json(
+        { error: "Email already registered" },
+        { status: 500 }
+      );
+    }
+    const options = generateRegistrationOptions({
+      rpID: domain,
+      rpName: appName,
+      userID: email,
+      userName: email,
+      userDisplayName: `${fName} ${lName}`,
+      attestationType: "none",
+      authenticatorSelection: {
+        residentKey: "preferred",
+        requireResidentKey: false,
+        userVerification: "preferred",
+      },
+
+      // This Relying Party will accept either an ES256 or RS256 credential, but
+      // prefers an ES256 credential.
+      supportedAlgorithmIDs: [-7, -257],
+    });
+    try {
+      await saveChallenge({ userID: email, challenge: options.challenge });
+    } catch (err) {
+      return NextResponse.json(
+        { error: "Could not set up challenge." },
+        { status: 500 }
+      );
+    }
+    let t = NextResponse.json(options);
+    setSession(t, { user: { email, fName, lName } });
+    return t;
   }
-  let t = NextResponse.json(options);
-  setSession(t, { user: { email } });
-  return t;
 }
 
 export async function POST(req: NextRequest, context: any) {
-  // const session = await getServerSession(authOptions);
-  let session = getSession(req) as any;
-  const email = session?.user?.email;
-  if (!email) {
+  let session = await getServerSession(authOptions);
+  if (!session) {
+    session = getSession(req) as any;
+  }
+  const user = session?.user;
+  if (!user) {
     return NextResponse.json(
       { error: "You are not connected." },
       { status: 401 }
     );
   }
-  const challenge = await getChallenge(email);
+  if (!user.email) {
+    return NextResponse.json(
+      { error: "You are not connected." },
+      { status: 401 }
+    );
+  }
+  const challenge = await getChallenge(user.email);
   if (!challenge) {
     return NextResponse.json(
       { error: "Pre-registration is required." },
@@ -103,7 +154,7 @@ export async function POST(req: NextRequest, context: any) {
   }
   try {
     await saveCredentials({
-      userID: email,
+      userID: user.email,
       passkeyInfo: [
         {
           friendlyName: `Passkey-${Math.floor(
@@ -114,6 +165,12 @@ export async function POST(req: NextRequest, context: any) {
           credentialId: credential.id,
         },
       ],
+      userInfo: {
+        email: user.email,
+        firstName: (user as any).fName,
+        lastName: (user as any).lName,
+        emailVerified: false,
+      },
     });
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (err) {

@@ -112,18 +112,18 @@ export const authOptions: AuthOptions = {
           if (!verified || !info) {
             return null;
           }
-          await mongoose.connection.db
-            .collection<DbCredential>("credentials")
-            .updateOne(
-              {
-                _id: authenticator._id,
-              },
-              {
-                $set: {
-                  counter: info.newCounter,
-                },
-              }
-            );
+          // await mongoose.connection.db
+          //   .collection<DbCredential>("credentials")
+          //   .updateOne(
+          //     {
+          //       _id: authenticator._id,
+          //     },
+          //     {
+          //       $set: {
+          //         counter: info.newCounter,
+          //       },
+          //     }
+          //   );
         } catch (error) {
           console.log(error);
           throw new Error("Verification failed");

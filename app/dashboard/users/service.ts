@@ -1,9 +1,15 @@
+import { DbCredential } from "@/lib/webauthn";
+
+export interface credentailsFromTb extends DbCredential {
+  _id: string;
+}
 export type dataFromServer = {
-  data: User[];
+  data: credentailsFromTb[];
   totalCount: number;
   limit: number;
   totalPages: number;
 };
+
 export type User = {
   fName?: string;
   lName?: string;
