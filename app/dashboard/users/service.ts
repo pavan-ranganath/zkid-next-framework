@@ -20,7 +20,7 @@ export type User = {
 };
 
 export async function getData(query?: any): Promise<dataFromServer> {
-  const res = await fetch("http://localhost:3000/api/users" + query);
+  const res = await fetch(window.location.origin + "/api/users" + query);
   // Recommendation: handle errors
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary

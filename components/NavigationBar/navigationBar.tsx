@@ -55,8 +55,14 @@ export default function NavigationBar() {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-
+                    <Link href="/dashboard">
+                        <Box
+                            component="img"
+                            sx={{ height: 54 }}
+                            alt="Logo"
+                            src={"EGS_logo_final.svg"}
+                        />
+                    </Link>
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"

@@ -66,8 +66,8 @@ async function GetPasskeys() {
 
               >
                 {userInfo.passkeyInfo?.map((passkey) => (
-                  <ListItemButton>
-                    <ListItemText primary={passkey.friendlyName} />
+                  <ListItemButton key={passkey.credentialId}>
+                    <ListItemText primary={passkey.friendlyName} secondary={'Credential Backup: ' + passkey.registrationInfo.registrationInfo?.credentialBackedUp} />
                   </ListItemButton>
                 ))
                 }
