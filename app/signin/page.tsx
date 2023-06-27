@@ -11,6 +11,7 @@ import { startAuthentication } from '@simplewebauthn/browser';
 import { RedirectType } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
+import Link from 'next/link';
 
 export default function SignInComponent() {
     const { data: session, status } = useSession();
@@ -91,7 +92,11 @@ export default function SignInComponent() {
                 <Button variant="contained" color="primary" type="submit">
                     Sign In
                 </Button>
+
             </form>
+            <small>
+                Do not have an account? <Link href="/register/webauthn">Register Here</Link>
+            </small>
         </>
     )
 }

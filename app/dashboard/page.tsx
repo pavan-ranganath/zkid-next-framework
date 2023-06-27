@@ -48,7 +48,7 @@ async function GetPasskeys() {
                 Lastname: {userInfo.userInfo?.lastName}
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
-                Email verified: {userInfo.userInfo?.emailVerified}
+                Email verified: {userInfo.userInfo?.emailVerified ? 'true' : 'false'}
               </Typography>
             </CardContent>
 
