@@ -129,7 +129,7 @@ async function signInWithWebauthn(email: any) {
         authenticatorData: credential.response.authenticatorData,
         signature: credential.response.signature,
         userHandle: credential.response.userHandle,
-        callbackUrl: "/dashboard/users"
+        callbackUrl: "/dashboard"
     })
 
 }
