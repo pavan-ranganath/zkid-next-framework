@@ -1,4 +1,4 @@
-export const DEFAULT_THEME: "dark" | "light" = "dark";
+export const DEFAULT_THEME: "dark" | "light" = "light";
 // https://github.com/mui/material-ui/issues/34898#issuecomment-1506990380
 export const getOtherTheme = (theme: string | undefined): "dark" | "light" => {
   switch (theme) {
