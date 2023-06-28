@@ -1,9 +1,9 @@
 "use client";
 
-import { Backdrop, Box, CircularProgress } from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { RedirectType } from "next/dist/client/components/redirect";
-import { useRouter, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 

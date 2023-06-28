@@ -1,6 +1,6 @@
 "use client";
 
-import { Container, Grid, ThemeProvider, useTheme } from "@mui/material";
+import { Grid } from "@mui/material";
 import Providers from "../Providers";
 
 export default function SignInLayout({ children }: { children: React.ReactNode }) {

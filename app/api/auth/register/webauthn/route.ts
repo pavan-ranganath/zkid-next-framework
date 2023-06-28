@@ -1,12 +1,12 @@
 import { dbConnect } from "@/lib/mongodb";
-import { DbCredential, getChallenge, passkeyObj, saveChallenge, saveCredentials, updateCredentials } from "@/lib/webauthn";
+import { DbCredential, getChallenge, saveChallenge, saveCredentials, updateCredentials } from "@/lib/webauthn";
 import { generateRegistrationOptions, verifyRegistrationResponse } from "@simplewebauthn/server";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
-import { destroySession, getSession, setSession } from "@/lib/sessionMgmt";
+import { getSession, setSession } from "@/lib/sessionMgmt";
 
 const domain = process.env.APP_DOMAIN!;
 const origin = process.env.APP_ORIGIN!;

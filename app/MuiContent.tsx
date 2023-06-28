@@ -3,8 +3,7 @@
 "use client";
 
 import { Stack, Typography } from "@mui/material";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { DEFAULT_THEME } from "@/app/theme";
 import Link from "next/link";

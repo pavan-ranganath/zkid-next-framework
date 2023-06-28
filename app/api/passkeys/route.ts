@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-import { Sort } from "mongodb";
 import { dbConnect } from "@/lib/mongodb";
-import { ColumnSort, ColumnFilter } from "@tanstack/table-core";
 import { getServerSession } from "next-auth";
 import { credentailsFromTb } from "@/app/dashboard/users/service";
 import { authOptions } from "../auth/[...nextauth]/route";

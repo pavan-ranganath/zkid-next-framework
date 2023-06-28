@@ -1,12 +1,11 @@
 import { dbConnect } from "@/lib/mongodb";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import EmailProvider from "next-auth/providers/email";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 
 import User from "@/lib/models/User";
 import { DbCredential, getChallenge } from "@/lib/webauthn";
-import { RequestInternal, Awaitable, AuthOptions } from "next-auth";
+import { AuthOptions } from "next-auth";
 import mongoose from "mongoose";
 import base64url from "base64url";
 

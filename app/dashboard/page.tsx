@@ -1,19 +1,15 @@
 "use client";
 
-import LogoutButton from "@/components/LogoutButton";
 import {
   Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
-  Collapse,
   Grid,
   List,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
-  ListSubheader,
   Typography,
 } from "@mui/material";
 import { startRegistration } from "@simplewebauthn/browser";

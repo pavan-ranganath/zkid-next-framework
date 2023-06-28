@@ -1,7 +1,6 @@
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
-import { User } from "next-auth";
 
 const secret = process.env.NEXTAUTH_SECRET!;
 

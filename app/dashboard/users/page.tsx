@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import MaterialReactTable, {
   MRT_ColumnDef,
   MRT_ColumnFiltersState,
@@ -8,10 +8,10 @@ import MaterialReactTable, {
   MRT_SortingState,
 } from "material-react-table";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
-import { Tooltip, IconButton, Button } from "@mui/material";
+import { Tooltip, IconButton } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { ProtectedLayout } from "@/components/protectedLayouts/protectedLayout";
-import { User, credentailsFromTb, dataFromServer } from "./service";
+import { credentailsFromTb, dataFromServer } from "./service";
 
 const UsersTable = () => {
   const columns = useMemo<MRT_ColumnDef<credentailsFromTb>[]>(

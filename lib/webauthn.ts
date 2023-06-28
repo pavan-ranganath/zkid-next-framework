@@ -1,4 +1,3 @@
-import { Binary } from "mongodb";
 import mongoose from "mongoose";
 import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import { VerifiedRegistrationResponse } from "@simplewebauthn/server";
