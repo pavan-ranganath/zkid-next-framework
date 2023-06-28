@@ -1,3 +1,7 @@
+/*
+  The code provides a registration page
+ */
+
 "use client";
 
 import { Stack, TextField, Button, Typography, Backdrop, CircularProgress } from "@mui/material"; // Material-UI components

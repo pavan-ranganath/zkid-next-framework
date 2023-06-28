@@ -15,6 +15,7 @@ export type filter = {
 };
 
 // Handling the GET request
+// retrieves data based on the user's email
 export async function GET(req: NextRequest, context: any) {
   // Retrieving the user session using the "getServerSession" function
   const session = await getServerSession(authOptions);

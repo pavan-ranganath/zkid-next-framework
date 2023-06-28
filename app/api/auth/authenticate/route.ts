@@ -17,6 +17,10 @@ const domain = process.env.APP_DOMAIN!;
 dbConnect();
 
 // Define the GET request handler function
+/**
+ * retrieves credentials associated with an email, generates authentication options,
+ * saves the authentication challenge, and returns the generated authentication options in the response
+ */
 export async function GET(req: NextRequest) {
   const { email } = Object.fromEntries(req.nextUrl.searchParams.entries());
 

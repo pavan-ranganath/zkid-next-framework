@@ -1,3 +1,8 @@
+/*
+  The code provides a dashboard page
+  Dashboard page that displays user information and passkeys, allows adding new passkeys through the webauthn registration process, and handles loading and error states.
+ */
+
 "use client";
 
 // Importing UI components from Material-UI

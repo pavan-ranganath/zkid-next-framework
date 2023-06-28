@@ -1,3 +1,6 @@
+/**
+ * It fetches user data from the server and displays it in a  table format with features like column filtering, sorting, pagination, and custom toolbar actions
+ */
 "use client";
 
 // Import necessary dependencies
@@ -90,9 +93,9 @@ const UsersTable = () => {
       muiToolbarAlertBannerProps={
         isError
           ? {
-              color: "error",
-              children: "Error loading data",
-            }
+            color: "error",
+            children: "Error loading data",
+          }
           : undefined
       }
       onColumnFiltersChange={setColumnFilters}
@@ -121,14 +124,14 @@ const UsersTable = () => {
       enableColumnResizing
       enableRowNumbers
       enableStickyHeader
-      // muiTableBodyRowProps={({ row }) => ({
-      //     onClick: (event) => {
-      //         console.info(event, row);
-      //     },
-      //     sx: {
-      //         cursor: 'pointer', //you might want to change the cursor too when adding an onClick
-      //     },
-      // })}
+    // muiTableBodyRowProps={({ row }) => ({
+    //     onClick: (event) => {
+    //         console.info(event, row);
+    //     },
+    //     sx: {
+    //         cursor: 'pointer', //you might want to change the cursor too when adding an onClick
+    //     },
+    // })}
     />
   );
 };

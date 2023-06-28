@@ -143,6 +143,10 @@ const handleInvalidResponseError = () => {
 };
 
 // Handler function for GET requests
+/**
+ *  Generating WebAuthn (Web Authentication) registration options, handling user registration, and saving the credentials in a MongoDB database.
+ *  It also includes necessary validation and error handling for the registration process.
+ */
 export async function GET(req: NextRequest, context: any) {
   // Retrieve the server session using authOptions
   const session = await getServerSession(authOptions);

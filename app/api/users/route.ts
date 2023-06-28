@@ -14,7 +14,8 @@ export type filter = {
   value: string;
 };
 
-// Handler function for GET requests
+// Handler function for users GET requests with filtering, sorting, and pagination functionality
+// Return the JSON response with the data and pagination details
 export async function GET(req: NextRequest, context: any) {
   try {
     // Extract query parameters from the request URL

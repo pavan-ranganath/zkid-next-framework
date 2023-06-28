@@ -1,5 +1,5 @@
 /*
-  The code provides a sign-in functionality with WebAuthn (Web Authentication)
+  The code provides a sign-in page
  */
 
 "use client";
