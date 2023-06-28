@@ -1,8 +1,8 @@
 import AuthProvider from "@/components/AuthProvider/AuthProvider";
 import "./globals.css";
 
-import Providers from "./Providers";
 import { Toaster } from "react-hot-toast";
+import Providers from "./Providers";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
   // suppressHydrationWarning is for next-themes - see: https://github.com/pacocoursey/next-themes#with-app

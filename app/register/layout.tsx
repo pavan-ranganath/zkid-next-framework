@@ -1,13 +1,11 @@
 "use client";
+
 import { Container, Grid, ThemeProvider, useTheme } from "@mui/material";
 import "./register.css";
 import ThemeButton from "../ThemeButton";
 import Providers from "../Providers";
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
   return (
     <>

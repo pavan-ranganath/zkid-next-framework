@@ -3,6 +3,7 @@ import { DbCredential, saveChallenge } from "@/lib/webauthn";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+
 const domain = process.env.APP_DOMAIN!;
 
 /**
@@ -16,11 +17,9 @@ export async function GET(req: NextRequest) {
   if (!email) {
     return NextResponse.json({ error: "Email is required." }, { status: 400 });
   }
-  const credentials = await mongoose.connection.db
-    .collection<DbCredential>("credentials")
-    .findOne({
-      userID: email,
-    });
+  const credentials = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({
+    userID: email,
+  });
   const options = generateAuthenticationOptions({
     rpID: domain,
     userVerification: "preferred",
@@ -36,10 +35,7 @@ export async function GET(req: NextRequest) {
   try {
     await saveChallenge({ userID: email, challenge: options.challenge });
   } catch (err) {
-    return NextResponse.json(
-      { error: "Could not set up challenge." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Could not set up challenge." }, { status: 500 });
   }
   return NextResponse.json(options);
 }

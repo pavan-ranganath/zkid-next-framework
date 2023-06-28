@@ -25,15 +25,11 @@ export const authOptions: AuthOptions = {
           const user = await User.findOne({ email: credentials.email });
           if (user) {
             // check password
-            const isPasswordCorrect = await user.comparePassword(
-              credentials.password,
-              user.password
-            );
+            const isPasswordCorrect = await user.comparePassword(credentials.password, user.password);
             if (isPasswordCorrect) {
               return user;
-            } else {
-              throw new Error("Incorrect credentials");
             }
+            throw new Error("Incorrect credentials");
           } else {
             throw new Error("User not found");
           }
@@ -48,16 +44,8 @@ export const authOptions: AuthOptions = {
       id: "webauthn",
       name: "Sign in with passkey",
       credentials: {},
-      authorize: async function (cred: any, req: any): Promise<any> {
-        const {
-          id,
-          rawId,
-          type,
-          clientDataJSON,
-          authenticatorData,
-          signature,
-          userHandle,
-        } = req.body;
+      async authorize(cred: any, req: any): Promise<any> {
+        const { id, rawId, type, clientDataJSON, authenticatorData, signature, userHandle } = req.body;
         const credential = {
           id,
           rawId,
@@ -69,11 +57,9 @@ export const authOptions: AuthOptions = {
             userHandle,
           },
         };
-        const authenticator = await mongoose.connection.db
-          .collection<DbCredential>("credentials")
-          .findOne({
-            "passkeyInfo.credentialId": credential.id,
-          });
+        const authenticator = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({
+          "passkeyInfo.credentialId": credential.id,
+        });
         if (!authenticator) {
           throw new Error("Authenticator not found");
         }
@@ -82,36 +68,34 @@ export const authOptions: AuthOptions = {
           throw new Error("Challenge not found");
         }
         try {
-          let passkeyInfo = authenticator.passkeyInfo.find((obj) => {
+          const passkeyInfo = authenticator.passkeyInfo.find((obj) => {
             return obj.credentialId === credential.id;
           });
           if (!passkeyInfo) {
             throw new Error("Keys not found");
           }
-          const { verified, authenticationInfo: info } =
-            await verifyAuthenticationResponse({
-              expectedChallenge: challenge.value,
-              expectedOrigin: origin,
-              expectedRPID: domain,
-              authenticator: {
-                credentialPublicKey: passkeyInfo.registrationInfo
-                  .registrationInfo?.credentialPublicKey.buffer as Buffer,
-                credentialID: base64url.toBuffer(passkeyInfo.credentialId),
-                counter: passkeyInfo.registrationInfo.registrationInfo!.counter,
-              },
+          const { verified, authenticationInfo: info } = await verifyAuthenticationResponse({
+            expectedChallenge: challenge.value,
+            expectedOrigin: origin,
+            expectedRPID: domain,
+            authenticator: {
+              credentialPublicKey: passkeyInfo.registrationInfo.registrationInfo?.credentialPublicKey.buffer as Buffer,
+              credentialID: base64url.toBuffer(passkeyInfo.credentialId),
+              counter: passkeyInfo.registrationInfo.registrationInfo!.counter,
+            },
+            response: {
+              id,
+              rawId,
               response: {
-                id: id,
-                rawId: rawId,
-                response: {
-                  clientDataJSON,
-                  authenticatorData,
-                  signature,
-                  userHandle,
-                },
-                clientExtensionResults: {},
-                type: type,
+                clientDataJSON,
+                authenticatorData,
+                signature,
+                userHandle,
               },
-            });
+              clientExtensionResults: {},
+              type,
+            },
+          });
           if (!verified || !info) {
             throw new Error("Verification failed");
           }

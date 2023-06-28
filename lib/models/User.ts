@@ -40,15 +40,13 @@ userSchema.methods.comparePassword = async function (password: string, hash: str
   return await bcrypt.compare(password, hash);
 };
 
-
-userSchema.set('toJSON', {
+userSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
-  transform: function (doc, ret) {
-      delete ret._id;
-      delete ret.hash;
-  }
+  transform(doc, ret) {
+    delete ret._id;
+    delete ret.hash;
+  },
 });
-
 
 export default models.User || model("User", userSchema);

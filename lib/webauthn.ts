@@ -1,8 +1,8 @@
 import { Binary } from "mongodb";
-import { dbConnect } from "./mongodb";
 import mongoose from "mongoose";
 import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import { VerifiedRegistrationResponse } from "@simplewebauthn/server";
+import { dbConnect } from "./mongodb";
 
 export interface passkeyObj {
   credentialId: string;
@@ -23,13 +23,7 @@ export interface DbCredential {
 }
 dbConnect();
 
-export async function saveChallenge({
-  userID,
-  challenge,
-}: {
-  challenge: string;
-  userID: string;
-}) {
+export async function saveChallenge({ userID, challenge }: { challenge: string; userID: string }) {
   console.log("saveChallenge", challenge, userID);
 
   await mongoose.connection.db.collection("challenge").updateOne(
@@ -83,13 +77,11 @@ export async function getChallenge(userID: string) {
  * @param cred user's public key
  */
 export async function saveCredentials(cred: DbCredential) {
-  await mongoose.connection.db
-    .collection<DbCredential>("credentials")
-    .insertOne({
-      userID: cred.userID,
-      passkeyInfo: cred.passkeyInfo,
-      userInfo: cred.userInfo,
-    });
+  await mongoose.connection.db.collection<DbCredential>("credentials").insertOne({
+    userID: cred.userID,
+    passkeyInfo: cred.passkeyInfo,
+    userInfo: cred.userInfo,
+  });
 }
 
 /**
@@ -97,16 +89,14 @@ export async function saveCredentials(cred: DbCredential) {
  * @param cred user's public key
  */
 export async function updateCredentials(cred: passkeyObj, userID: string) {
-  await mongoose.connection.db
-    .collection<DbCredential>("credentials")
-    .updateOne(
-      {
-        userID: userID,
+  await mongoose.connection.db.collection<DbCredential>("credentials").updateOne(
+    {
+      userID,
+    },
+    {
+      $push: {
+        passkeyInfo: cred,
       },
-      {
-        $push: {
-          passkeyInfo: cred,
-        },
-      }
-    );
+    }
+  );
 }

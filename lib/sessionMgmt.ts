@@ -28,9 +28,7 @@ export function getSession(req: NextRequest) {
   }
 }
 
-export function destroySession(res: {
-  setHeader: (arg0: string, arg1: string) => void;
-}) {
+export function destroySession(res: { setHeader: (arg0: string, arg1: string) => void }) {
   res.setHeader(
     "Set-Cookie",
     cookie.serialize("session", "", {
