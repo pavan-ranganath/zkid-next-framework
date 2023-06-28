@@ -65,7 +65,7 @@ import Link from "next/link";
  */
 export default function SignInComponent() {
   // Retrieve the session status and data using the useSession hook from next-auth/react.
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   // Determine the user's authorization status based on the session status.
   const authorized = status === "authenticated";
@@ -103,7 +103,7 @@ export default function SignInComponent() {
     if (authorized) {
       redirect("/dashboard", RedirectType.push);
     }
-  }, [loading, unAuthorized, status]);
+  }, [loading, unAuthorized, status, authorized]);
 
   // If the user refreshed the page or somehow navigated to the protected page,
   // show a loading spinner.

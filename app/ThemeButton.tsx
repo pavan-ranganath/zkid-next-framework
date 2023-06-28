@@ -3,7 +3,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { DEFAULT_THEME, getOtherTheme } from "./theme";
 

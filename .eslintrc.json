@@ -17,21 +17,42 @@
     }
   },
   "rules": {
-    "no-console": "error",
+    "no-console": "off",
+    "react-hooks/exhaustive-deps": "error",
+    "camelcase": "off",
+    "no-plusplus": "warn",
     "func-names": "off",
     "no-underscore-dangle": "off",
+    "import/prefer-default-export": "off",
     "consistent-return": "off",
     "jest/expect-expect": "off",
     "security/detect-object-injection": "off",
     "no-unused-vars": "off", // or "@typescript-eslint/no-unused-vars": "off",
-    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-imports": "off",
+    "no-use-before-define": "warn",
     "unused-imports/no-unused-vars": [
       "warn",
       { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+    ],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
     ]
   },
   "env": {
     "browser": true,
     "node": true
+  },
+  "globals": {
+    "React": true,
+    "JSX": true,
+    "RequestInfo": true,
+    "RequestInit": true
   }
 }

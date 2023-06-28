@@ -80,7 +80,7 @@ export default function Register(): JSX.Element {
     if (authorized) {
       redirect("/dashboard", RedirectType.push);
     }
-  }, [loading, unAuthorized, status]);
+  }, [loading, unAuthorized, authorized]);
 
   // If the user refreshed the page or somehow navigated to the protected page
   if (loading) {

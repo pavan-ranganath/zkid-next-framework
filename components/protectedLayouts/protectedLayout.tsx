@@ -42,12 +42,12 @@ export const ProtectedLayout = ({ children }: { children: React.ReactNode }): Re
   // Executing the following code on component mount or when the sessionStatus changes
   useEffect(() => {
     // Check if the session is loading or the router is not ready
-    if (sessionStatus === "authenticated") {
+    if (authorized) {
       // User is authenticated, continue to the protected route
       return;
     }
 
-    if (sessionStatus === "loading") {
+    if (loading) {
       // Session is loading, show a loading indicator or redirect if needed
       return;
     }
@@ -61,7 +61,7 @@ export const ProtectedLayout = ({ children }: { children: React.ReactNode }): Re
       // Redirect to the login page using the push method
       redirect("/signin", RedirectType.push);
     }
-  }, [sessionStatus]);
+  }, [unAuthorized, authorized, loading]);
 
   // If the user refreshed the page or somehow navigated to the protected page
   if (loading) {

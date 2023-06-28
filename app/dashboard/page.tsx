@@ -119,11 +119,21 @@ async function GetPasskeys() {
   );
 }
 
-// Async function to fetch data from an API
-export async function fetcher<JSON = any>(input: RequestInfo, init?: RequestInit): Promise<JSON> {
-  const res = await fetch(input, init);
-  return res.json();
-}
+// Async function to fetch data from sepecified url
+const fetcher = async (url: string) => {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error("Failed to fetch data");
+  }
+};
 
 // Async function to register webauthn credentials
 async function registerWebauthn() {
@@ -158,7 +168,7 @@ async function registerWebauthn() {
     });
 
     // Handling the response from the server
-    if (response.status != 201) {
+    if (response.status !== 201) {
       toast.error("Could not register webauthn credentials.");
       const errorResp = await response.json();
       console.error(errorResp);

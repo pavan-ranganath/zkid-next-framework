@@ -35,6 +35,8 @@ import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 // Used to get and set session data in the server response
 import { getSession, setSession } from "@/lib/sessionMgmt";
 
+export const dynamic = "force-dynamic";
+
 // Retrieve environment variables
 const domain = process.env.APP_DOMAIN!;
 const origin = process.env.APP_ORIGIN!;
@@ -111,7 +113,7 @@ const verifyWebAuthnRegistrationResponse = async (
   response: RegistrationResponseJSON,
   expectedRPID: string | string[] | undefined,
   expectedOrigin: string | string[],
-  expectedChallenge: string | ((challenge: string) => boolean)
+  expectedChallenge: string
 ) => {
   /**
    * Verify the registration response received from the client.

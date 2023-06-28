@@ -1,9 +1,10 @@
-// Import necessary modules and libraries
 import { NextRequest, NextResponse } from "next/server"; // Import Next.js server functions for handling requests and responses
 import mongoose from "mongoose"; // Import Mongoose library for MongoDB database interaction
 import { Sort } from "mongodb"; // Import MongoDB Sort interface for sorting query results
 import { dbConnect } from "@/lib/mongodb"; // Import custom function for connecting to MongoDB
-import { ColumnSort, ColumnFilter } from "@tanstack/table-core"; // Import interfaces for column sorting and filtering
+import { ColumnSort, ColumnFilter } from "@tanstack/table-core";
+
+export const dynamic = "force-dynamic"; // Import interfaces for column sorting and filtering
 
 // Connect to the MongoDB database
 dbConnect();

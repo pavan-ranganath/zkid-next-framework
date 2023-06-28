@@ -1,9 +1,10 @@
-// Import the necessary modules and functions
 import { dbConnect } from "@/lib/mongodb"; // Imports the function for connecting to the MongoDB database
 import { DbCredential, saveChallenge } from "@/lib/webauthn"; // Imports the necessary functions related to web authentication
 import { generateAuthenticationOptions } from "@simplewebauthn/server"; // Imports a function for generating authentication options
 import mongoose from "mongoose"; // Imports the mongoose library for MongoDB interaction
-import { NextRequest, NextResponse } from "next/server"; // Imports the Next.js request and response objects
+import { NextRequest, NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic"; // Imports the Next.js request and response objects
 
 const domain = process.env.APP_DOMAIN!;
 
