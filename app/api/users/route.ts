@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from "next/server"; // Import Next.js serve
 import mongoose from "mongoose"; // Import Mongoose library for MongoDB database interaction
 import { Sort } from "mongodb"; // Import MongoDB Sort interface for sorting query results
 import { dbConnect } from "@/lib/mongodb"; // Import custom function for connecting to MongoDB
-import { ColumnSort, ColumnFilter } from "@tanstack/table-core";
+import { ColumnSort, ColumnFilter } from "@tanstack/table-core"; // Import interfaces for column sorting and filtering
 
-export const dynamic = "force-dynamic"; // Import interfaces for column sorting and filtering
-
-// Connect to the MongoDB database
-dbConnect();
+export const dynamic = "force-dynamic"; // to supress Error processing API request: DynamicServerError: Dynamic server usage: nextUrl.searchParams
 
 // Define the type for the filter object
 export type filter = {
@@ -19,6 +16,9 @@ export type filter = {
 // Return the JSON response with the data and pagination details
 export async function GET(req: NextRequest, context: any) {
   try {
+    // Establishing a connection to the database
+    await dbConnect();
+
     // Extract query parameters from the request URL
     const { page = 1, limit = 10, sorting = "", filters = "" } = Object.fromEntries(req.nextUrl.searchParams.entries());
 

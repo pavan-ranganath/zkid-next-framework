@@ -35,15 +35,12 @@ import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 // Used to get and set session data in the server response
 import { getSession, setSession } from "@/lib/sessionMgmt";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"; // to supress Error processing API request: DynamicServerError: Dynamic server usage: nextUrl.searchParams
 
 // Retrieve environment variables
 const domain = process.env.APP_DOMAIN!;
 const origin = process.env.APP_ORIGIN!;
 const appName = process.env.APP_NAME!;
-
-// Establish a connection to the MongoDB database
-dbConnect();
 
 // Generate registration options for WebAuthn based on user details
 // This function creates an object that represents the registration options
@@ -150,6 +147,9 @@ const handleInvalidResponseError = () => {
  *  It also includes necessary validation and error handling for the registration process.
  */
 export async function GET(req: NextRequest, context: any) {
+  // Establishing a connection to the database
+  await dbConnect();
+
   // Retrieve the server session using authOptions
   const session = await getServerSession(authOptions);
 
@@ -221,6 +221,9 @@ export async function GET(req: NextRequest, context: any) {
 
 // Handler function for POST requests
 export async function POST(req: NextRequest, context: any) {
+  // Establishing a connection to the database
+  await dbConnect();
+
   // Retrieve the session from the request
   const session = getSession(req) as any;
   const { user } = session;
@@ -287,6 +290,9 @@ export async function POST(req: NextRequest, context: any) {
 
 // Handler function for PUT requests
 export async function PUT(req: NextRequest, context: any) {
+  // Establishing a connection to the database
+  await dbConnect();
+
   // Retrieve the server session using authOptions
   const session = await getServerSession(authOptions);
   const user = session?.user;

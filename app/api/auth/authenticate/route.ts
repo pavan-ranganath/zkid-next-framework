@@ -2,9 +2,9 @@ import { dbConnect } from "@/lib/mongodb"; // Imports the function for connectin
 import { DbCredential, saveChallenge } from "@/lib/webauthn"; // Imports the necessary functions related to web authentication
 import { generateAuthenticationOptions } from "@simplewebauthn/server"; // Imports a function for generating authentication options
 import mongoose from "mongoose"; // Imports the mongoose library for MongoDB interaction
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server"; // Imports the Next.js request and response objects
 
-export const dynamic = "force-dynamic"; // Imports the Next.js request and response objects
+export const dynamic = "force-dynamic"; // to supress Error processing API request: DynamicServerError: Dynamic server usage: nextUrl.searchParams
 
 const domain = process.env.APP_DOMAIN!;
 
@@ -14,15 +14,15 @@ const domain = process.env.APP_DOMAIN!;
  * It generates and returns authentication options.
  */
 
-// Connect to the MongoDB database
-dbConnect();
-
 // Define the GET request handler function
 /**
  * retrieves credentials associated with an email, generates authentication options,
  * saves the authentication challenge, and returns the generated authentication options in the response
  */
 export async function GET(req: NextRequest) {
+  // Establishing a connection to the database
+  await dbConnect();
+
   const { email } = Object.fromEntries(req.nextUrl.searchParams.entries());
 
   // Check if email parameter is provided

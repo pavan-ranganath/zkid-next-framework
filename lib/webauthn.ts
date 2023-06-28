@@ -32,8 +32,6 @@ export interface DbCredential {
   };
 }
 
-dbConnect(); // Establishing a connection to the MongoDB database using the "dbConnect" function
-
 /**
  * saveChallenge saves a challenge value for a user in the database.
  * @param challenge - The challenge value to be saved.

@@ -13,9 +13,6 @@ import { AuthOptions } from "next-auth"; // Type definition for NextAuth options
 import mongoose from "mongoose"; // MongoDB object modeling tool
 import base64url from "base64url"; // Module for handling base64url encoding and decoding
 
-// Establishing a connection to the database
-dbConnect();
-
 // Retrieving environment variables
 const domain = process.env.APP_DOMAIN!; // The domain of the application
 const origin = process.env.APP_ORIGIN!; // The origin of the application

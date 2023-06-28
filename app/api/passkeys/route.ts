@@ -5,9 +5,6 @@ import { getServerSession } from "next-auth"; // Importing the "getServerSession
 import { credentailsFromTb } from "@/app/dashboard/users/service"; // Importing the "credentailsFromTb" type from the local module "@/app/dashboard/users/service" for defining the type of a collection document
 import { authOptions } from "../auth/[...nextauth]/route"; // Importing the "authOptions" object from the local module "../auth/[...nextauth]/route" for configuring authentication options
 
-// Establishing a connection to the MongoDB database
-dbConnect();
-
 // Defining a type for the filter object
 export type filter = {
   id: string;
@@ -17,6 +14,9 @@ export type filter = {
 // Handling the GET request
 // retrieves data based on the user's email
 export async function GET(req: NextRequest, context: any) {
+  // Establishing a connection to the database
+  await dbConnect();
+
   // Retrieving the user session using the "getServerSession" function
   const session = await getServerSession(authOptions);
 
