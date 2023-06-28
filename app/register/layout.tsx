@@ -1,11 +1,16 @@
 "use client";
 
-import { Grid, useTheme } from "@mui/material";
-import "./register.css";
-import Providers from "../Providers";
+import React from "react"; // Importing React from the "react" package. Required for creating React components.
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const theme = useTheme();
+import { Grid } from "@mui/material"; // Importing the Grid component from the Material-UI library. Used for grid-based layouts.
+
+import "./register.css"; // Importing the CSS file for styling the register page.
+
+import Providers from "../Providers"; // Importing the Providers component from the "../Providers" module. It provides context or services to its child components.
+
+// RegisterLayout component
+// This component represents the layout for the register page
+export default function RegisterLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Providers>

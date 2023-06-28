@@ -1,8 +1,7 @@
 {
   "extends": ["next/core-web-vitals","airbnb-base", "plugin:security/recommended", "plugin:prettier/recommended","eslint:recommended",
   "plugin:react/recommended",
-  "plugin:jsx-a11y/recommended",
-  "plugin:unused-imports/recommended"],
+  "plugin:jsx-a11y/recommended"],
   "plugins": ["jest", "security", "prettier","unused-imports"],
   "parserOptions": {
     "ecmaVersion": 2021,

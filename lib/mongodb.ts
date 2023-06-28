@@ -1,22 +1,32 @@
+// Importing the necessary modules and functions from "mongoose"
 import { connect, connection, ConnectionStates } from "mongoose";
 
+// Represents the connection state of the database
 const conn = {
   isConnected: ConnectionStates.disconnected,
 };
 
+// Function to establish a connection to the database
 export async function dbConnect() {
+  // Checking if the MongoDB URI is provided in the environment variables
   if (!process.env.MONGODB_URI) {
     throw new Error("Please add your Mongo URI to .env.local");
   }
+
+  // Checking if already connected to the database
   if (conn.isConnected) {
     return;
   }
 
+  // Connecting to the MongoDB database using the provided URI
   const db = await connect(process.env.MONGODB_URI);
-  // console.log(db.connection.db.databaseName);
+
+  // Updating the connection state based on the ready state of the connection
   conn.isConnected = db.connections[0].readyState;
 }
 
+// Event listener for successful database connection
 connection.on("connected", () => console.log("Mongodb connected to db"));
 
-connection.on("error", (err) => console.error("Mongodb Errro:", err.message));
+// Event listener for database connection errors
+connection.on("error", (err) => console.error("Mongodb Error:", err.message));

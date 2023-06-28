@@ -1,19 +1,22 @@
 "use client";
 
-import { useMemo, useState } from "react";
+// Import necessary dependencies
+import { useMemo, useState } from "react"; // React hooks for managing state
 import MaterialReactTable, {
   MRT_ColumnDef,
   MRT_ColumnFiltersState,
   MRT_PaginationState,
   MRT_SortingState,
-} from "material-react-table";
-import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
-import { Tooltip, IconButton } from "@mui/material";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import { ProtectedLayout } from "@/components/protectedLayouts/protectedLayout";
-import { credentailsFromTb, dataFromServer } from "./service";
+} from "material-react-table"; // Material React Table library components and types
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"; // React Query library components and hooks
+import { Tooltip, IconButton } from "@mui/material"; // Material UI components
+import RefreshIcon from "@mui/icons-material/Refresh"; // Material UI Refresh icon
+import { ProtectedLayout } from "@/components/protectedLayouts/protectedLayout"; // Custom ProtectedLayout component
+import { credentailsFromTb, dataFromServer } from "./service"; // Custom types and service functions
 
+// Define the UsersTable component
 const UsersTable = () => {
+  // Define table columns using useMemo to memoize the value
   const columns = useMemo<MRT_ColumnDef<credentailsFromTb>[]>(
     () => [
       {
@@ -40,6 +43,8 @@ const UsersTable = () => {
     ],
     []
   );
+
+  // State variables for column filters, global filter, sorting, and pagination
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -48,6 +53,7 @@ const UsersTable = () => {
     pageSize: 10,
   });
 
+  // UseQuery hook to fetch data from the server
   const { data, isError, isFetching, isLoading, refetch } = useQuery<dataFromServer>({
     queryKey: [
       "table-data",
@@ -126,6 +132,10 @@ const UsersTable = () => {
     />
   );
 };
+
+// Export the users async function
+// The QueryClientProvider acts as a central hub for managing data queries and caching in the application
+// The ProtectedLayout checks if user is logged in
 export default async function users() {
   const queryClient = new QueryClient();
 
