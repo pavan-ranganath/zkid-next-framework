@@ -206,6 +206,7 @@ async function registerWebauthn(email: string, fName: string, lName: string, rou
       // router.push('/signin');
     }
   } catch (err) {
+    console.error("Registration failed", err)
     toast.error(`Registration failed. ${(err as Error).message}`);
   }
 }
