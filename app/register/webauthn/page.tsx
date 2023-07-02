@@ -177,36 +177,36 @@ async function registerWebauthn(email: string, fName: string, lName: string, rou
     return;
   }
 
-  try {
-    // Start the WebAuthn registration process
-    // - The startRegistration function is responsible for initiating the WebAuthn registration flow
-    //   by invoking the browser's built-in WebAuthn API with the received registration options (opt)
-    // - The startRegistration function returns a credential object that represents the user's newly
-    //   registered WebAuthn credential
-    const credential = await startRegistration(opt);
+  // try {
+  // Start the WebAuthn registration process
+  // - The startRegistration function is responsible for initiating the WebAuthn registration flow
+  //   by invoking the browser's built-in WebAuthn API with the received registration options (opt)
+  // - The startRegistration function returns a credential object that represents the user's newly
+  //   registered WebAuthn credential
+  const credential = await startRegistration(opt);
 
-    // Send the registration data to the server
-    const response = await fetch("/api/auth/register/webauthn", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credential),
-      credentials: "include",
-    });
+  // Send the registration data to the server
+  const response = await fetch("/api/auth/register/webauthn", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(credential),
+    credentials: "include",
+  });
 
-    // Handle error if the registration request failed
-    if (response.status !== 201) {
-      toast.error("Could not register WebAuthn credentials.");
-      const errorResp = await response.json();
-      console.error(errorResp);
-    } else {
-      toast.success("Your WebAuthn credentials have been registered.", { duration: 10000 });
-      // Redirect to the sign-in page
-      // router.push('/signin');
-    }
-  } catch (err) {
-    console.error("Registration failed", err)
-    toast.error(`Registration failed. ${(err as Error).message}`);
+  // Handle error if the registration request failed
+  if (response.status !== 201) {
+    toast.error("Could not register WebAuthn credentials.");
+    const errorResp = await response.json();
+    console.error(errorResp);
+  } else {
+    toast.success("Your WebAuthn credentials have been registered.", { duration: 10000 });
+    // Redirect to the sign-in page
+    // router.push('/signin');
   }
+  // } catch (err) {
+  //   console.error("Registration failed", err)
+  //   toast.error(`Registration failed. ${(err as Error).message}`);
+  // }
 }
