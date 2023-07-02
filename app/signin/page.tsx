@@ -119,7 +119,7 @@ export default function SignInComponent() {
   }
 
   // Dismiss any active toasts (notifications).
-  toast.dismiss();
+  // toast.dismiss();
 
   return (
     <>
