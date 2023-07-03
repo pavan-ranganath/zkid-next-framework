@@ -110,7 +110,7 @@ export function handleRegistrationError(error: any) {
     if (error.message.includes("Operation failed")) {
       toast.error("The selected authenticator is already registered.");
     } else {
-      toast.error("You need to grant permission to use WebAuthn for registration.");
+      toast.error("The operation either timed out or was not allowed or authenticator is already registered");
     }
   } else if (error.name === "NotFoundError") {
     toast.error("WebAuthn is not supported by your browser.");
