@@ -71,7 +71,7 @@ async function GetPasskeys() {
   return (
     <>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6} sm={6}>
           <Card variant="outlined">
             <CardHeader title="User info" />
             <CardContent>
@@ -91,7 +91,7 @@ async function GetPasskeys() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6} sm={6}>
           <Card variant="outlined">
             <CardHeader title="Passkeys" />
             <CardContent>
@@ -177,7 +177,25 @@ async function registerWebauthn() {
       // router.push('/signin');
     }
   } catch (err) {
-    console.error(err);
-    toast.error(`Registration failed. ${(err as Error).message}`);
+    handleRegistrationError(err);
+    // toast.error(`Registration failed. ${(err as Error).message}`);
+  }
+}
+
+// Function to handle registration errors
+export function handleRegistrationError(error: any) {
+  console.error("Registration error:", error);
+  if (error.name === "NotAllowedError") {
+    if (error.message.includes("Operation failed")) {
+      toast.error("The selected authenticator is already registered.");
+    } else {
+      toast.error("You need to grant permission to use WebAuthn for registration.");
+    }
+  } else if (error.name === "NotFoundError") {
+    toast.error("WebAuthn is not supported by your browser.");
+  } else if (error.name === "InvalidStateError") {
+    toast.error("This authenticator is already registered.");
+  } else {
+    toast.error(`Registration failed. ${(error as Error).message}`);
   }
 }

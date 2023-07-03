@@ -16,6 +16,7 @@ import { startRegistration } from "@simplewebauthn/browser"; // WebAuthn registr
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"; // Next.js router instance
 import { useSession } from "next-auth/react"; // NextAuth session hook
 import { RedirectType } from "next/dist/client/components/redirect"; // Next.js redirect type
+import { handleRegistrationError } from "@/app/dashboard/page";
 
 /**
  * The Register component handles the user registration process.
@@ -206,7 +207,6 @@ async function registerWebauthn(email: string, fName: string, lName: string, rou
       // router.push('/signin');
     }
   } catch (err) {
-    console.error("Registration failed", err);
-    toast.error(`Registration failed. ${(err as Error).message}`);
+    handleRegistrationError(err);
   }
 }
