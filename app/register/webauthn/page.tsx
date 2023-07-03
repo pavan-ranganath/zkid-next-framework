@@ -16,7 +16,7 @@ import { startRegistration } from "@simplewebauthn/browser"; // WebAuthn registr
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"; // Next.js router instance
 import { useSession } from "next-auth/react"; // NextAuth session hook
 import { RedirectType } from "next/dist/client/components/redirect"; // Next.js redirect type
-import { handleRegistrationError } from "@/app/dashboard/page";
+import { handleRegistrationError } from "@/lib/webauthn";
 
 /**
  * The Register component handles the user registration process.

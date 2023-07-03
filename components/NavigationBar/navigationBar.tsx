@@ -17,7 +17,6 @@ import {
 
 import { useState, MouseEvent, useEffect } from "react"; // Importing React hooks for state management and side effects
 
-import AdbIcon from "@mui/icons-material/Adb"; // Importing an icon component from Material-UI
 import MenuIcon from "@mui/icons-material/Menu"; // Importing a menu icon component from Material-UI
 
 import Link from "next/link"; // Importing the Link component from Next.js for client-side navigation
@@ -34,9 +33,9 @@ const pages: {
   friendlyName: string;
   href: string;
 }[] = [
-  { id: 1, friendlyName: "Dashboard", href: "/dashboard" },
-  { id: 2, friendlyName: "Users", href: "/dashboard/users" },
-];
+    { id: 1, friendlyName: "Dashboard", href: "/dashboard" },
+    { id: 2, friendlyName: "Users", href: "/dashboard/users" },
+  ];
 
 export default function NavigationBar() {
   const { theme: themeState, setTheme } = useTheme(); // Using the useTheme hook to access the current theme and set the theme
@@ -74,23 +73,23 @@ export default function NavigationBar() {
     friendlyName: string;
     onClick: () => Promise<void>;
   }[] = [
-    {
-      id: 1,
-      friendlyName: "Logout",
-      onClick: async () => {
-        await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
-        handleCloseUserMenu();
+      {
+        id: 1,
+        friendlyName: "Logout",
+        onClick: async () => {
+          await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
+          handleCloseUserMenu();
+        },
       },
-    },
-    {
-      id: 2,
-      friendlyName: `Activate ${themeName} Theme`,
-      onClick: async () => {
-        setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
-        handleCloseUserMenu();
+      {
+        id: 2,
+        friendlyName: `Activate ${themeName} Theme`,
+        onClick: async () => {
+          setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
+          handleCloseUserMenu();
+        },
       },
-    },
-  ];
+    ];
 
   return (
     <AppBar position="static">
@@ -140,8 +139,6 @@ export default function NavigationBar() {
             </Menu>
           </Box>
 
-          {/* AdbIcon (for small screens) */}
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
 
           {/* Navigation Buttons (for medium and large screens) */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>

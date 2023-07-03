@@ -11,6 +11,7 @@ import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 import { VerifiedRegistrationResponse } from "@simplewebauthn/server";
 
 // The `dbConnect` function is imported from a local file named "mongodb.js". Custom function responsible for establishing a connection to the MongoDB database.
+import toast from "react-hot-toast";
 import { dbConnect } from "./mongodb";
 
 export interface passkeyObj {
@@ -101,4 +102,21 @@ export async function updateCredentials(cred: passkeyObj, userID: string) {
       },
     }
   );
+}
+// Function to handle registration errors
+export function handleRegistrationError(error: any) {
+  console.error("Registration error:", error);
+  if (error.name === "NotAllowedError") {
+    if (error.message.includes("Operation failed")) {
+      toast.error("The selected authenticator is already registered.");
+    } else {
+      toast.error("You need to grant permission to use WebAuthn for registration.");
+    }
+  } else if (error.name === "NotFoundError") {
+    toast.error("WebAuthn is not supported by your browser.");
+  } else if (error.name === "InvalidStateError") {
+    toast.error("This authenticator is already registered.");
+  } else {
+    toast.error(`Registration failed. ${(error as Error).message}`);
+  }
 }

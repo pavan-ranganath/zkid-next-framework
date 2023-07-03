@@ -32,6 +32,7 @@ import { Suspense } from "react";
 import useSWR from "swr";
 
 // Importing the credentailsFromTb type from the "./users/service" module
+import { handleRegistrationError } from "@/lib/webauthn";
 import { credentailsFromTb } from "./users/service";
 
 // Dashboard component
@@ -179,23 +180,5 @@ async function registerWebauthn() {
   } catch (err) {
     handleRegistrationError(err);
     // toast.error(`Registration failed. ${(err as Error).message}`);
-  }
-}
-
-// Function to handle registration errors
-export function handleRegistrationError(error: any) {
-  console.error("Registration error:", error);
-  if (error.name === "NotAllowedError") {
-    if (error.message.includes("Operation failed")) {
-      toast.error("The selected authenticator is already registered.");
-    } else {
-      toast.error("You need to grant permission to use WebAuthn for registration.");
-    }
-  } else if (error.name === "NotFoundError") {
-    toast.error("WebAuthn is not supported by your browser.");
-  } else if (error.name === "InvalidStateError") {
-    toast.error("This authenticator is already registered.");
-  } else {
-    toast.error(`Registration failed. ${(error as Error).message}`);
   }
 }
