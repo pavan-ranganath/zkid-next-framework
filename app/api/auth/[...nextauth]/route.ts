@@ -15,7 +15,7 @@ import base64url from "base64url"; // Module for handling base64url encoding and
 
 // Retrieving environment variables
 const domain = process.env.APP_DOMAIN!; // The domain of the application
-const origin = process.env.APP_ORIGIN!; // The origin of the application
+const origin = process.env.NEXTAUTH_URL!; // The origin of the application
 
 // Configuration options for NextAuth
 export const authOptions: AuthOptions = {

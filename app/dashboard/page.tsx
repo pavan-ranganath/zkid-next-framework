@@ -33,6 +33,7 @@ import useSWR from "swr";
 
 // Importing the credentailsFromTb type from the "./users/service" module
 import { handleRegistrationError } from "@/lib/webauthn";
+import VerifiedIcon from "@mui/icons-material/Verified";
 import { credentailsFromTb } from "./users/service";
 
 // Dashboard component
@@ -79,6 +80,13 @@ async function GetPasskeys() {
               {/* Displaying user information */}
               <Typography gutterBottom variant="body1" component="div">
                 Email:{userInfo.userInfo?.email}
+                {!userInfo.userInfo?.emailVerified ? (
+                  <Button size="small" onClick={verifyEmail}>
+                    Verify
+                  </Button>
+                ) : (
+                  <VerifiedIcon color="success" />
+                )}
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 Firstname: {userInfo.userInfo?.firstName}
@@ -121,7 +129,7 @@ async function GetPasskeys() {
 }
 
 // Async function to fetch data from sepecified url
-const fetcher = async (url: string) => {
+export const fetcher = async (url: string) => {
   try {
     const response = await fetch(url);
 
@@ -135,6 +143,31 @@ const fetcher = async (url: string) => {
     throw new Error("Failed to fetch data");
   }
 };
+
+async function verifyEmail() {
+  try {
+    const response = await fetch("/api/auth/emailverifier", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+      cache: "no-store",
+      credentials: "include",
+    });
+    if (response.status !== 201) {
+      toast.error("Failed to send email verification link");
+      const errorResp = await response.json();
+      console.error(errorResp);
+    } else {
+      toast.success("Email verification link sent to registered email", { duration: 10000 });
+      // router.push('/signin');
+    }
+  } catch (err) {
+    console.log(err);
+    toast.error(`Failed to send email ${(err as Error).message}`);
+  }
+}
 
 // Async function to register webauthn credentials
 async function registerWebauthn() {
