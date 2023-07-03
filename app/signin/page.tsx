@@ -183,7 +183,12 @@ async function signInWithWebauthn(email: any) {
   // Check if fetching authentication options was successful.
   if (optionsResponse.status !== 200) {
     console.error(optionsResponse);
-    toast.error("Could not get authentication options from the server");
+    const { error } = await optionsResponse.json();
+    if (error) {
+      toast.error(error);
+    } else {
+      toast.error("Could not get authentication options from the server");
+    }
     throw new Error("Could not get authentication options from the server");
     // return;
   }
