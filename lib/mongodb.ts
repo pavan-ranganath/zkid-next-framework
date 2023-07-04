@@ -1,12 +1,5 @@
 // Importing the necessary modules and functions from "mongoose"
-import { connect, connection, ConnectionStates, ConnectOptions } from "mongoose";
-import fs from "fs";
-
-const options: ConnectOptions = {
-  tls: true,
-  tlsCAFile: "/home/pavanr/certificates/ca.pem",
-  tlsCertificateKeyFile: "/home/pavanr/certificates/client1Crt.pem",
-};
+import { connect, connection, ConnectionStates } from "mongoose";
 
 // Represents the connection state of the database
 const conn = {
@@ -26,7 +19,7 @@ export async function dbConnect() {
   }
 
   // Connecting to the MongoDB database using the provided URI
-  const db = await connect(process.env.MONGODB_URI, options);
+  const db = await connect(process.env.MONGODB_URI);
 
   // Updating the connection state based on the ready state of the connection
   conn.isConnected = db.connections[0].readyState;
