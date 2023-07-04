@@ -100,6 +100,23 @@ export default function Register(): JSX.Element {
 
   return (
     <>
+      {/* Display branding */}
+      <div style={{ textAlign: "center" }}>
+        <img
+          src="/EGS_logo_final.svg"
+          alt="EGS Logo"
+          style={{
+            maxWidth: "50%",
+            height: "auto",
+            marginBottom: "2rem",
+            display: "inline-block",
+          }}
+        />
+        <Typography variant="h4" component="h2">
+          zKID
+        </Typography>
+      </div>
+
       {/* Registration form */}
       <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
         Registration

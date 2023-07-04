@@ -22,7 +22,7 @@ export default function RegisterLayout({ children }: { children: React.ReactNode
           justifyContent="center"
           sx={{ minHeight: "100vh" }}
         >
-          <Grid item xs={3}>
+          <Grid item xs={3} sx={{ "margin": "10px" }}>
             {children}
           </Grid>
         </Grid>
