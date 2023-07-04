@@ -79,6 +79,8 @@ export const sendEmail = async (to: any, subject: string, text: string, html: st
 export const sendVerificationEmail = async (to: any, token: any): Promise<any> => {
   const subject = "Email Verification";
   const verificationEmailUrl = `${process.env.NEXTAUTH_URL}/verification?token=${token}`;
+  const logoUrl = "https://egstech.org/EGStech_logo.png";
+
   const html = `
   <html>
     <head>
@@ -103,10 +105,23 @@ export const sendVerificationEmail = async (to: any, token: any): Promise<any> =
         .button {
           display: inline-block;
           background-color: #007bff;
-          color: #ffffff;
+          color: #ffffff !important;
           text-decoration: none;
           padding: 10px 20px;
           border-radius: 5px;
+        }
+        .logo-container {
+          margin-bottom: 30px;
+        }
+        .logo {
+          max-width: 10%; /* Adjust the size of the logo as needed */
+          height: auto;
+          margin-bottom: 10px;
+        }
+        .company-name {
+          font-size: 10px;
+          font-weight: bold;
+          color: #333333;
         }
       </style>
     </head>
@@ -118,6 +133,10 @@ export const sendVerificationEmail = async (to: any, token: any): Promise<any> =
         <p class="message">By verifying your email, you will have access to all the features and benefits of our platform.</p>
         <p class="message">If you did not create an account, then please ignore this email.</p>
         <p class="message">Best regards,<br/>The ZKID Team</p>
+        <div>
+          <img src="${logoUrl}" alt="Company Logo" class="logo">
+          <p class="company-name">Entrada Global Solutions</p>
+        </div>
       </div>
     </body>
   </html>
