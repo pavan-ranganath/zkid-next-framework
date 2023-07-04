@@ -8,6 +8,7 @@ install mongodb
 
 ```bash
 cp example.env.local .env.local
+
 npm install
 npm run dev
 # or
@@ -18,23 +19,80 @@ pnpm dev
 
 configure .env.local
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Setting Up TLS Encryption and Authentication for MongoDB
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+This guide provides step-by-step instructions for setting up TLS encryption and authentication for your MongoDB deployment using OpenSSL.
 
-## Learn More
+NOTE: Give localhost to `CN` or in `SAN` for mongodb to connect while developing
 
-To learn more about Next.js, take a look at the following resources:
+## Certificate and Key Generation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Generate the CA Key and Certificate:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   ```bash
+   openssl genpkey -algorithm RSA -out ca.key
+   openssl req -new -x509 -key ca.key -out ca.crt
+   ```
 
-## Deploy on Vercel
+2. Generate the Server Key and Certificate Signing Request (CSR):
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   openssl genpkey -algorithm RSA -out server.key
+   openssl req -new -key server.key -out server.csr
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. Sign the Server CSR with the CA to obtain the Server Certificate:
+
+   ```bash
+   openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+   ```
+
+4. Generate the Client Key and Certificate Signing Request (CSR):
+
+   ```bash
+   openssl genpkey -algorithm RSA -out client1.key
+   openssl req -new -key client1.key -out client1.csr
+   ```
+
+5. Sign the Client CSR with the CA to obtain the Client Certificate:
+
+   ```bash
+   openssl x509 -req -in client1.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client1.crt
+   ```
+
+6. Create the MongoDB PEM files:
+   ```bash
+   cat server.crt server.key > mongod.pem
+   cat client1.crt client1.key > client1_cert.pem
+   ```
+
+## MongoDB Server Configuration
+
+1. Open the `/etc/mongod.conf` file.
+
+2. Add the following configuration under the `net` section to enable TLS encryption and authentication:
+
+   ```yaml
+   net:
+     tls:
+       mode: requireTLS
+       certificateKeyFile: /path/to/mongod.pem
+       certificateKeyFilePassword: <optional_password>
+       CAFile: /path/to/ca.crt
+   ```
+
+   Replace `/path/to/mongod.pem` with the actual path to the `mongod.pem` file, and `/path/to/ca.crt` with the actual path to the `ca.crt` file. Optionally, provide the password for the `certificateKeyFile` if applicable.
+
+## MongoDB Client Connection
+
+To connect to the MongoDB server using TLS, use the following command:
+
+```bash
+mongosh --tls --tlsCAFile /path/to/ca.crt --tlsCertificateKeyFile /path/to/client1_cert.pem
+```
+
+Replace `/path/to/ca.crt` with the actual path to the `ca.crt` file, and `/path/to/client1_cert.pem` with the actual path to the `client1_cert.pem` file.
+
+---
