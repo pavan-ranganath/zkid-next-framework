@@ -1,8 +1,14 @@
 // Importing the necessary dependencies and modules
 
-import nodemailer from "nodemailer"; // Importing the 'nodemailer' module for sending emails
-import SmtpTransport from "nodemailer/lib/smtp-transport"; // Importing the 'SmtpTransport' module from 'nodemailer/lib/smtp-transport' for SMTP transport configuration
+// The 'nodemailer' module is used for sending emails. It provides a convenient API for configuring and sending emails using different transport methods.
+// Importing the 'nodemailer' module for sending emails
+import nodemailer from "nodemailer";
 
+// The 'SmtpTransport' module is imported from 'nodemailer/lib/smtp-transport'. It represents the SMTP transport method for sending emails using the SMTP protocol.
+// Importing the 'SmtpTransport' module from 'nodemailer/lib/smtp-transport' for SMTP transport configuration
+import SmtpTransport from "nodemailer/lib/smtp-transport";
+
+// The 'emailConfig' object contains the SMTP configuration and the "from" address for the emails. It retrieves the necessary configuration values from environment variables.
 const emailConfig = {
   smtp: {
     host: process.env.SMTP_HOST,
@@ -15,12 +21,6 @@ const emailConfig = {
   },
   from: process.env.EMAIL_FROM,
 };
-
-// The 'nodemailer' module is used for sending emails. It provides a convenient API for configuring and sending emails using different transport methods.
-
-// The 'SmtpTransport' module is imported from 'nodemailer/lib/smtp-transport'. It represents the SMTP transport method for sending emails using the SMTP protocol.
-
-// The 'emailConfig' object contains the SMTP configuration and the "from" address for the emails. It retrieves the necessary configuration values from environment variables.
 
 /**
  * Send an email
@@ -144,7 +144,3 @@ export const sendVerificationEmail = async (to: any, token: any): Promise<any> =
 
   await sendEmail(to, subject, "", html);
 };
-
-// The email sending functions 'sendVerificationEmail' are defined.
-// These functions generate the email subject and content based on the provided tokens and URLs,
-// and then call the 'sendEmail' function to send the email.

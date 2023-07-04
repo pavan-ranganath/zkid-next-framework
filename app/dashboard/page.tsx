@@ -144,7 +144,6 @@ export const fetcher = async (url: string) => {
   }
 };
 
-
 /**
 
 Verify Email
