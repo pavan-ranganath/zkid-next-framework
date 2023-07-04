@@ -39,7 +39,7 @@ export const dynamic = "force-dynamic"; // to supress Error processing API reque
 
 // Retrieve environment variables
 const domain = process.env.APP_DOMAIN!;
-const origin = process.env.APP_ORIGIN!;
+const origin = process.env.NEXTAUTH_URL!;
 const appName = process.env.APP_NAME!;
 
 // Generate registration options for WebAuthn based on user details
