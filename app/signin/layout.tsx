@@ -22,7 +22,7 @@ export default function SignInLayout({ children }: { children: React.ReactNode }
           sx={{ minHeight: "100vh" }}
         >
           {/* Adding a Grid item */}
-          <Grid item xs={3} sx={{ "margin": "10px" }}>
+          <Grid item xs={3} sx={{ margin: "10px" }}>
             {/* Rendering the children component */}
             {children}
           </Grid>
