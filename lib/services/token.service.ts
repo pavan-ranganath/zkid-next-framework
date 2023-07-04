@@ -1,5 +1,3 @@
-// Importing the necessary dependencies and modules
-
 // Importing the 'jsonwebtoken' module for token generation and verification
 // The 'jsonwebtoken' module is used for generating and verifying JSON Web Tokens (JWTs). JWTs are used for secure communication between parties, typically in client-server architectures.
 import jwt from "jsonwebtoken";
