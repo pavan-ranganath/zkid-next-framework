@@ -44,6 +44,13 @@ contract EmailVerification {
         require(attestorRegistry.isAttestionSupported(attestor, ATTESTION_TYPE), "Attestor is not allowed to attest Email");
         require(attestations[msg.sender].attestor == address(0), "Attestation for this address already exists");
 
+        // Check if an attestation already exists for the sender's address.
+        require(
+            attestations[msg.sender].attestor == address(0),
+            string(abi.encodePacked("Attestation for email '", attestations[msg.sender].email, "' already exists"))
+        );
+
+        // Create a new attestation and store it for the sender's address.
         attestations[msg.sender] = Attestation({
             attestor: attestor,
             email: email,
@@ -51,6 +58,7 @@ contract EmailVerification {
             rejectionReason: ""
         });
 
+        // Emit an event to indicate that an attestation has been submitted.
         emit AttestationSubmitted(msg.sender);
     }
 
@@ -66,7 +74,10 @@ contract EmailVerification {
     function getAttestationByAddress(
         address _address
     ) public view returns (address attestor, string memory email, AttestationStatus status, string memory rejectionReason) {
+        // Retrieve the attestation details for the specified address.
         Attestation memory attestation = attestations[_address];
+
+        // Return the attestation details.
         return (attestation.attestor, attestation.email, attestation.status, attestation.rejectionReason);
     }
 
@@ -88,6 +99,7 @@ contract EmailVerification {
         require(attestation.attestor == msg.sender, "Unauthorized attestation update");
         require(status != AttestationStatus.PENDING, "Cannot update attestation to PENDING status");
 
+        // If the status is REJECTED, ensure a rejection reason is provided.
         if (status == AttestationStatus.REJECTED) {
             require(bytes(rejectionReason).length > 0, "Rejection reason is required for status 'REJECTED'");
         }
@@ -95,6 +107,7 @@ contract EmailVerification {
         attestation.status = status;
         attestation.rejectionReason = rejectionReason;
 
+        // Emit an event to indicate that the attestation status has been updated.
         emit AttestationStatusUpdated(_address, status, rejectionReason);
     }
 }
