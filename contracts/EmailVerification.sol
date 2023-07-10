@@ -1,60 +1,36 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./AttestorRegistry.sol";
 
-contract EmailVerification is Ownable {
-    constructor() {}
-
-    enum AttestationStatus {
-        WAITING, // Attestation is waiting for approval
-        ACCEPTED, // Attestation is accepted
-        REJECTED // Attestation is rejected
-    }
-
-    mapping(address => bool) public trustedAttestors;
-
+// Contract for managing email attestations
+contract EmailVerification {
     struct Attestation {
         address attestor; // Address of the attestor
         string email; // Email being attested
         AttestationStatus status; // Status of the attestation
         string rejectionReason; // Reason for rejection (if status is REJECTED)
     }
+    string ATTESTION_TYPE = "EMAIL";
+    enum AttestationStatus {
+        PENDING, // Attestation is pending for approval
+        ACCEPTED, // Attestation is accepted
+        REJECTED // Attestation is rejected
+    }
 
-    mapping(address => Attestation) public attestations;
+    mapping(address => Attestation) public attestations; // Mapping of addresses to their corresponding attestation details
+    AttestorRegistry public attestorRegistry; // Instance of the AttestorRegistry contract
 
-    event AttestationSubmitted(address indexed submitter);
+    // The indexed keyword is used to mark an event parameter as indexed.
+    // Indexed parameters enable efficient filtering of events when querying the blockchain.
+    event AttestationSubmitted(address indexed submitter); // Event emitted when an attestation is submitted
     event AttestationStatusUpdated(
         address indexed attestationAddress,
         AttestationStatus indexed status,
         string rejectionReason
-    );
+    ); // Event emitted when the status of an attestation is updated
 
-    /**
-     * @notice Add valid attestor to set of trusted attestors.
-     *
-     * @param attestor Address to add.
-     */
-    function addValidAttestor(address attestor) public onlyOwner {
-        trustedAttestors[attestor] = true;
-    }
-
-    /**
-     * @notice Remove attestor from set of trusted attestors.
-     *
-     * @param attestor Address to remove.
-     */
-    function removeValidAttestor(address attestor) public onlyOwner {
-        delete trustedAttestors[attestor];
-    }
-
-    /**
-     * @notice Check if an attestor is within the set of trusted attestors.
-     *
-     * @param attestor Address to check.
-     * @return Whether the attestor is trusted.
-     */
-    function checkTrustedAttestor(address attestor) public view returns (bool) {
-        return trustedAttestors[attestor];
+    constructor(address attestorRegistryAddress) {
+        attestorRegistry = AttestorRegistry(attestorRegistryAddress);
     }
 
     /**
@@ -64,16 +40,14 @@ contract EmailVerification is Ownable {
      * @param email The email being attested.
      */
     function submitAttestation(address attestor, string memory email) public {
-        require(trustedAttestors[attestor], "Invalid attestor");
-        require(
-            attestations[msg.sender].attestor == address(0),
-            string(abi.encodePacked("Attestation for email '", attestations[msg.sender].email, "' already exists"))
-        );
+        require(attestorRegistry.trustedAttestors(attestor), "Invalid attestor");
+        require(attestorRegistry.isAttestionSupported(attestor, ATTESTION_TYPE), "Attestor is not allowed to attest Email");
+        require(attestations[msg.sender].attestor == address(0), "Attestation for this address already exists");
 
         attestations[msg.sender] = Attestation({
             attestor: attestor,
             email: email,
-            status: AttestationStatus.WAITING,
+            status: AttestationStatus.PENDING,
             rejectionReason: ""
         });
 
@@ -103,33 +77,24 @@ contract EmailVerification is Ownable {
      * @param status The new attestation status.
      * @param rejectionReason The reason for rejection (if status is REJECTED).
      */
-    function updateAttestationStatus(
-        address _address,
-        AttestationStatus status,
-        string memory rejectionReason
-    ) public onlyOwner {
-        Attestation memory attestorInMemory = attestations[_address];
-        require(trustedAttestors[msg.sender], "Invalid attestor");
-        require(attestorInMemory.attestor != address(0), "Attestation does not exist");
-        require(attestorInMemory.attestor == msg.sender, "Unauthorized attestation update");
-        require(status != AttestationStatus.WAITING, "Cannot update attestation to WAITING status");
+    function updateAttestationStatus(address _address, AttestationStatus status, string memory rejectionReason) public {
+        Attestation storage attestation = attestations[_address];
+        require(attestorRegistry.trustedAttestors(msg.sender), "Invalid attestor");
+        require(
+            attestorRegistry.isAttestionSupported(msg.sender, ATTESTION_TYPE),
+            "Attestor is not allowed to attest Email"
+        );
+        require(attestation.attestor != address(0), "Attestation does not exist");
+        require(attestation.attestor == msg.sender, "Unauthorized attestation update");
+        require(status != AttestationStatus.PENDING, "Cannot update attestation to PENDING status");
 
         if (status == AttestationStatus.REJECTED) {
             require(bytes(rejectionReason).length > 0, "Rejection reason is required for status 'REJECTED'");
         }
 
-        Attestation storage attestation = attestations[_address];
         attestation.status = status;
         attestation.rejectionReason = rejectionReason;
 
         emit AttestationStatusUpdated(_address, status, rejectionReason);
-    }
-
-    /**
-     * @notice Delete the caller's attestation.
-     */
-    function deleteAttestation() public {
-        require(attestations[msg.sender].attestor != address(0), "Attestation does not exist");
-        delete attestations[msg.sender];
     }
 }
