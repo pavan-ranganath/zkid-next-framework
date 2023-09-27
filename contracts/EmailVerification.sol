@@ -1,8 +1,10 @@
-/// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract AttestationContract is Ownable {
+contract EmailVerification is Ownable {
+    constructor() {}
+
     enum AttestationStatus {
         WAITING, // Attestation is waiting for approval
         ACCEPTED, // Attestation is accepted
