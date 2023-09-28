@@ -68,6 +68,13 @@ async function GetPasskeys() {
         return <div>Error passkeyInfo</div>;
     }
 
+    async function verifyProfile(event: any): Promise<void> {
+        if (!userInfo?.userInfo?.email.verified) {
+            await verifyEmail();
+        }
+
+    }
+
     // Displaying user info and passkeys
     return (
         <>
@@ -78,24 +85,29 @@ async function GetPasskeys() {
                         <CardContent>
                             {/* Displaying user information */}
                             <Typography gutterBottom variant="body1" component="div">
-                                Email:{userInfo.userInfo?.email}
-                                {!userInfo.userInfo?.emailVerified ? (
-                                    <Button size="small" onClick={verifyEmail}>
-                                        Verify
-                                    </Button>
-                                ) : (
+                                Email:{userInfo.userInfo?.email.value}
+                                {userInfo.userInfo?.email.verified ? (
                                     <VerifiedIcon color="success" />
-                                )}
+                                ) : (<></>)}
                             </Typography>
                             <Typography gutterBottom variant="body1" component="div">
-                                Name: {userInfo.userInfo?.fullName}
+                                Name: {userInfo.userInfo?.fullName.value}
+                                {userInfo.userInfo?.fullName.verified ? (
+                                    <VerifiedIcon color="success" />
+                                ) : (<></>)}
                             </Typography>
                             <Typography gutterBottom variant="body1" component="div">
-                                Date of Birth: {userInfo.userInfo?.dob ? moment(userInfo.userInfo?.dob).format('MMMM Do YYYY') : ''}
+                                Date of Birth: {userInfo.userInfo?.dob.value ? moment(userInfo.userInfo?.dob.value).format('MMMM Do YYYY') : ''}
+                                {userInfo.userInfo?.dob.verified ? (
+                                    <VerifiedIcon color="success" />
+                                ) : (<></>)}
                             </Typography>
                             {/* <Typography gutterBottom variant="body1" component="div">
                   Email verified: {userInfo.userInfo?.emailVerified ? "true" : "false"}
                 </Typography> */}
+                            {!userInfo.userInfo?.fullName.verified ? (<Button size="small" onClick={verifyProfile}>
+                                Verify Profile
+                            </Button>) : (<></>)}
                         </CardContent>
                     </Card>
                 </Grid>

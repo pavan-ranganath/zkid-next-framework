@@ -30,19 +30,19 @@ const UsersTable = () => {
       },
       {
         accessorFn(originalRow) {
-          return originalRow?.userInfo?.firstName;
+          return originalRow?.userInfo?.fullName;
         },
         enableColumnFilter: false,
         enableSorting: false,
-        header: "First Name",
+        header: "Name",
       },
       {
         accessorFn(originalRow) {
-          return originalRow?.userInfo?.lastName;
+          return originalRow?.userInfo?.email;
         },
         enableColumnFilter: false,
         enableSorting: false,
-        header: "Last Name",
+        header: "Email",
       },
     ],
     []
@@ -94,9 +94,9 @@ const UsersTable = () => {
       muiToolbarAlertBannerProps={
         isError
           ? {
-              color: "error",
-              children: "Error loading data",
-            }
+            color: "error",
+            children: "Error loading data",
+          }
           : undefined
       }
       onColumnFiltersChange={setColumnFilters}
@@ -125,14 +125,14 @@ const UsersTable = () => {
       enableColumnResizing
       enableRowNumbers
       enableStickyHeader
-      // muiTableBodyRowProps={({ row }) => ({
-      //     onClick: (event) => {
-      //         console.info(event, row);
-      //     },
-      //     sx: {
-      //         cursor: 'pointer', //you might want to change the cursor too when adding an onClick
-      //     },
-      // })}
+    // muiTableBodyRowProps={({ row }) => ({
+    //     onClick: (event) => {
+    //         console.info(event, row);
+    //     },
+    //     sx: {
+    //         cursor: 'pointer', //you might want to change the cursor too when adding an onClick
+    //     },
+    // })}
     />
   );
 };

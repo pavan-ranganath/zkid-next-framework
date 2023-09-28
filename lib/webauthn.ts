@@ -20,16 +20,18 @@ export interface passkeyObj {
   credential: RegistrationResponseJSON; // The registration response JSON object representing the passkey credential
   registrationInfo: VerifiedRegistrationResponse; // Information about the verified registration response for the passkey
 }
-
+export interface Field<T> {
+  value: T;
+  verified: boolean;
+}
 export interface DbCredential {
   _id?: string; // Optional unique identifier for the credential in the database
   userID: string; // The ID of the user associated with the credential
   passkeyInfo: passkeyObj[]; // An array of passkey objects containing information about the user's passkeys
   userInfo?: {
-    fullName: string; // The first name of the user
-    email: string; // The email address of the user
-    emailVerified: boolean; // Indicates whether the email of the user is verified or not
-    dob: string; // The last name of the user
+    fullName: Field<string>; // The first name of the user
+    email: Field<string>; // The email address of the user
+    dob: Field<string>; // The last name of the user
   };
 }
 

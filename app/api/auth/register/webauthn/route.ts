@@ -168,7 +168,11 @@ export async function GET(req: NextRequest, context: any) {
     });
 
     // Generate registration options based on the user's email and credentials
-    const options = generateWebAuthnOptions(email, credentials?.userInfo?.fullName!, credentials?.userInfo?.dob!);
+    const options = generateWebAuthnOptions(
+      email,
+      credentials?.userInfo?.fullName.value!,
+      credentials?.userInfo?.dob.value!
+    );
 
     // Exclude previously registered credentials from the registration options
     options.excludeCredentials = credentials?.passkeyInfo.map((c) => ({
@@ -274,10 +278,9 @@ export async function POST(req: NextRequest, context: any) {
         },
       ],
       userInfo: {
-        email: user.email,
-        fullName: user.fullName,
-        emailVerified: false,
-        dob: user.dob,
+        email: { value: user.email, verified: false },
+        fullName: { value: user.fullName, verified: false },
+        dob: { value: user.dob, verified: false },
       },
     });
 

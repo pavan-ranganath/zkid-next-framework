@@ -48,7 +48,7 @@ export async function POST(req: NextRequest, context: any) {
     const verifyEmailToken = await generateVerifyEmailToken({ id: user?._id });
 
     // Send the verification email to the user's email address
-    await sendVerificationEmail(user.userInfo?.email, verifyEmailToken);
+    await sendVerificationEmail(user.userInfo?.email.value, verifyEmailToken);
 
     return NextResponse.json({ success: "Verification email sent" }, { status: 201 });
   } catch (error) {
@@ -88,7 +88,7 @@ export async function GET(req: NextRequest, context: any) {
     }
 
     // Set the emailVerified flag to true
-    user.userInfo!.emailVerified = true;
+    user.userInfo!.email.verified = true;
 
     // Delete the verification tokens associated with the user
     await Token.deleteMany({ user: user._id, type: tokenTypes.VERIFY_EMAIL });
