@@ -5,7 +5,7 @@ const options: ConnectOptions = {
   tlsAllowInvalidHostnames: true,
   tls: true,
   tlsCAFile: process.env.TLS_CA_FILE,
-  tlsCertificateKeyFile: process.env.TL_CERT_KEY_FILE,
+  tlsCertificateKeyFile: process.env.TLS_CERT_KEY_FILE,
 };
 
 // Represents the connection state of the database
