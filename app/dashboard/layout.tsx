@@ -23,7 +23,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <>
       <Providers>
         <NavigationBar />
-        {children}
+        <div style={{ margin: 10 }}>
+
+          {children}
+        </div>
       </Providers>
     </>
   );

@@ -26,6 +26,7 @@ import { signOut } from "next-auth/react"; // Importing the signOut function fro
 import { useTheme } from "next-themes"; // Importing the useTheme hook from the next-themes package for theme management
 
 import { DEFAULT_THEME, getOtherTheme } from "@/app/theme"; // Importing custom theme-related functions from the "@/app/theme" module
+import { useRouter } from "next/navigation";
 
 // An array of page objects containing page information
 const pages: {
@@ -33,9 +34,9 @@ const pages: {
   friendlyName: string;
   href: string;
 }[] = [
-  { id: 1, friendlyName: "Dashboard", href: "/dashboard" },
-  { id: 2, friendlyName: "Users", href: "/dashboard/users" },
-];
+    { id: 1, friendlyName: "Dashboard", href: "/dashboard" },
+    { id: 2, friendlyName: "Users", href: "/dashboard/users" },
+  ];
 
 export default function NavigationBar() {
   const { theme: themeState, setTheme } = useTheme(); // Using the useTheme hook to access the current theme and set the theme
@@ -43,6 +44,7 @@ export default function NavigationBar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null); // State variable for the anchor element of the navigation menu
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // State variable for the anchor element of the user menu
   const [selectedList, setSelectedList] = useState<number[]>([]); // State variable for the selected list items
+  const router = useRouter()
 
   // Event handler for opening the navigation menu
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
@@ -73,31 +75,40 @@ export default function NavigationBar() {
     friendlyName: string;
     onClick: () => Promise<void>;
   }[] = [
-    {
-      id: 1,
-      friendlyName: "Logout",
-      onClick: async () => {
-        await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
-        handleCloseUserMenu();
+      {
+        id: 1,
+        friendlyName: `Profile`,
+        onClick: async () => {
+          router.push("/dashboard/profile");
+          handleCloseUserMenu();
+        },
       },
-    },
-    {
-      id: 2,
-      friendlyName: `Activate ${themeName} Theme`,
-      onClick: async () => {
-        setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
-        handleCloseUserMenu();
+      {
+        id: 2,
+        friendlyName: `Activate ${themeName} Theme`,
+        onClick: async () => {
+          setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
+          handleCloseUserMenu();
+        },
       },
-    },
-  ];
+      {
+        id: 3,
+        friendlyName: "Logout",
+        onClick: async () => {
+          await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
+          handleCloseUserMenu();
+        },
+      },
+
+    ];
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{ marginBottom: 20, paddingTop: 5, paddingBottom: 5 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Logo */}
           <Link href="/dashboard">
-            <Box component="img" sx={{ height: 54 }} alt="Logo" src={"EGS_logo_final.svg"} />
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54 }} component="img" alt="Logo" src={"/zkidLogo_v1.svg"} />
           </Link>
 
           {/* Navigation Menu (for small screens) */}
@@ -112,6 +123,8 @@ export default function NavigationBar() {
             >
               <MenuIcon />
             </IconButton>
+            {/* Logo */}
+
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -137,8 +150,10 @@ export default function NavigationBar() {
                 </MenuItem>
               ))}
             </Menu>
+            <Link href="/dashboard" style={{ flexGrow: 1, textAlign: "center" }}>
+              <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, height: 54 }} component="img" alt="Logo" src={"/zkidLogo_v1.svg"} />
+            </Link>
           </Box>
-
           {/* Navigation Buttons (for medium and large screens) */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (

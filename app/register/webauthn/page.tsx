@@ -104,18 +104,18 @@ export default function Register(): JSX.Element {
       {/* Display branding */}
       <div style={{ textAlign: "center" }}>
         <img
-          src="/EGS_logo_final.svg"
+          src="/zkidLogo_v1.svg"
           alt="EGS Logo"
           style={{
-            maxWidth: "50%",
+            maxWidth: "100%",
             height: "auto",
             marginBottom: "2rem",
             display: "inline-block",
           }}
         />
-        <Typography variant="h4" component="h2">
+        {/* <Typography variant="h4" component="h2">
           zKID
-        </Typography>
+        </Typography> */}
       </div>
 
       {/* Registration form */}
@@ -225,7 +225,7 @@ async function registerWebauthn(email: string, fullName: string, dob: string, ro
     } else {
       toast.success("Your WebAuthn credentials have been registered.", { duration: 10000 });
       // Redirect to the sign-in page
-      // router.push('/signin');
+      router.push('/signin');
     }
   } catch (err) {
     handleRegistrationError(err);

@@ -5,7 +5,7 @@ import { styled } from "@mui/system"; // Importing the 'styled' function from MU
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Importing the check circle icon from MUI icons
 import ErrorIcon from "@mui/icons-material/Error"; // Importing the error icon from MUI icons
 import useSWR from "swr"; // Importing the 'useSWR' hook from the SWR library for data fetching and caching
-import { fetcher } from "../dashboard/page"; // Importing the 'fetcher' function from the '../dashboard/page' module
+import { fetcher } from "../dashboard/profile/page";
 
 // Styling the container using the 'styled' function from MUI
 const StyledContainer = styled(Container)(({ theme }) => ({

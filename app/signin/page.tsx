@@ -126,18 +126,18 @@ export default function SignInComponent() {
       {/* Display branding */}
       <div style={{ textAlign: "center" }}>
         <img
-          src="/EGS_logo_final.svg"
+          src="/zkidLogo_v1.svg"
           alt="EGS Logo"
           style={{
-            maxWidth: "50%",
+            maxWidth: "100%",
             height: "auto",
             marginBottom: "2rem",
             display: "inline-block",
           }}
         />
-        <Typography variant="h4" component="h2">
-          zKID
-        </Typography>
+        {/* <Typography variant="h5" component="h2">
+          Entrada Solutions
+        </Typography> */}
       </div>
 
       {/* Display the sign-in form */}
