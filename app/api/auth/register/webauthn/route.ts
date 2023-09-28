@@ -57,11 +57,11 @@ const appName = process.env.APP_NAME!;
  * to be sent to the client for WebAuthn registration.
  *
  * @param {string} email - The user's email address.
- * @param {string} fName - The user's first name.
- * @param {string} lName - The user's last name.
+ * @param {string} fullName - The user's name.
+ * @param {string} dob - The user's DOB.
  * @returns {object} An object containing the generated registration options.
  */
-const generateWebAuthnOptions = (email: string, fName: string, lName: string) => {
+const generateWebAuthnOptions = (email: string, fullName: string, dob: string) => {
   /**
    * Generate registration options using the provided user details.
    *
@@ -82,7 +82,7 @@ const generateWebAuthnOptions = (email: string, fName: string, lName: string) =>
     rpName: appName,
     userID: email,
     userName: email,
-    userDisplayName: `${fName} ${lName}`,
+    userDisplayName: `${fullName}`,
     attestationType: "none",
     authenticatorSelection: {
       residentKey: "preferred",
@@ -168,7 +168,7 @@ export async function GET(req: NextRequest, context: any) {
     });
 
     // Generate registration options based on the user's email and credentials
-    const options = generateWebAuthnOptions(email, credentials?.userInfo?.firstName!, credentials?.userInfo?.lastName!);
+    const options = generateWebAuthnOptions(email, credentials?.userInfo?.fullName!, credentials?.userInfo?.dob!);
 
     // Exclude previously registered credentials from the registration options
     options.excludeCredentials = credentials?.passkeyInfo.map((c) => ({
@@ -191,7 +191,7 @@ export async function GET(req: NextRequest, context: any) {
   // Proceed with the registration process for a new user
 
   // Retrieve query parameters from the request URL
-  const { fName, lName, email } = Object.fromEntries(req.nextUrl.searchParams.entries());
+  const { fullName, dob, email } = Object.fromEntries(req.nextUrl.searchParams.entries());
 
   // Check if the user already has credentials in the database
   const credentials = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({
@@ -204,7 +204,7 @@ export async function GET(req: NextRequest, context: any) {
   }
 
   // Generate registration options based on the provided user details
-  const options = generateWebAuthnOptions(email, fName, lName);
+  const options = generateWebAuthnOptions(email, fullName, dob);
 
   try {
     // Save the challenge for the user
@@ -215,7 +215,7 @@ export async function GET(req: NextRequest, context: any) {
 
   // Create a response with the registration options and set the session
   const response = NextResponse.json(options);
-  setSession(response, { user: { email, fName, lName } });
+  setSession(response, { user: { email, fullName, dob } });
   return response;
 }
 
@@ -275,9 +275,9 @@ export async function POST(req: NextRequest, context: any) {
       ],
       userInfo: {
         email: user.email,
-        firstName: user.fName,
-        lastName: user.lName,
+        fullName: user.fullName,
         emailVerified: false,
+        dob: user.dob,
       },
     });
 

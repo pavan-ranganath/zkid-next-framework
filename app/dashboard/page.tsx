@@ -35,6 +35,7 @@ import useSWR from "swr";
 import { handleRegistrationError } from "@/lib/webauthn";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { credentailsFromTb } from "./users/service";
+import moment from "moment";
 
 // Dashboard component
 export default function Dashboard() {
@@ -89,14 +90,14 @@ async function GetPasskeys() {
                 )}
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
-                Firstname: {userInfo.userInfo?.firstName}
+                Name: {userInfo.userInfo?.fullName}
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
-                Lastname: {userInfo.userInfo?.lastName}
+                Date of Birth: {userInfo.userInfo?.dob ? moment(userInfo.userInfo?.dob).format('MMMM Do YYYY') : ''}
               </Typography>
-              <Typography gutterBottom variant="body1" component="div">
+              {/* <Typography gutterBottom variant="body1" component="div">
                 Email verified: {userInfo.userInfo?.emailVerified ? "true" : "false"}
-              </Typography>
+              </Typography> */}
             </CardContent>
           </Card>
         </Grid>

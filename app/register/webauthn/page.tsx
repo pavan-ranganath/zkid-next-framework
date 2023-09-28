@@ -43,10 +43,11 @@ export default function Register(): JSX.Element {
 
   // Validation schema for registration form
   const registerForm = {
-    fName: yup.string().required("First name is required"),
-    lName: yup.string().required("Last name is required"),
+    fullName: yup.string().required("Full name is required"),
     email: yup.string().required("Email is required").email("Invalid email format"),
+    dob: yup.date().required("Date of birth is required").max(new Date(), "Date of birth must be in the past"),
   };
+
 
   // Initializing React Hook Form with validation resolver
   // Destructuring the useForm hook and its return values:
@@ -70,7 +71,7 @@ export default function Register(): JSX.Element {
 
   // Form submission handler
   function onSubmit(data: any) {
-    registerWebauthn(data.email, data.fName, data.lName, router);
+    registerWebauthn(data.email, data.fullName, data.dob, router);
   }
 
   // Effect hook to handle page navigation based on session status
@@ -122,31 +123,33 @@ export default function Register(): JSX.Element {
         Registration
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 1, sm: 2, md: 4 }} sx={{ marginBottom: 4 }}>
-          {/* First Name field */}
-          <TextField
-            id="fName"
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="First Name"
-            fullWidth
-            {...register("fName")}
-            error={touchedFields.fName && Boolean(errors.fName)}
-            helperText={touchedFields.fName ? errors.fName?.message : ""}
-          />
-          {/* Last Name field */}
-          <TextField
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="Last Name"
-            {...register("lName")}
-            error={touchedFields.lName && Boolean(errors.lName)}
-            helperText={touchedFields.lName ? errors.lName?.message : ""}
-            fullWidth
-          />
-        </Stack>
+
+        {/* Full Name field */}
+        <TextField
+          id="fullName"
+          type="text"
+          variant="outlined"
+          color="primary"
+          label="Full Name"
+          fullWidth
+          {...register("fullName")}
+          error={touchedFields.fullName && Boolean(errors.fullName)}
+          helperText={touchedFields.fullName ? errors.fullName?.message : ""}
+          sx={{ mb: 2 }}
+        />
+        {/* Date of Birth field */}
+        <TextField
+          type="date"
+          variant="outlined"
+          color="primary"
+          label="Date of Birth"
+          InputLabelProps={{ shrink: true }}
+          {...register("dob")}
+          error={touchedFields.dob && Boolean(errors.dob)}
+          helperText={touchedFields.dob ? errors.dob?.message : ""}
+          fullWidth
+          sx={{ mb: 2 }}
+        />
         {/* Email field */}
         <TextField
           type="email"
@@ -157,13 +160,14 @@ export default function Register(): JSX.Element {
           error={touchedFields.email && Boolean(errors.email)}
           helperText={touchedFields.email ? errors.email?.message : ""}
           fullWidth
-          sx={{ mb: 4 }}
+          sx={{ mb: 2 }}
         />
         {/* Submit button */}
         <Button variant="contained" color="primary" type="submit">
           Register
         </Button>
       </form>
+
       {/* Sign-in link */}
       <small>
         Already have an account? <Link href="/signin">Sign in Here</Link>
@@ -179,10 +183,10 @@ export default function Register(): JSX.Element {
 // - Sends the registration data to the server for verification and storage
 // - If the registration request is successful (status 201), displays a success toast and can redirect to the sign-in page
 // - If any error occurs during the process, displays an error toast and logs the error message or response
-async function registerWebauthn(email: string, fName: string, lName: string, router: AppRouterInstance) {
+async function registerWebauthn(email: string, fullName: string, dob: string, router: AppRouterInstance) {
   // Construct the registration URL
   const url = new URL("/api/auth/register/webauthn", window.location.origin);
-  url.search = new URLSearchParams({ email, fName, lName }).toString();
+  url.search = new URLSearchParams({ email, fullName, dob }).toString();
 
   // Fetch the registration options from the server
   const optionsResponse = await fetch(url.toString());

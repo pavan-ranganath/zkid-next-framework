@@ -26,10 +26,10 @@ export interface DbCredential {
   userID: string; // The ID of the user associated with the credential
   passkeyInfo: passkeyObj[]; // An array of passkey objects containing information about the user's passkeys
   userInfo?: {
-    firstName: string; // The first name of the user
+    fullName: string; // The first name of the user
     email: string; // The email address of the user
     emailVerified: boolean; // Indicates whether the email of the user is verified or not
-    lastName: string; // The last name of the user
+    dob: string; // The last name of the user
   };
 }
 
