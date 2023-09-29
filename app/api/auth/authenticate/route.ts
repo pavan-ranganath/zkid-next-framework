@@ -35,21 +35,26 @@ export async function GET(req: NextRequest) {
     userID: email,
   });
 
-  /**
-   * Generate authentication options for the web authentication process.
-   * - rpID: The relying party identifier (domain) for which the authentication options are being generated.
-   * - userVerification: Specifies the preferred user verification requirement (e.g., "required", "preferred", "discouraged").
-   */
-  const options = generateAuthenticationOptions({
-    rpID: domain,
-    userVerification: "preferred",
-  });
-
   // Check if credentials are found for the provided email
   if (!credentials) {
     return NextResponse.json({ error: "Email not found" }, { status: 400 });
   }
 
+  /**
+   * Generate authentication options for the web authentication process.
+   * - rpID: The relying party identifier (domain) for which the authentication options are being generated.
+   * - userVerification: Specifies the preferred user verification requirement (e.g., "required", "preferred", "discouraged").
+   */
+  const options = await generateAuthenticationOptions({
+    rpID: domain,
+    userVerification: "preferred",
+  });
+  console.log("options", options);
+
+  // Check if options are generated
+  if (!options) {
+    return NextResponse.json({ error: "Error generating options" }, { status: 400 });
+  }
   // Update the authentication options with the allowed credentials
   // Authenticators previously registered by the user
   options.allowCredentials = credentials?.passkeyInfo.map((c) => ({

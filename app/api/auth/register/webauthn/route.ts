@@ -110,7 +110,7 @@ const verifyWebAuthnRegistrationResponse = async (
   response: RegistrationResponseJSON,
   expectedRPID: string | string[] | undefined,
   expectedOrigin: string | string[],
-  expectedChallenge: string
+  expectedChallenge: string,
 ) => {
   /**
    * Verify the registration response received from the client.
@@ -168,12 +168,15 @@ export async function GET(req: NextRequest, context: any) {
     });
 
     // Generate registration options based on the user's email and credentials
-    const options = generateWebAuthnOptions(
+    const options = await generateWebAuthnOptions(
       email,
       credentials?.userInfo?.fullName.value!,
-      credentials?.userInfo?.dob.value!
+      credentials?.userInfo?.dob.value!,
     );
-
+    // Check if options are generated
+    if (!options) {
+      return NextResponse.json({ error: "Error generating options" }, { status: 400 });
+    }
     // Exclude previously registered credentials from the registration options
     options.excludeCredentials = credentials?.passkeyInfo.map((c) => ({
       id: c.credentialId,
@@ -208,8 +211,12 @@ export async function GET(req: NextRequest, context: any) {
   }
 
   // Generate registration options based on the provided user details
-  const options = generateWebAuthnOptions(email, fullName, dob);
+  const options = await generateWebAuthnOptions(email, fullName, dob);
 
+  // Check if options are generated
+  if (!options) {
+    return NextResponse.json({ error: "Error generating options" }, { status: 400 });
+  }
   try {
     // Save the challenge for the user
     await saveChallenge({ userID: email, challenge: options.challenge });
@@ -257,7 +264,7 @@ export async function POST(req: NextRequest, context: any) {
     credential,
     domain,
     origin,
-    challenge.value
+    challenge.value,
   );
 
   // If the response is not verified or missing registration info, return an error response
@@ -325,7 +332,7 @@ export async function PUT(req: NextRequest, context: any) {
     credential,
     domain,
     origin,
-    challenge.value
+    challenge.value,
   );
 
   // If the response is not verified or missing registration info, return an error response
@@ -342,7 +349,7 @@ export async function PUT(req: NextRequest, context: any) {
         registrationInfo: { verified, registrationInfo: info },
         credentialId: credential.id,
       },
-      user.email
+      user.email,
     );
 
     return NextResponse.json({ success: true }, { status: 201 });
