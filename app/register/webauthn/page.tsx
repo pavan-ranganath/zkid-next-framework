@@ -4,7 +4,6 @@
 
 "use client";
 
-import { Stack, TextField, Button, Typography, Backdrop, CircularProgress } from "@mui/material"; // Material-UI components
 import Link from "next/link"; // Link component from Next.js for navigation
 import { useEffect } from "react"; // React hook for side effects
 import * as yup from "yup"; // Yup library for form validation
@@ -13,10 +12,17 @@ import { useForm } from "react-hook-form"; // Form management library
 import { redirect, useRouter } from "next/navigation"; // Next.js functions for navigation
 import { toast } from "react-hot-toast"; // Toast notification library
 import { startRegistration } from "@simplewebauthn/browser"; // WebAuthn registration function
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context"; // Next.js router instance
 import { useSession } from "next-auth/react"; // NextAuth session hook
 import { RedirectType } from "next/dist/client/components/redirect"; // Next.js redirect type
 import { handleRegistrationError } from "@/lib/webauthn";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+
+// MUI library imports
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 /**
  * The Register component handles the user registration process.

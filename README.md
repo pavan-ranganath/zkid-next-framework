@@ -96,3 +96,6 @@ mongosh --tls --tlsCAFile /path/to/ca.crt --tlsCertificateKeyFile /path/to/clien
 Replace `/path/to/ca.crt` with the actual path to the `ca.crt` file, and `/path/to/client1_cert.pem` with the actual path to the `client1_cert.pem` file.
 
 ---
+
+NOTE: 
+https://github.com/vercel/next.js/issues/55663

@@ -2,7 +2,8 @@
 
 // Importing Stack and Typography from "@mui/material"
 // These are components from Material-UI used for layout and typography
-import { Stack, Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
 
 // Importing useState hook from "react"
 // This hook allows managing state in functional components
@@ -15,6 +16,7 @@ import { DEFAULT_THEME } from "@/app/theme";
 // Importing Link from "next/link"
 // This is a Next.js component used for client-side navigation between pages
 import Link from "next/link";
+
 
 // MuiContent component
 // This component represents the main content of the application

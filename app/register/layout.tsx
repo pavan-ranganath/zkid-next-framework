@@ -2,7 +2,7 @@
 
 import React from "react"; // Importing React from the "react" package. Required for creating React components.
 
-import { Grid } from "@mui/material"; // Importing the Grid component from the Material-UI library. Used for grid-based layouts.
+import Grid from "@mui/material/Grid"; // Importing the Grid component from the Material-UI library. Used for grid-based layouts.
 
 import "./register.css"; // Importing the CSS file for styling the register page.
 

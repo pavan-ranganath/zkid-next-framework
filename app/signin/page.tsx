@@ -10,7 +10,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 // Importing specific components from the '@mui/material' package
 // These components are part of the Material-UI library, which provides pre-designed UI components for React applications
-import { Backdrop, Button, CircularProgress, Typography, TextField } from "@mui/material";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 // Importing the 'signIn' and 'useSession' functions from the 'next-auth/react' package
 // These functions are used for authentication and session management in Next.js applications using NextAuth.js
@@ -51,6 +55,7 @@ import { useEffect } from "react";
 // Importing the 'Link' component from the 'next/link' package
 // It is used for client-side navigation between pages in Next.js applications
 import Link from "next/link";
+
 
 /*
   - The code provides a sign-in feature for users using WebAuthn authentication.
