@@ -7,8 +7,12 @@ import { apiRequest } from "@/lib/services/apiService";
 import { signIn } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { validateResponseHeaders } from "@/lib/services/validateDigiLockerResponse";
-import { setAadhaar } from "@/lib/services/aadhaarService";
+import { AadhaarXmlParser, matchFormDataAndAadharData, setAadhaar } from "@/lib/services/aadhaarService";
 import { XadesClass } from "@/lib/services/XadesClass";
+import mongoose from "mongoose";
+import { dbConnect } from "@/lib/mongodb";
+import { DbCredential } from "@/lib/webauthn";
+import { sendEmailVerification } from "../auth/emailverifier/route";
 
 export async function GET(req: NextRequest, event: NextFetchEvent) {
   const session: OpenIDTokenEndpointResponse = getSession(req, "digiLockerUserSession") as any;
@@ -36,8 +40,7 @@ export async function GET(req: NextRequest, event: NextFetchEvent) {
   if (!validateRes) {
     console.error("Validation of header failed");
     const errResp = NextResponse;
-    errResp.json({ error_description: "Validation of header failed" });
-    errResp.error();
+    errResp.json({ error_description: "Validation of header failed" }, { status: 401 });
     return errResp;
   }
   const xmlAadharString = await responseDigi.text();
@@ -47,8 +50,7 @@ export async function GET(req: NextRequest, event: NextFetchEvent) {
   if (!userEmail) {
     console.error("User email not found");
     const errResp = NextResponse;
-    errResp.json({ error_description: "User email not found" });
-    errResp.error();
+    errResp.json({ error_description: "User email not found" }, { status: 401 });
     return errResp;
   }
   const xades = new XadesClass();
@@ -56,18 +58,49 @@ export async function GET(req: NextRequest, event: NextFetchEvent) {
   if (!xmlVerify) {
     console.error("XML verification failed");
     const errResp = NextResponse;
-    errResp.json({ error_description: "XML verification failed" });
-    errResp.error();
+    errResp.json({ error_description: "XML verification failed" }, { status: 401 });
     return errResp;
   }
+
+  const xmlAadhar = new AadhaarXmlParser(xmlAadharString);
+  await xmlAadhar.parseXml();
+  if (!xmlAadhar) {
+    console.error("XML parsing failed");
+    const errResp = NextResponse;
+    errResp.json({ error_description: "XML parsing failed" }, { status: 401 });
+    return errResp;
+  }
+  const poi = xmlAadhar.extractPoiAttributes;
+  if (!poi) {
+    console.error("Poi extraction failed");
+    const errResp = NextResponse;
+    errResp.json({ error_description: "Poi extraction failed" }, { status: 401 });
+    return errResp;
+  }
+  const poa = xmlAadhar.extractPoaAttributes;
 
   const storedAadhar = await setAadhaar(xmlAadharString, userEmail);
   if (!storedAadhar) {
     console.error("Aadhaar not stored");
-    const errResp = NextResponse.json({ error_description: "Aadhaar not stored" });
+    const errResp = NextResponse.json({ error_description: "Aadhaar not stored" }, { status: 401 });
     return errResp;
   }
-  const successful = NextResponse;
-  successful.json({ status: true });
-  return NextResponse.json({ isVerified: true }, { status: 201 });
+  // Establishing a connection to the database
+  await dbConnect();
+  // Find the credentials associated with the provided email in the database
+  const credentials = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({
+    userID: userEmail,
+  });
+  if (!credentials) {
+    console.error("Credentials not found");
+    const errResp = NextResponse.json({ error_description: "Credentials not found" });
+    return errResp;
+  }
+  const matched = await matchFormDataAndAadharData(poi, credentials);
+  if (matched) {
+    let emailSent = await sendEmailVerification(userEmail);
+    return emailSent;
+  }
+  const errResp = NextResponse.json({ error_description: "Aadhaar data does not match" }, { status: 401 });
+  return errResp;
 }

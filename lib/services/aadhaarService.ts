@@ -1,6 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 const userAadhaarStorageKey = "aadhaar";
 import { storeData, getData, updateData } from "./storage";
+import { DbCredential } from "../webauthn";
 export interface PersonInfo {
   dob: string;
   gender: string;
@@ -43,7 +44,7 @@ const xmlParserOptions = {
   allowBooleanAttributes: true,
 };
 export const setAadhaar = async (aadhaar: string, userEmail: string) => {
-  return await updateData(userEmail, aadhaar, "credentials");
+  return await updateData(userEmail, aadhaar, "credentials", "aadhaar");
 };
 export const getAadhaar = async (userEmail: string): Promise<any | null> => {
   const data = await getData(userEmail, "credentials");
@@ -162,3 +163,36 @@ export class AadhaarXmlParser {
     }
   }
 }
+
+export const matchFormDataAndAadharData = async (poi: PersonInfo, _user: DbCredential) => {
+  try {
+    let user = _user.userInfo!;
+    const userDateObject = user.dob.value ? new Date(user.dob.value) : new Date();
+    const formattedUserDate = `${userDateObject.getDate().toString().padStart(2, "0")}-${(userDateObject.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${userDateObject.getFullYear()}`;
+
+    const isMatchingName = poi.name.toLowerCase() === user.fullName.value.toLowerCase();
+    const isMatchingDOB = poi.dob === formattedUserDate;
+
+    if (!isMatchingName) {
+      console.log("Name does not match:", poi.name, user.fullName.value);
+      return;
+    }
+
+    if (!isMatchingDOB) {
+      console.log("Date of birth does not match:", poi.dob, user.dob.value);
+      return;
+    }
+    user.fullName.verified = true;
+    user.dob.verified = true;
+    await updateUserProfile({ ..._user, userInfo: user });
+    return true;
+  } catch (error) {
+    console.error("matchFormDataAndAadharData", error);
+    return false;
+  }
+};
+export const updateUserProfile = async (userProfile: DbCredential) => {
+  return await updateData(userProfile.userID, userProfile.userInfo, "credentials", "userInfo");
+};

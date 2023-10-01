@@ -102,7 +102,7 @@ export async function GET(req: NextRequest, context: any) {
         $set: {
           userInfo: user.userInfo,
         },
-      }
+      },
     );
 
     return NextResponse.json({ success: "Email verified successfully", isVerified: true }, { status: 201 });
@@ -111,3 +111,38 @@ export async function GET(req: NextRequest, context: any) {
     return NextResponse.json({ error: (error as Error).message, isVerified: false }, { status: 401 });
   }
 }
+
+export const sendEmailVerification = async (email: string) => {
+  try {
+    // If email is not available in the session, return an authentication error response
+    if (!email) {
+      return NextResponse.json({ error: "Authentication is required" }, { status: 401 });
+    }
+
+    // Establishing a connection to the database
+    await dbConnect();
+
+    // Retrieve credentials from the database for the user's email
+    const user = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({
+      userID: email,
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 401 });
+    }
+
+    // Generate a verification email token
+    const verifyEmailToken = await generateVerifyEmailToken({ id: user?._id });
+
+    // Send the verification email to the user's email address
+    await sendVerificationEmail(user.userInfo?.email.value, verifyEmailToken);
+
+    return NextResponse.json(
+      { success: "Username and Date of birth field verified \n Verification email sent please check your email" },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+  }
+};

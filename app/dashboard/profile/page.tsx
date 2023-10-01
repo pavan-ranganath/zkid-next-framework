@@ -49,27 +49,16 @@ export default function Profile() {
     // }
 
 
-    // get query param from url
-    const searchParams = useSearchParams()
-
-    const digiLoginSuccess = searchParams.get("digiLoginSuccess")
-    if (digiLoginSuccess) {
-        const { data: response, error: errorVerifyProfile, isLoading: isVerifyLoading } = useSWR<any>("/api/verifyprofile", fetcher, {
-            onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-                // Never retry on 404.
-                if (error.status === 404) return
 
 
-                // Only retry up to 10 times.
-                if (retryCount >= 1) return
-
-                // Retry after 2 seconds.
-                setTimeout(() => revalidate({ retryCount }), 2000)
-            }
-        });
-    }
-
-    const { data: userInfo, error: errorUserInfo, isLoading: userInfoIsLoading } = useSWR<credentailsFromTb>("/api/passkeys", fetcher, { shouldRetryOnError: false });
+    const { data: userInfo, error: errorUserInfo, isLoading: userInfoIsLoading } = useSWR<credentailsFromTb>("/api/passkeys", fetcher, {
+        suspense: true,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        revalidateOnMount: false,
+        revalidateIfStale: false,
+        shouldRetryOnError: false,
+    });
 
 
     return (
@@ -85,6 +74,23 @@ export default function Profile() {
 // Async function to fetch passkeys
 async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credentailsFromTb, error: any, isLoading: any }) {
 
+    // get query param from url
+    const searchParams = useSearchParams()
+
+    const digiLoginSuccess = searchParams.get("digiLoginSuccess")
+    if (digiLoginSuccess) {
+        const { data: response, error: errorVerifyProfile, isLoading: isVerifyLoading } = useSWR<any>("/api/verifyprofile", fetcher, {
+            suspense: true,
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+            revalidateOnMount: false,
+            revalidateIfStale: false,
+            shouldRetryOnError: false,
+            onSuccess(data, key, config) {
+                toast.success(data.success, { duration: 10000 });
+            },
+        });
+    }
 
     // Display loading message while fetching data
     if (isLoading) return <div>loading...</div>;
@@ -101,9 +107,6 @@ async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credent
     }
 
     async function verifyProfile(event: any): Promise<void> {
-        if (!userInfo?.userInfo?.email.verified) {
-            // await verifyEmail();
-        }
         const authResp = await digiSignin();
         const resp: ResponseInternal = await authResp.json()
         window.location.href = resp.redirect!;
@@ -122,7 +125,13 @@ async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credent
                                 Email:{userInfo.userInfo?.email.value}
                                 {userInfo.userInfo?.email.verified ? (
                                     <VerifiedIcon color="success" />
-                                ) : (<></>)}
+                                ) : (
+                                    userInfo.userInfo?.fullName.verified ? (
+                                        <Button size="small" onClick={verifyEmail}>
+                                            Verify email
+                                        </Button>
+                                    ) : null // Choose to render nothing if neither email nor fullname is verified
+                                )}
                             </Typography>
                             <Typography gutterBottom variant="body1" component="div">
                                 Name: {userInfo.userInfo?.fullName.value}

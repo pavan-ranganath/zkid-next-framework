@@ -33,11 +33,11 @@ export async function getData(key: any, collectionName: string) {
 }
 
 // update collection in table for a key
-export async function updateData(userID: any, data: any, collectionName: string) {
+export async function updateData(userID: any, data: any, collectionName: string, key: string) {
   const collection = mongoose.connection.db.collection(collectionName);
 
   try {
-    const result = await collection.updateOne({ userID }, { $set: { aadhaar: data } });
+    const result = await collection.updateOne({ userID }, { $set: { [key]: data } });
 
     console.log(`Data with key '${userID}' updated securely.`);
     return result; // Return the result of the insert operation
