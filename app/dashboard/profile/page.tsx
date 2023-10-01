@@ -24,7 +24,7 @@ import { startRegistration } from "@simplewebauthn/browser";
 import toast from "react-hot-toast";
 
 // Importing the Suspense component from React
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 
 // Importing the useSWR hook from the "swr" library
 import useSWR from "swr";
@@ -34,24 +34,57 @@ import { handleRegistrationError } from "@/lib/webauthn";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import moment from "moment";
 import { credentailsFromTb } from "../users/service";
+import { signIn } from "next-auth/react";
+import { ResponseInternal } from "next-auth/core";
+import { useRouter, useSearchParams } from 'next/navigation'
+import { apiRequest } from "@/lib/services/apiService";
 
 
 // Dashboard component
 export default function Profile() {
+
+    // const fetcher = (...urls: string[]) => {
+    //     const f = (url: RequestInfo | URL) => fetch(url).then(r => r.json())
+    //     return Promise.all(urls.map(url => f(url)))
+    // }
+
+
+    // get query param from url
+    const searchParams = useSearchParams()
+
+    const digiLoginSuccess = searchParams.get("digiLoginSuccess")
+    if (digiLoginSuccess) {
+        const { data: response, error: errorVerifyProfile, isLoading: isVerifyLoading } = useSWR<any>("/api/verifyprofile", fetcher, {
+            onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+                // Never retry on 404.
+                if (error.status === 404) return
+
+
+                // Only retry up to 10 times.
+                if (retryCount >= 1) return
+
+                // Retry after 2 seconds.
+                setTimeout(() => revalidate({ retryCount }), 2000)
+            }
+        });
+    }
+
+    const { data: userInfo, error: errorUserInfo, isLoading: userInfoIsLoading } = useSWR<credentailsFromTb>("/api/passkeys", fetcher, { shouldRetryOnError: false });
+
+
     return (
         <>
             {/* Showing a loading message while fetching data */}
             <Suspense fallback={<p>Loading data...</p>}>
-                <GetPasskeys />
+                <GetPasskeys data={userInfo!} isLoading={userInfoIsLoading} error={errorUserInfo} />
             </Suspense>
         </>
     );
 }
 
 // Async function to fetch passkeys
-async function GetPasskeys() {
-    // Fetching passkeys using the useSWR hook
-    const { data: userInfo, error, isLoading } = useSWR<credentailsFromTb>("/api/passkeys", fetcher);
+async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credentailsFromTb, error: any, isLoading: any }) {
+
 
     // Display loading message while fetching data
     if (isLoading) return <div>loading...</div>;
@@ -69,9 +102,11 @@ async function GetPasskeys() {
 
     async function verifyProfile(event: any): Promise<void> {
         if (!userInfo?.userInfo?.email.verified) {
-            await verifyEmail();
+            // await verifyEmail();
         }
-
+        const authResp = await digiSignin();
+        const resp: ResponseInternal = await authResp.json()
+        window.location.href = resp.redirect!;
     }
 
     // Displaying user info and passkeys
@@ -116,7 +151,7 @@ async function GetPasskeys() {
                         <CardContent>
                             <List sx={{ width: "100%" }} component="nav">
                                 {/* Displaying passkey information */}
-                                {userInfo.passkeyInfo?.map((passkey) => (
+                                {userInfo.passkeyInfo?.map((passkey: any) => (
                                     <ListItemButton key={passkey.credentialId}>
                                         <ListItemText
                                             primary={passkey.friendlyName}
@@ -240,4 +275,23 @@ async function registerWebauthn() {
         handleRegistrationError(err);
         // toast.error(`Registration failed. ${(err as Error).message}`);
     }
+}
+const _digiSignInUrlProvider = '/api/auth/digilocker'
+const digiSignin = async () => {
+    return await fetch(_digiSignInUrlProvider, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+    })
+}
+
+function verifyProfileWithDigiLocker() {
+
+    return fetch('/api/verifyProfile', {
+        method: "get",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+    })
 }

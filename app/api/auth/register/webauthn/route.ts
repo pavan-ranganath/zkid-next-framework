@@ -141,6 +141,7 @@ const handleInvalidResponseError = () => {
   return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
 };
 
+const PASSKEY_SESSION_NAME = "PASSKEY_REGISTRATION";
 // Handler function for GET requests
 /**
  *  Generating WebAuthn (Web Authentication) registration options, handling user registration, and saving the credentials in a MongoDB database.
@@ -226,7 +227,7 @@ export async function GET(req: NextRequest, context: any) {
 
   // Create a response with the registration options and set the session
   const response = NextResponse.json(options);
-  setSession(response, { user: { email, fullName, dob } });
+  setSession(response, { name: PASSKEY_SESSION_NAME, value: { user: { email, fullName, dob } } });
   return response;
 }
 
@@ -236,7 +237,7 @@ export async function POST(req: NextRequest, context: any) {
   await dbConnect();
 
   // Retrieve the session from the request
-  const session = getSession(req) as any;
+  const session = getSession(req, PASSKEY_SESSION_NAME) as any;
   const { user } = session;
 
   // If the user is not connected or doesn't have an email, return an error response

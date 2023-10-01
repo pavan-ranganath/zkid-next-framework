@@ -10,16 +10,16 @@ const secret = process.env.NEXTAUTH_SECRET!;
  * @param res The Next.js response object to set the cookie in.
  * @param session The session object containing the data to be signed and stored in the cookie.
  */
-export function setSession(res: NextResponse, session: any) {
+export function setSession(res: NextResponse, session: { name: string; value: any }, age: number = 600) {
   // Creating a signed JWT using the session data and the secret
-  const token = jwt.sign(session, secret);
+  const token = jwt.sign(session.value, secret);
 
   // Serializing the JWT as a cookie value with specified options
-  const cookieValue = cookie.serialize("session", token, {
+  const cookieValue = cookie.serialize(session.name, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60, // 5 minutes (in seconds)
-    sameSite: "strict",
+    maxAge: age, // 5 minutes (in seconds)
+    sameSite: "lax",
     path: "/",
   });
 
@@ -32,9 +32,9 @@ export function setSession(res: NextResponse, session: any) {
  * @param req The Next.js request object containing the cookie to extract the session from.
  * @returns The session data if the JWT is valid, otherwise null.
  */
-export function getSession(req: NextRequest) {
+export function getSession(req: NextRequest, sessionName: string) {
   // Retrieving the JWT token from the 'session' cookie in the request
-  const token = req.cookies.get("session")?.value;
+  const token = req.cookies.get(sessionName)?.value;
 
   // If the token is not present, return null indicating no session
   if (!token) return null;
@@ -62,6 +62,21 @@ export function destroySession(res: { setHeader: (arg0: string, arg1: string) =>
       expires: new Date(0), // Setting the expiration date to the past
       sameSite: "strict",
       path: "/",
-    })
+    }),
+  );
+}
+
+// remove a cookie in session
+export function removeSession(res: NextResponse, sessionName: string) {
+  // Setting an empty and expired 'session' cookie in the response headers
+  res.headers.set(
+    "Set-Cookie",
+    cookie.serialize(sessionName, "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(0), // Setting the expiration date to the past
+      sameSite: "strict",
+      path: "/",
+    }),
   );
 }
