@@ -43,14 +43,6 @@ import { apiRequest } from "@/lib/services/apiService";
 // Dashboard component
 export default function Profile() {
 
-    // const fetcher = (...urls: string[]) => {
-    //     const f = (url: RequestInfo | URL) => fetch(url).then(r => r.json())
-    //     return Promise.all(urls.map(url => f(url)))
-    // }
-
-
-
-
     const { data: userInfo, error: errorUserInfo, isLoading: userInfoIsLoading } = useSWR<credentailsFromTb>("/api/passkeys", fetcher, {
         suspense: true,
         revalidateOnFocus: false,
@@ -88,8 +80,16 @@ async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credent
             shouldRetryOnError: false,
             onSuccess(data, key, config) {
                 toast.success(data.success, { duration: 10000 });
+                // removeSearParams = true;
             },
         });
+        if (!isVerifyLoading) {
+
+            if (response) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+            }
+        }
     }
 
     // Display loading message while fetching data
