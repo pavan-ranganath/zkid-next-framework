@@ -45,13 +45,37 @@ export default function Profile() {
 
     const { data: userInfo, error: errorUserInfo, isLoading: userInfoIsLoading } = useSWR<credentailsFromTb>("/api/passkeys", fetcher, {
         suspense: true,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        revalidateOnMount: false,
-        revalidateIfStale: false,
-        shouldRetryOnError: false,
+        // revalidateOnFocus: false,
+        // revalidateOnReconnect: false,
+        // revalidateOnMount: false,
+        // revalidateIfStale: false,
+        // shouldRetryOnError: false,
     });
+    // const searchParams = useSearchParams()
 
+    // const digiLoginSuccess = searchParams.get("digiLoginSuccess")
+    // if (digiLoginSuccess) {
+    //     const { data: response, error: errorVerifyProfile, isLoading: isVerifyLoading } = useSWR<any>("/api/verifyprofile", fetcher, {
+    //         suspense: true,
+    //         revalidateOnFocus: false,
+    //         revalidateOnReconnect: false,
+    //         revalidateOnMount: false,
+    //         revalidateIfStale: false,
+    //         shouldRetryOnError: false,
+    //         onSuccess(data, key, config) {
+    //             toast.success(data.success, { duration: 10000 });
+    //             // removeSearParams = true;
+    //         },
+    //     });
+    //     if (!isVerifyLoading) {
+
+    //         if (response) {
+    //             // window.history.replaceState({}, document.title, window.location.pathname);
+
+    //         }
+    //     }
+    //     if (isVerifyLoading) return <div>loading digi...</div>;
+    // }
 
     return (
         <>
@@ -67,30 +91,7 @@ export default function Profile() {
 async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credentailsFromTb, error: any, isLoading: any }) {
 
     // get query param from url
-    const searchParams = useSearchParams()
 
-    const digiLoginSuccess = searchParams.get("digiLoginSuccess")
-    if (digiLoginSuccess) {
-        const { data: response, error: errorVerifyProfile, isLoading: isVerifyLoading } = useSWR<any>("/api/verifyprofile", fetcher, {
-            suspense: true,
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-            revalidateOnMount: false,
-            revalidateIfStale: false,
-            shouldRetryOnError: false,
-            onSuccess(data, key, config) {
-                toast.success(data.success, { duration: 10000 });
-                // removeSearParams = true;
-            },
-        });
-        if (!isVerifyLoading) {
-
-            if (response) {
-                window.history.replaceState({}, document.title, window.location.pathname);
-
-            }
-        }
-    }
 
     // Display loading message while fetching data
     if (isLoading) return <div>loading...</div>;

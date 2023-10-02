@@ -30,7 +30,7 @@ const digilockerIssuerUrl = process.env.DIGILOCKER_ISSUER_URL;
 
 export const DIGILOCKER_SESSION_NAME = "digiLockerAuthSession";
 export const DIGILOCKER_USER_SESSION_NAME = "digiLockerUserSession";
-
+export const RUN_DIGI_LOCKERVERIFICATION_ALGORITHM = "runDigiLockerVerificationAlgorithm";
 const redirect_uri = "http://localhost:3000/api/auth/digilocker";
 const client: Client = {
   issuer: digilockerIssuerUrl,
@@ -90,10 +90,11 @@ export async function GET(req: NextRequest, context: any) {
     return errResp;
   }
   const redirectUrl = new URL("/dashboard/profile", req.url);
-  redirectUrl.searchParams.set("digiLoginSuccess", "true");
+  // redirectUrl.searchParams.set("digiLoginSuccess", "true");
   const response = NextResponse.redirect(redirectUrl.toString());
   // store userToken in session
   setSession(response, { name: DIGILOCKER_USER_SESSION_NAME, value: userToken }, 36000);
+  // const resWithCookieVer = setSession(resWithCookie, { name: RUN_DIGI_LOCKERVERIFICATION_ALGORITHM, value: true }, 36000);
   // remove auth session
   // removeSession(response, DIGILOCKER_SESSION_NAME);
   return response;

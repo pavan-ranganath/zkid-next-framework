@@ -77,7 +77,6 @@ export async function GET(req: NextRequest, event: NextFetchEvent) {
     errResp.json({ error_description: "Poi extraction failed" }, { status: 401 });
     return errResp;
   }
-  const poa = xmlAadhar.extractPoaAttributes;
 
   const storedAadhar = await setAadhaar(xmlAadharString, userEmail);
   if (!storedAadhar) {

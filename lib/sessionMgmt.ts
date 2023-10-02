@@ -25,6 +25,7 @@ export function setSession(res: NextResponse, session: { name: string; value: an
 
   // Setting the cookie in the response headers
   res.headers.set("Set-Cookie", cookieValue);
+  return res;
 }
 
 /**
