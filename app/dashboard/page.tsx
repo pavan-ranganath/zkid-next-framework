@@ -1,8 +1,10 @@
+import PageTitle from "@/components/pageTitle";
+
 // Dashboard component
 export default function Dashboard() {
   return (
     <>
-      <h1>Dashboard</h1>
+      <PageTitle title="Home" />
     </>
   );
 }

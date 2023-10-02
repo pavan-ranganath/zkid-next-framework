@@ -40,6 +40,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { apiRequest } from "@/lib/services/apiService";
 import { useConfirm } from "material-ui-confirm";
 import { credentailsFromTb } from "../users/service";
+import PageTitle from "@/components/pageTitle";
 
 // Dashboard component
 export default function Profile() {
@@ -110,6 +111,7 @@ async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credent
   // Displaying user info and passkeys
   return (
     <>
+      <PageTitle title="Profile" />
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12} md={6} sm={6}>
           <Card variant="outlined">

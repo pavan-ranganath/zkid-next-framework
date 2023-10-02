@@ -1,105 +1,45 @@
-import { setSession, removeSession, getSession } from "@/lib/sessionMgmt";
+import { dbConnect } from "@/lib/mongodb";
+import { setSession, removeSession } from "@/lib/sessionMgmt";
+import { getServerSession } from "next-auth";
+import { getSession } from "next-auth/react";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { OpenIDTokenEndpointResponse, protectedResourceRequest } from "oauth4webapi";
-import API_CONFIG from "@/lib/services/apiConfig";
-import { apiRequest } from "@/lib/services/apiService";
-import { signIn } from "next-auth/react";
-import { getServerSession } from "next-auth";
-import { validateResponseHeaders } from "@/lib/services/validateDigiLockerResponse";
-import { AadhaarXmlParser, matchFormDataAndAadharData, setAadhaar } from "@/lib/services/aadhaarService";
-import { XadesClass } from "@/lib/services/XadesClass";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { credentailsFromTb } from "@/app/dashboard/users/service";
 import mongoose from "mongoose";
-import { dbConnect } from "@/lib/mongodb";
-import { DbCredential } from "@/lib/webauthn";
-import { DIGILOCKER_USER_SESSION_NAME } from "../auth/digilocker/route";
-import { sendEmailVerification } from "../auth/emailverifier/route";
 
 export async function GET(req: NextRequest, event: NextFetchEvent) {
-  const session: OpenIDTokenEndpointResponse = getSession(req, "digiLockerUserSession") as any;
-  if (!session) {
-    console.error("Session does not exist");
-    const errResp = NextResponse;
-    errResp.json({ error_description: "Session does not exist" });
-    // errResp.error();
-    return errResp;
-  }
-  // deconstruct items in session
-  const { access_token, expires_in } = session;
-  const { method, pathTemplate } = API_CONFIG.DIGILOCKER.paths.eAadhaar;
-  const { apiUrl } = API_CONFIG.DIGILOCKER;
-  const responseDigi = await protectedResourceRequest(
-    access_token,
-    method,
-    new URL(apiUrl + pathTemplate),
-    new Headers(),
-    null,
-  );
-  // const response = await responseDigi.text();
-  const respClone = responseDigi.clone();
-  const validateRes = await validateResponseHeaders(respClone, "application/xml", process.env.DIGILOCKER_CLIENT_SECRET!);
-  if (!validateRes) {
-    console.error("Validation of header failed");
-    const errResp = NextResponse;
-    errResp.json({ error_description: "Validation of header failed" }, { status: 401 });
-    return errResp;
-  }
-  const xmlAadharString = await responseDigi.text();
-  const serverSession = await getServerSession();
+  // Retrieving the user session using the "getServerSession" function
+  const session = await getServerSession(authOptions);
 
-  const userEmail = serverSession?.user?.email;
-  if (!userEmail) {
-    console.error("User email not found");
-    const errResp = NextResponse;
-    errResp.json({ error_description: "User email not found" }, { status: 401 });
-    return errResp;
-  }
-  const xades = new XadesClass();
-  const xmlVerify = xmlAadharString ? await xades.verifyXml(xmlAadharString) : false;
-  if (!xmlVerify) {
-    console.error("XML verification failed");
-    const errResp = NextResponse;
-    errResp.json({ error_description: "XML verification failed" }, { status: 401 });
-    return errResp;
-  }
+  // Extracting the user's email from the session
+  const email = session?.user?.email;
 
-  const xmlAadhar = new AadhaarXmlParser(xmlAadharString);
-  await xmlAadhar.parseXml();
-  if (!xmlAadhar) {
-    console.error("XML parsing failed");
-    const errResp = NextResponse;
-    errResp.json({ error_description: "XML parsing failed" }, { status: 401 });
-    return errResp;
-  }
-  const poi = xmlAadhar.extractPoiAttributes;
-  if (!poi) {
-    console.error("Poi extraction failed");
-    const errResp = NextResponse;
-    errResp.json({ error_description: "Poi extraction failed" }, { status: 401 });
-    return errResp;
-  }
-
-  const storedAadhar = await setAadhaar(xmlAadharString, userEmail);
-  if (!storedAadhar) {
-    console.error("Aadhaar not stored");
-    const errResp = NextResponse.json({ error_description: "Aadhaar not stored" }, { status: 401 });
-    return errResp;
+  // Checking if the user is authenticated
+  if (!email) {
+    // Returning a JSON response with an error message and a status code of 401 (Unauthorized)
+    return NextResponse.json({ error: "Authentication is required" }, { status: 401 });
   }
   // Establishing a connection to the database
   await dbConnect();
-  // Find the credentials associated with the provided email in the database
-  const credentials = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({
-    userID: userEmail,
-  });
-  if (!credentials) {
-    console.error("Credentials not found");
-    const errResp = NextResponse.json({ error_description: "Credentials not found" });
-    return errResp;
+  try {
+    // Accessing the "credentials" collection from the MongoDB database
+    const collection = mongoose.connection.db.collection<credentailsFromTb>("credentials");
+
+    // Querying the collection to find a document with the matching userID
+    const data = await collection.findOne({ userID: email });
+
+    // check for verification status of email, name and DOB
+    if (data?.userInfo?.email.verified && data?.userInfo.dob.verified && data?.userInfo.fullName.verified) {
+      // Returning a JSON response with the data and a status code of 200 (OK)
+      return NextResponse.json({ status: true }, { status: 200 });
+    } else {
+      // Returning a JSON response with an error message and a status code of 401 (Unauthorized)
+      return NextResponse.json({ status: false }, { status: 200 });
+    }
+  } catch (error) {
+    console.error(error);
+    // Returning a JSON response with an error message and a status code of 500 (Internal Server Error)
+    return NextResponse.json({ error: (error as Error)?.message }, { status: 500 });
   }
-  const matched = await matchFormDataAndAadharData(poi, credentials);
-  if (matched) {
-    const emailSent = await sendEmailVerification(userEmail);
-    return emailSent;
-  }
-  const errResp = NextResponse.json({ error_description: "Aadhaar data does not match" }, { status: 401 });
-  return errResp;
 }
