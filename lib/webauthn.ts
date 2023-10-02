@@ -32,6 +32,7 @@ export interface DbCredential {
     fullName: Field<string>; // The first name of the user
     email: Field<string>; // The email address of the user
     dob: Field<string>; // The last name of the user
+    mobile: Field<string>; // The last name of the user
   };
 }
 
@@ -55,7 +56,7 @@ export async function saveChallenge({ userID, challenge }: { challenge: string; 
     },
     {
       upsert: true, // Creating a new document if it doesn't exist
-    }
+    },
   );
 }
 
@@ -102,7 +103,7 @@ export async function updateCredentials(cred: passkeyObj, userID: string) {
       $push: {
         passkeyInfo: cred,
       },
-    }
+    },
   );
 }
 // Function to handle registration errors

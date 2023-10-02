@@ -1,3 +1,4 @@
+"use client"
 /**
  * The 'react' package provides the necessary components and utilities for building React applications.
  * It includes the core React library and other essential components, hooks, and functions.
@@ -10,6 +11,7 @@ import React from "react";
  */
 import NavigationBar from "@/components/NavigationBar/navigationBar";
 import Providers from "../Providers";
+import { ConfirmProvider } from "material-ui-confirm";
 
 /**
  * DashboardLayout is a layout component that provides a common layout structure for the dashboard page.
@@ -23,10 +25,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <>
       <Providers>
         <NavigationBar />
-        <div style={{ margin: 10 }}>
+        <ConfirmProvider>
+          <div style={{ margin: 10 }}>
 
-          {children}
-        </div>
+            {children}
+          </div>
+        </ConfirmProvider>
       </Providers>
     </>
   );

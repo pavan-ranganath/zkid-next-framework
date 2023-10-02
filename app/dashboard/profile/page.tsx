@@ -16,6 +16,7 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import CardActions from "@mui/material/CardActions";
+import ListItem from "@mui/material/ListItem";
 
 // Importing the startRegistration function from the "@simplewebauthn/browser" library
 import { startRegistration } from "@simplewebauthn/browser";
@@ -38,6 +39,7 @@ import { signIn } from "next-auth/react";
 import { ResponseInternal } from "next-auth/core";
 import { useRouter, useSearchParams } from 'next/navigation'
 import { apiRequest } from "@/lib/services/apiService";
+import { useConfirm } from "material-ui-confirm";
 
 
 // Dashboard component
@@ -51,32 +53,8 @@ export default function Profile() {
         // revalidateIfStale: false,
         // shouldRetryOnError: false,
     });
+
     // const searchParams = useSearchParams()
-
-    // const digiLoginSuccess = searchParams.get("digiLoginSuccess")
-    // if (digiLoginSuccess) {
-    //     const { data: response, error: errorVerifyProfile, isLoading: isVerifyLoading } = useSWR<any>("/api/verifyprofile", fetcher, {
-    //         suspense: true,
-    //         revalidateOnFocus: false,
-    //         revalidateOnReconnect: false,
-    //         revalidateOnMount: false,
-    //         revalidateIfStale: false,
-    //         shouldRetryOnError: false,
-    //         onSuccess(data, key, config) {
-    //             toast.success(data.success, { duration: 10000 });
-    //             // removeSearParams = true;
-    //         },
-    //     });
-    //     if (!isVerifyLoading) {
-
-    //         if (response) {
-    //             // window.history.replaceState({}, document.title, window.location.pathname);
-
-    //         }
-    //     }
-    //     if (isVerifyLoading) return <div>loading digi...</div>;
-    // }
-
     return (
         <>
             {/* Showing a loading message while fetching data */}
@@ -91,8 +69,7 @@ export default function Profile() {
 async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credentailsFromTb, error: any, isLoading: any }) {
 
     // get query param from url
-
-
+    const confirm = useConfirm();
     // Display loading message while fetching data
     if (isLoading) return <div>loading...</div>;
 
@@ -108,9 +85,21 @@ async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credent
     }
 
     async function verifyProfile(event: any): Promise<void> {
-        const authResp = await digiSignin();
-        const resp: ResponseInternal = await authResp.json()
-        window.location.href = resp.redirect!;
+        confirm({ title: "Profile verification", content: confirmationDialogMessage(), confirmationText: "Verify Now", cancellationText: "Cancel" })
+            .then(async () => {
+                /* ... */
+                const authResp = await digiSignin();
+                const resp: ResponseInternal = await authResp.json()
+                window.location.href = resp.redirect!;
+            })
+            .catch(() => {
+                /* ... */
+            });
+
+    }
+
+    function verifyMobile(event: any): void {
+        alert('verify mobile work in progress');
     }
 
     // Displaying user info and passkeys
@@ -146,9 +135,18 @@ async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credent
                                     <VerifiedIcon color="success" />
                                 ) : (<></>)}
                             </Typography>
-                            {/* <Typography gutterBottom variant="body1" component="div">
-                  Email verified: {userInfo.userInfo?.emailVerified ? "true" : "false"}
-                </Typography> */}
+                            <Typography gutterBottom variant="body1" component="div">
+                                Mobile:{userInfo.userInfo?.mobile.value}
+                                {userInfo.userInfo?.mobile.verified ? (
+                                    <VerifiedIcon color="success" />
+                                ) : (
+                                    userInfo.userInfo?.fullName.verified ? (
+                                        <Button size="small" onClick={verifyMobile}>
+                                            Verify mobile
+                                        </Button>
+                                    ) : null // Choose to render nothing if neither email nor fullname is verified
+                                )}
+                            </Typography>
                             {!userInfo.userInfo?.fullName.verified ? (<Button size="small" onClick={verifyProfile}>
                                 Verify Profile
                             </Button>) : (<></>)}
@@ -304,4 +302,21 @@ function verifyProfileWithDigiLocker() {
             "Content-Type": "application/x-www-form-urlencoded",
         },
     })
+}
+
+const confirmationDialogMessage = () => {
+    return (
+        <div>
+            <List>
+                <ListItem>
+                    <ListItemText>
+                        To verify your identity, click "Verify Now" to grant Digilocker access for your name and DOB and to receive a verification email.
+                    </ListItemText>
+                </ListItem>
+            </List>
+            <Typography variant="body2">
+                Your privacy is paramount to us. All verifications are done securely, and we never store unnecessary data.
+            </Typography>
+        </div>
+    )
 }

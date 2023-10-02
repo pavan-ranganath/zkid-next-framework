@@ -8,7 +8,7 @@ import Link from "next/link"; // Link component from Next.js for navigation
 import { useEffect } from "react"; // React hook for side effects
 import * as yup from "yup"; // Yup library for form validation
 import { yupResolver } from "@hookform/resolvers/yup"; // Resolver for Yup validation with React Hook Form
-import { useForm } from "react-hook-form"; // Form management library
+import { Controller, useForm } from "react-hook-form"; // Form management library
 import { redirect, useRouter } from "next/navigation"; // Next.js functions for navigation
 import { toast } from "react-hot-toast"; // Toast notification library
 import { startRegistration } from "@simplewebauthn/browser"; // WebAuthn registration function
@@ -23,6 +23,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
+import "yup-phone-lite";
 
 /**
  * The Register component handles the user registration process.
@@ -52,6 +54,7 @@ export default function Register(): JSX.Element {
     fullName: yup.string().required("Full name is required"),
     email: yup.string().required("Email is required").email("Invalid email format"),
     dob: yup.date().required("Date of birth is required").max(new Date(), "Date of birth must be in the past"),
+    mobile: yup.string().phone("IN", "Please enter a valid mobile number").required("A Mobile number is required").matches(/^\+91 [6-9]\d{4} \d{5}$/, "Please enter a valid mobile number")
   };
 
 
@@ -71,13 +74,14 @@ export default function Register(): JSX.Element {
     control,
     handleSubmit,
     formState: { errors, touchedFields },
+
   } = useForm({
     resolver: yupResolver(yup.object().shape(registerForm)),
   });
 
   // Form submission handler
   function onSubmit(data: any) {
-    registerWebauthn(data.email, data.fullName, data.dob, router);
+    registerWebauthn(data.email, data.fullName, data.dob, data.mobile, router);
   }
 
   // Effect hook to handle page navigation based on session status
@@ -168,6 +172,36 @@ export default function Register(): JSX.Element {
           fullWidth
           sx={{ mb: 2 }}
         />
+        {/* Phone field */}
+        <Controller
+          name="mobile"
+          control={control}
+          rules={{
+            validate: (value) => {
+              console.log("value", value);
+              return matchIsValidTel(value) || "Invalid mobile number1";
+            }
+          }}
+          render={({ field: { ref, ...field }, fieldState }) => (
+            <MuiTelInput
+              disableDropdown
+              inputRef={ref}
+              inputProps={{ readOnly: false }}
+              {...field}
+              color="primary"
+              defaultCountry="IN"
+              forceCallingCode
+              focusOnSelectCountry
+              variant="outlined"
+              onlyCountries={["IN"]}
+              label="Mobile Number"
+              error={!!errors.mobile}
+              helperText={errors.mobile?.message}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+          )}
+        />
         {/* Submit button */}
         <Button variant="contained" color="primary" type="submit">
           Register
@@ -189,10 +223,10 @@ export default function Register(): JSX.Element {
 // - Sends the registration data to the server for verification and storage
 // - If the registration request is successful (status 201), displays a success toast and can redirect to the sign-in page
 // - If any error occurs during the process, displays an error toast and logs the error message or response
-async function registerWebauthn(email: string, fullName: string, dob: string, router: AppRouterInstance) {
+async function registerWebauthn(email: string, fullName: string, dob: string, mobile: string, router: AppRouterInstance) {
   // Construct the registration URL
   const url = new URL("/api/auth/register/webauthn", window.location.origin);
-  url.search = new URLSearchParams({ email, fullName, dob }).toString();
+  url.search = new URLSearchParams({ email, fullName, dob, mobile }).toString();
 
   // Fetch the registration options from the server
   const optionsResponse = await fetch(url.toString());

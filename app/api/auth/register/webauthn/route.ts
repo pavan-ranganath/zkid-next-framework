@@ -199,7 +199,7 @@ export async function GET(req: NextRequest, context: any) {
   // Proceed with the registration process for a new user
 
   // Retrieve query parameters from the request URL
-  const { fullName, dob, email } = Object.fromEntries(req.nextUrl.searchParams.entries());
+  const { fullName, dob, email, mobile } = Object.fromEntries(req.nextUrl.searchParams.entries());
 
   // Check if the user already has credentials in the database
   const credentials = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({
@@ -227,7 +227,7 @@ export async function GET(req: NextRequest, context: any) {
 
   // Create a response with the registration options and set the session
   const response = NextResponse.json(options);
-  setSession(response, { name: PASSKEY_SESSION_NAME, value: { user: { email, fullName, dob } } });
+  setSession(response, { name: PASSKEY_SESSION_NAME, value: { user: { email, fullName, dob, mobile } } });
   return response;
 }
 
@@ -289,6 +289,7 @@ export async function POST(req: NextRequest, context: any) {
         email: { value: user.email, verified: false },
         fullName: { value: user.fullName, verified: false },
         dob: { value: user.dob, verified: false },
+        mobile: { value: user.mobile, verified: false },
       },
     });
 
