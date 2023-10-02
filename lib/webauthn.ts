@@ -27,6 +27,7 @@ export interface Field<T> {
 export interface DbCredential {
   _id?: string; // Optional unique identifier for the credential in the database
   userID: string; // The ID of the user associated with the credential
+  userSystemID: string; // The ID of the user associated with the credential fr system
   passkeyInfo: passkeyObj[]; // An array of passkey objects containing information about the user's passkeys
   userInfo?: {
     fullName: Field<string>; // The first name of the user
@@ -68,7 +69,7 @@ export async function saveChallenge({ userID, challenge }: { challenge: string; 
 export async function getChallenge(userID: string) {
   // Retrieving and deleting a challenge value from the "challenge" collection for a specific user
   const challengeObj = await mongoose.connection.db
-    .collection<{ userID: string; value: string }>("challenge")
+    .collection<{ userID: string; value: string; userSystemId: string }>("challenge")
     .findOneAndDelete({
       userID,
     });
@@ -86,6 +87,7 @@ export async function saveCredentials(cred: DbCredential) {
     userID: cred.userID, // Storing the user's ID
     passkeyInfo: cred.passkeyInfo, // Storing the user's passkey information (e.g., credential ID, friendly name, etc.)
     userInfo: cred.userInfo, // Storing additional user information (e.g., first name, email, etc.)
+    userSystemID: cred.userSystemID, // Storing the user's system ID
   });
 }
 
