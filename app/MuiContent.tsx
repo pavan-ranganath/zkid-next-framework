@@ -17,12 +17,11 @@ import { DEFAULT_THEME } from "@/app/theme";
 // This is a Next.js component used for client-side navigation between pages
 import Link from "next/link";
 
-
 // MuiContent component
 // This component represents the main content of the application
 const MuiContent = () => {
   // State to track the current theme name, initialized with the default theme
-  const [themeName, setThemeName] = useState(DEFAULT_THEME);
+  const [themeName] = useState(DEFAULT_THEME);
 
   return (
     // Stack component serves as the main container with vertical orientation and padding

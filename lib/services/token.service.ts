@@ -25,7 +25,7 @@ export const generateToken = (
   userId: any,
   expires: moment.Moment,
   type: string,
-  secret: string = process.env.NEXTAUTH_SECRET!
+  secret: string = process.env.NEXTAUTH_SECRET!,
 ): string => {
   const payload = {
     sub: userId,
@@ -50,7 +50,7 @@ export const saveToken = async (
   userId: any,
   expires: moment.Moment,
   type: string,
-  blacklisted: boolean = false
+  blacklisted: boolean = false,
 ): Promise<any> => {
   const tokenDoc = await Token.create({
     token,

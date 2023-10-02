@@ -13,7 +13,7 @@ export async function validateResponseHeaders(
   expectedContentType: string,
   clientSecret: string,
 ): Promise<boolean> {
-  const headers = response.headers;
+  const { headers } = response;
 
   // Check Content-Type
   if (headers.get("content-type") !== expectedContentType) {

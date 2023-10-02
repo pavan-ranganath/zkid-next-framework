@@ -1,8 +1,8 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
-import API_CONFIG, { generateDynamicPath } from "./apiConfig";
 import { getToken } from "@/app/api/auth/digilocker/route";
 import { NextRequest } from "next/server";
 import { OpenIDTokenEndpointResponse } from "oauth4webapi";
+import API_CONFIG, { generateDynamicPath } from "./apiConfig";
 
 interface ApiParams {
   category: string;
@@ -14,8 +14,6 @@ interface ApiParams {
 
 export const apiRequest = async ({ category, pathKey, params, data, headers }: ApiParams): Promise<AxiosResponse> => {
   const { method } = API_CONFIG[category].paths[pathKey];
-  const apiKey = API_CONFIG[category].apiKey;
-  const currentTimestamp = new Date().getTime();
 
   // Calculate the URL using the generateDynamicPath utility function
   const url = generateDynamicPath(category, pathKey, params);

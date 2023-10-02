@@ -3,13 +3,13 @@ import mongoose from "mongoose"; // Importing Mongoose for MongoDB database conn
 import { dbConnect } from "@/lib/mongodb"; // Importing the "dbConnect" function from the local module "@/lib/mongodb" for connecting to the MongoDB database
 import { getServerSession } from "next-auth"; // Importing the "getServerSession" function from the "next-auth" module for retrieving the user session
 import { credentailsFromTb } from "@/app/dashboard/users/service"; // Importing the "credentailsFromTb" type from the local module "@/app/dashboard/users/service" for defining the type of a collection document
-import { authOptions } from "../auth/[...nextauth]/route"; // Importing the "authOptions" object from the local module "../auth/[...nextauth]/route" for configuring authentication options
 import { getSession, removeSession } from "@/lib/sessionMgmt";
 import { OpenIDTokenEndpointResponse, protectedResourceRequest } from "oauth4webapi";
 import API_CONFIG from "@/lib/services/apiConfig";
 import { XadesClass } from "@/lib/services/XadesClass";
 import { AadhaarXmlParser, matchFormDataAndAadharData, setAadhaar } from "@/lib/services/aadhaarService";
 import { DbCredential } from "@/lib/webauthn";
+import { authOptions } from "../auth/[...nextauth]/route"; // Importing the "authOptions" object from the local module "../auth/[...nextauth]/route" for configuring authentication options
 import { sendEmailVerification } from "../auth/emailverifier/route";
 
 // Defining a type for the filter object
@@ -39,10 +39,10 @@ export async function GET(req: NextRequest, context: any) {
   try {
     // check digilocker verification flag in session
     const digiLockerUserSession = getSession(req, "digiLockerUserSession") as any;
-    if (!!digiLockerUserSession) {
+    if (digiLockerUserSession) {
       const { access_token, expires_in } = digiLockerUserSession;
-      const { method, pathTemplate } = API_CONFIG["DIGILOCKER"].paths["eAadhaar"];
-      const { apiUrl } = API_CONFIG["DIGILOCKER"];
+      const { method, pathTemplate } = API_CONFIG.DIGILOCKER.paths.eAadhaar;
+      const { apiUrl } = API_CONFIG.DIGILOCKER;
       const responseDigi = await protectedResourceRequest(
         access_token,
         method,

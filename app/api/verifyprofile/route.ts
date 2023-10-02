@@ -1,6 +1,5 @@
 import { setSession, removeSession, getSession } from "@/lib/sessionMgmt";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
-import { DIGILOCKER_USER_SESSION_NAME } from "../auth/digilocker/route";
 import { OpenIDTokenEndpointResponse, protectedResourceRequest } from "oauth4webapi";
 import API_CONFIG from "@/lib/services/apiConfig";
 import { apiRequest } from "@/lib/services/apiService";
@@ -12,6 +11,7 @@ import { XadesClass } from "@/lib/services/XadesClass";
 import mongoose from "mongoose";
 import { dbConnect } from "@/lib/mongodb";
 import { DbCredential } from "@/lib/webauthn";
+import { DIGILOCKER_USER_SESSION_NAME } from "../auth/digilocker/route";
 import { sendEmailVerification } from "../auth/emailverifier/route";
 
 export async function GET(req: NextRequest, event: NextFetchEvent) {
@@ -25,8 +25,8 @@ export async function GET(req: NextRequest, event: NextFetchEvent) {
   }
   // deconstruct items in session
   const { access_token, expires_in } = session;
-  const { method, pathTemplate } = API_CONFIG["DIGILOCKER"].paths["eAadhaar"];
-  const { apiUrl } = API_CONFIG["DIGILOCKER"];
+  const { method, pathTemplate } = API_CONFIG.DIGILOCKER.paths.eAadhaar;
+  const { apiUrl } = API_CONFIG.DIGILOCKER;
   const responseDigi = await protectedResourceRequest(
     access_token,
     method,
@@ -97,7 +97,7 @@ export async function GET(req: NextRequest, event: NextFetchEvent) {
   }
   const matched = await matchFormDataAndAadharData(poi, credentials);
   if (matched) {
-    let emailSent = await sendEmailVerification(userEmail);
+    const emailSent = await sendEmailVerification(userEmail);
     return emailSent;
   }
   const errResp = NextResponse.json({ error_description: "Aadhaar data does not match" }, { status: 401 });

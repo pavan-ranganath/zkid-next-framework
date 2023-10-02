@@ -39,7 +39,7 @@ import "yup-phone-lite";
  */
 export default function Register(): JSX.Element {
   // Retrieving session data and status using NextAuth hook
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   // Checking authorization status
   const authorized = status === "authenticated";
@@ -54,9 +54,12 @@ export default function Register(): JSX.Element {
     fullName: yup.string().required("Full name is required"),
     email: yup.string().required("Email is required").email("Invalid email format"),
     dob: yup.date().required("Date of birth is required").max(new Date(), "Date of birth must be in the past"),
-    mobile: yup.string().phone("IN", "Please enter a valid mobile number").required("A Mobile number is required").matches(/^\+91 [6-9]\d{4} \d{5}$/, "Please enter a valid mobile number")
+    mobile: yup
+      .string()
+      .phone("IN", "Please enter a valid mobile number")
+      .required("A Mobile number is required")
+      .matches(/^\+91 [6-9]\d{4} \d{5}$/, "Please enter a valid mobile number"),
   };
-
 
   // Initializing React Hook Form with validation resolver
   // Destructuring the useForm hook and its return values:
@@ -74,7 +77,6 @@ export default function Register(): JSX.Element {
     control,
     handleSubmit,
     formState: { errors, touchedFields },
-
   } = useForm({
     resolver: yupResolver(yup.object().shape(registerForm)),
   });
@@ -133,7 +135,6 @@ export default function Register(): JSX.Element {
         Registration
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-
         {/* Full Name field */}
         <TextField
           id="fullName"
@@ -180,9 +181,9 @@ export default function Register(): JSX.Element {
             validate: (value) => {
               console.log("value", value);
               return matchIsValidTel(value) || "Invalid mobile number1";
-            }
+            },
           }}
-          render={({ field: { ref, ...field }, fieldState }) => (
+          render={({ field: { ref, ...field } }) => (
             <MuiTelInput
               disableDropdown
               inputRef={ref}
@@ -265,7 +266,7 @@ async function registerWebauthn(email: string, fullName: string, dob: string, mo
     } else {
       toast.success("Your WebAuthn credentials have been registered.", { duration: 10000 });
       // Redirect to the sign-in page
-      router.push('/signin');
+      router.push("/signin");
     }
   } catch (err) {
     handleRegistrationError(err);

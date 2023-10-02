@@ -22,10 +22,9 @@ export async function getData(key: any, collectionName: string) {
     if (result) {
       console.log(`Data with key '${key}' retrieved securely.`);
       return result.data;
-    } else {
-      console.log(`Data with key '${key}' not found.`);
-      return null;
     }
+    console.log(`Data with key '${key}' not found.`);
+    return null;
   } catch (error) {
     console.error(`Error retrieving data with key '${key}':`, error);
     return null;

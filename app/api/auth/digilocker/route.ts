@@ -36,7 +36,7 @@ const client: Client = {
   issuer: digilockerIssuerUrl,
   client_id: oidcClientId,
   client_secret: oidcClientSecret,
-  redirect_uri: redirect_uri,
+  redirect_uri,
   token_endpoint_auth_method: "client_secret_basic", // Adjust as needed
 };
 const as: AuthorizationServer = {
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
   authorizationUrl.searchParams.set("response_type", "code");
   authorizationUrl.searchParams.set("scope", "openid");
   authorizationUrl.searchParams.set("state", state);
-  let resp: ResponseInternal = { redirect: authorizationUrl.toString(), status: 200 };
+  const resp: ResponseInternal = { redirect: authorizationUrl.toString(), status: 200 };
   const response = NextResponse.json(resp);
   setSession(response, { name: DIGILOCKER_SESSION_NAME, value: { code_verifier, state } });
   return response;

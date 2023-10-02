@@ -1,6 +1,5 @@
 "use client";
 
-
 // Importing required modules and components
 
 // Importing the Backdrop and CircularProgress components from the Material-UI library

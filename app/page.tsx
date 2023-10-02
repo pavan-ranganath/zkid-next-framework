@@ -1,5 +1,5 @@
-import MuiContent from "./MuiContent";
 import { ConfirmProvider } from "material-ui-confirm";
+import MuiContent from "./MuiContent";
 
 // Index component
 // This is the main component for the index page

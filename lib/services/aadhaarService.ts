@@ -1,7 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
-const userAadhaarStorageKey = "aadhaar";
 import { storeData, getData, updateData } from "./storage";
 import { DbCredential } from "../webauthn";
+
 export interface PersonInfo {
   dob: string;
   gender: string;
@@ -44,7 +44,7 @@ const xmlParserOptions = {
   allowBooleanAttributes: true,
 };
 export const setAadhaar = async (aadhaar: string, userEmail: string) => {
-  return await updateData(userEmail, aadhaar, "credentials", "aadhaar");
+  return updateData(userEmail, aadhaar, "credentials", "aadhaar");
 };
 export const getAadhaar = async (userEmail: string): Promise<any | null> => {
   const data = await getData(userEmail, "credentials");
@@ -78,7 +78,9 @@ function convertToPEM(x509Certificate: string): string {
 
 export class AadhaarXmlParser {
   private xmlObject: any;
+
   private xmlString: string;
+
   constructor(xml: string) {
     this.xmlString = xml;
   }
@@ -96,6 +98,7 @@ export class AadhaarXmlParser {
   get xmlAadhar() {
     return this.xmlObject;
   }
+
   get extractPoiAttributes(): PersonInfo | null {
     try {
       const poi = this.xmlObject.Certificate.CertificateData.KycRes.UidData.Poi;
@@ -164,9 +167,13 @@ export class AadhaarXmlParser {
   }
 }
 
+export const updateUserProfile = async (userProfile: DbCredential) => {
+  return updateData(userProfile.userID, userProfile.userInfo, "credentials", "userInfo");
+};
+
 export const matchFormDataAndAadharData = async (poi: PersonInfo, _user: DbCredential) => {
   try {
-    let user = _user.userInfo!;
+    const user = _user.userInfo!;
     const userDateObject = user.dob.value ? new Date(user.dob.value) : new Date();
     const formattedUserDate = `${userDateObject.getDate().toString().padStart(2, "0")}-${(userDateObject.getMonth() + 1)
       .toString()
@@ -192,7 +199,4 @@ export const matchFormDataAndAadharData = async (poi: PersonInfo, _user: DbCrede
     console.error("matchFormDataAndAadharData", error);
     return false;
   }
-};
-export const updateUserProfile = async (userProfile: DbCredential) => {
-  return await updateData(userProfile.userID, userProfile.userInfo, "credentials", "userInfo");
 };

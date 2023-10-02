@@ -56,7 +56,6 @@ import { useEffect } from "react";
 // It is used for client-side navigation between pages in Next.js applications
 import Link from "next/link";
 
-
 /*
   - The code provides a sign-in feature for users using WebAuthn authentication.
   - Users can enter their email address and submit the form to sign in.

@@ -3,7 +3,9 @@ import * as XAdES from "xadesjs";
 import { OptionsXAdES } from "xadesjs/build/types/signed_xml";
 import * as dom from "@xmldom/xmldom";
 import * as xpath from "xpath";
-var xadesjs = require("xadesjs") as typeof XAdES;
+
+const xadesjs = require("xadesjs") as typeof XAdES;
+
 const crypto = new Crypto();
 xadesjs.Application.setEngine("OpenSSL", crypto);
 // window.DOMParser =  (require('@xmldom/xmldom').DOMParser);
@@ -46,6 +48,6 @@ export class XadesClass {
     signedXml.LoadXml(signatureElements[0]);
 
     // Verify the signature
-    return await signedXml.Verify();
+    return signedXml.Verify();
   }
 }

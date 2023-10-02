@@ -4,12 +4,12 @@ import { styled } from "@mui/material/styles"; // Importing the 'styled' functio
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Importing the check circle icon from MUI icons
 import ErrorIcon from "@mui/icons-material/Error"; // Importing the error icon from MUI icons
 import useSWR from "swr"; // Importing the 'useSWR' hook from the SWR library for data fetching and caching
-import { fetcher } from "../dashboard/profile/page";
 
 // MUI imports
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { fetcher } from "../dashboard/profile/page";
 
 // Styling the container using the 'styled' function from MUI
 const StyledContainer = styled(Container)(({ theme }) => ({

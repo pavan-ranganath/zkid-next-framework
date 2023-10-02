@@ -6,7 +6,6 @@
 import { createTheme as createMuiTheme } from "@mui/material/styles";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 
-
 // Importing ThemeProvider and useTheme from "next-themes"
 // These are used for managing and accessing the current theme state in Next.js applications
 import { ThemeProvider, useTheme } from "next-themes";

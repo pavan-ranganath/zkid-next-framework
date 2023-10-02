@@ -34,9 +34,9 @@ const pages: {
   friendlyName: string;
   href: string;
 }[] = [
-    { id: 1, friendlyName: "Dashboard", href: "/dashboard" },
-    { id: 2, friendlyName: "Users", href: "/dashboard/users" },
-  ];
+  { id: 1, friendlyName: "Dashboard", href: "/dashboard" },
+  { id: 2, friendlyName: "Users", href: "/dashboard/users" },
+];
 
 export default function NavigationBar() {
   const { theme: themeState, setTheme } = useTheme(); // Using the useTheme hook to access the current theme and set the theme
@@ -44,7 +44,7 @@ export default function NavigationBar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null); // State variable for the anchor element of the navigation menu
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // State variable for the anchor element of the user menu
   const [selectedList, setSelectedList] = useState<number[]>([]); // State variable for the selected list items
-  const router = useRouter()
+  const router = useRouter();
 
   // Event handler for opening the navigation menu
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
@@ -75,32 +75,31 @@ export default function NavigationBar() {
     friendlyName: string;
     onClick: () => Promise<void>;
   }[] = [
-      {
-        id: 1,
-        friendlyName: `Profile`,
-        onClick: async () => {
-          router.push("/dashboard/profile");
-          handleCloseUserMenu();
-        },
+    {
+      id: 1,
+      friendlyName: `Profile`,
+      onClick: async () => {
+        router.push("/dashboard/profile");
+        handleCloseUserMenu();
       },
-      {
-        id: 2,
-        friendlyName: `Activate ${themeName} Theme`,
-        onClick: async () => {
-          setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
-          handleCloseUserMenu();
-        },
+    },
+    {
+      id: 2,
+      friendlyName: `Activate ${themeName} Theme`,
+      onClick: async () => {
+        setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
+        handleCloseUserMenu();
       },
-      {
-        id: 3,
-        friendlyName: "Logout",
-        onClick: async () => {
-          await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
-          handleCloseUserMenu();
-        },
+    },
+    {
+      id: 3,
+      friendlyName: "Logout",
+      onClick: async () => {
+        await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
+        handleCloseUserMenu();
       },
-
-    ];
+    },
+  ];
 
   return (
     <AppBar position="static" style={{ marginBottom: 20, paddingTop: 5, paddingBottom: 5 }}>
@@ -108,7 +107,12 @@ export default function NavigationBar() {
         <Toolbar disableGutters>
           {/* Logo */}
           <Link href="/dashboard">
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54 }} component="img" alt="Logo" src={"/zkidLogo_v1.svg"} />
+            <Box
+              sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54 }}
+              component="img"
+              alt="Logo"
+              src={"/zkidLogo_v1.svg"}
+            />
           </Link>
 
           {/* Navigation Menu (for small screens) */}
@@ -151,7 +155,12 @@ export default function NavigationBar() {
               ))}
             </Menu>
             <Link href="/dashboard" style={{ flexGrow: 1, textAlign: "center" }}>
-              <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, height: 54 }} component="img" alt="Logo" src={"/zkidLogo_v1.svg"} />
+              <Box
+                sx={{ display: { xs: "flex", md: "none" }, mr: 1, height: 54 }}
+                component="img"
+                alt="Logo"
+                src={"/zkidLogo_v1.svg"}
+              />
             </Link>
           </Box>
           {/* Navigation Buttons (for medium and large screens) */}
