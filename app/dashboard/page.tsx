@@ -1,4 +1,5 @@
 "use client";
+
 import PageTitle from "@/components/pageTitle";
 import { useVerifyStatus } from "@/components/verificationStatusProvider";
 import { useConfirm } from "material-ui-confirm";
@@ -24,7 +25,6 @@ export default function Dashboard() {
         .then(async () => {
           /* ... */
           router.push("/dashboard/profile");
-
         })
         .catch(() => {
           /* ... */

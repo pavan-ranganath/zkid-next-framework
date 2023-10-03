@@ -39,8 +39,8 @@ import { ResponseInternal } from "next-auth/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import { apiRequest } from "@/lib/services/apiService";
 import { useConfirm } from "material-ui-confirm";
-import { credentailsFromTb } from "../users/service";
 import PageTitle from "@/components/pageTitle";
+import { credentailsFromTb } from "../users/service";
 
 // Dashboard component
 export default function Profile() {

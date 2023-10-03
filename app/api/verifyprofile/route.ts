@@ -4,9 +4,9 @@ import { getServerSession } from "next-auth";
 import { getSession } from "next-auth/react";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { OpenIDTokenEndpointResponse, protectedResourceRequest } from "oauth4webapi";
-import { authOptions } from "../auth/[...nextauth]/route";
 import { credentailsFromTb } from "@/app/dashboard/users/service";
 import mongoose from "mongoose";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function GET(req: NextRequest, event: NextFetchEvent) {
   // Retrieving the user session using the "getServerSession" function
@@ -33,10 +33,9 @@ export async function GET(req: NextRequest, event: NextFetchEvent) {
     if (data?.userInfo?.email.verified && data?.userInfo.dob.verified && data?.userInfo.fullName.verified) {
       // Returning a JSON response with the data and a status code of 200 (OK)
       return NextResponse.json({ status: true }, { status: 200 });
-    } else {
-      // Returning a JSON response with an error message and a status code of 401 (Unauthorized)
-      return NextResponse.json({ status: false }, { status: 200 });
     }
+    // Returning a JSON response with an error message and a status code of 401 (Unauthorized)
+    return NextResponse.json({ status: false }, { status: 200 });
   } catch (error) {
     console.error(error);
     // Returning a JSON response with an error message and a status code of 500 (Internal Server Error)

@@ -12,11 +12,11 @@ import React, { useEffect } from "react";
  */
 import NavigationBar from "@/components/NavigationBar/navigationBar";
 import { ConfirmProvider } from "material-ui-confirm";
-import Providers from "../Providers";
-import { fetcher } from "./profile/page";
 import useSWR from "swr";
 import VerificationBanner from "@/components/verificationBanner";
 import { VerifyStatusProvider } from "@/components/verificationStatusProvider";
+import { fetcher } from "./profile/page";
+import Providers from "../Providers";
 
 /**
  * DashboardLayout is a layout component that provides a common layout structure for the dashboard page.
@@ -44,13 +44,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return <>Loading</>;
   }
 
-
   return (
     <>
       <Providers>
         <NavigationBar />
-        <VerifyStatusProvider initialStatus={verifyStatus?.status ? verifyStatus?.status : false}> {/* Provide the initial status */}
-
+        <VerifyStatusProvider initialStatus={verifyStatus?.status ? verifyStatus?.status : false}>
+          {" "}
+          {/* Provide the initial status */}
           <ConfirmProvider>
             <div style={{ margin: 10 }}>{children}</div>
           </ConfirmProvider>
