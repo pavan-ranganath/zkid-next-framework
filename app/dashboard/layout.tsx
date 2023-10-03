@@ -15,7 +15,7 @@ import { ConfirmProvider } from "material-ui-confirm";
 import useSWR from "swr";
 import VerificationBanner from "@/components/verificationBanner";
 import { VerifyStatusProvider } from "@/components/verificationStatusProvider";
-import { fetcher } from "./profile/page";
+import { fetcher } from "@/lib/services/apiService";
 import Providers from "../Providers";
 
 /**
@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     error: errorVerifyStatus,
     isLoading: verifyStatusIsLoading,
   } = useSWR<{ status: boolean }>("/api/verifyprofile", fetcher, {
-    suspense: true,
+    // suspense: true,
   });
   if (errorVerifyStatus) {
     return <>Error</>;

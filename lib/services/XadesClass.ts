@@ -6,6 +6,10 @@ import * as xpath from "xpath";
 
 const xadesjs = require("xadesjs") as typeof XAdES;
 
+interface CryptoKeyPair {
+  privateKey: CryptoKey;
+  publicKey: CryptoKey;
+}
 const crypto = new Crypto();
 xadesjs.Application.setEngine("OpenSSL", crypto);
 // window.DOMParser =  (require('@xmldom/xmldom').DOMParser);

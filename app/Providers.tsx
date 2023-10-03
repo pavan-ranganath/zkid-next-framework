@@ -3,8 +3,7 @@
 // Importing required modules and components
 
 // Importing createTheme and ThemeProvider from "@mui/material"
-import { createTheme as createMuiTheme } from "@mui/material/styles";
-import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import { createTheme as createMuiTheme, ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 
 // Importing ThemeProvider and useTheme from "next-themes"
 // These are used for managing and accessing the current theme state in Next.js applications

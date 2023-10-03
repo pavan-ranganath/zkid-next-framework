@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import next from "next-auth"; // NextAuth module for authentication
-import { AuthOptions } from "next-auth";
-import { OAuthConfig } from "next-auth/providers/oauth";
-import { nanoid } from "nanoid";
-import { NextApiRequest, NextApiResponse } from "next";
+
 // import { getBody, setCookie, toResponse } from "next-auth/src/next/utils";
 import {
   authorizationCodeGrantRequest,
@@ -22,6 +18,9 @@ import {
 // Used to get and set session data in the server response
 import { getSession, removeSession, setSession } from "@/lib/sessionMgmt";
 import { ResponseInternal } from "next-auth/core";
+import { DIGILOCKER_SESSION_NAME, DIGILOCKER_USER_SESSION_NAME } from "@/lib/constants";
+import { NextApiResponse } from "next";
+import { redirect } from "next/navigation";
 
 const oidcClientId = process.env.DIGILOCKER_CLIENT_ID!;
 const oidcClientSecret = process.env.DIGILOCKER_CLIENT_SECRET;
@@ -29,9 +28,6 @@ const oidcTokenUrl = process.env.DIGILOCKER_CLIENT_TOKEN_URL;
 const oidcAuthorizationnUrl = process.env.DIGILOCKER_AUTH_TOKEN_URL;
 const digilockerIssuerUrl = process.env.DIGILOCKER_ISSUER_URL;
 
-export const DIGILOCKER_SESSION_NAME = "digiLockerAuthSession";
-export const DIGILOCKER_USER_SESSION_NAME = "digiLockerUserSession";
-export const RUN_DIGI_LOCKERVERIFICATION_ALGORITHM = "runDigiLockerVerificationAlgorithm";
 const redirect_uri = "http://localhost:3000/api/auth/digilocker";
 const client: Client = {
   issuer: digilockerIssuerUrl,
@@ -69,51 +65,31 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest, context: any) {
-  const session = getSession(req, DIGILOCKER_SESSION_NAME) as any;
-  if (!session) {
-    const errResp = NextResponse;
-    errResp.json({ error_description: "Session does not exist" });
-    errResp.error();
-    return errResp;
-  }
-  const { code_verifier, state: stateInSession } = session;
-  const currentUrl: URL = new URL(req.nextUrl);
-  const params = validateAuthResponse(as, client, currentUrl, stateInSession);
-  if (isOAuth2Error(params)) {
-    console.log("error", params);
-    const errResp = NextResponse;
-    errResp.json(params);
-    errResp.error();
-    return errResp;
-  }
-  const responseFromDigilocker = await authorizationCodeGrantRequest(as, client, params, redirect_uri, code_verifier);
-  const userToken = await processAuthorizationCodeOpenIDResponse(as, client, responseFromDigilocker);
-  if (isOAuth2Error(userToken)) {
-    const errResp = NextResponse;
-    errResp.json(userToken);
-    errResp.error();
-    return errResp;
-  }
-  const idTokenClaims = getValidatedIdTokenClaims(userToken);
-  const redirectUrl = new URL("/dashboard/profile", req.url);
-  const response = NextResponse.redirect(redirectUrl.toString());
-  // store userToken in session
-  setSession(response, { name: DIGILOCKER_USER_SESSION_NAME, value: { token: userToken, idTokenClaims } }, 36000);
-  // const resWithCookieVer = setSession(resWithCookie, { name: RUN_DIGI_LOCKERVERIFICATION_ALGORITHM, value: true }, 36000);
-  // remove auth session
-  // removeSession(response, DIGILOCKER_SESSION_NAME);
-  return response;
-}
+  try {
+    const session = getSession(req, DIGILOCKER_SESSION_NAME) as any;
+    if (!session) {
+      throw new Error("Invalid session");
+    }
+    const { code_verifier, state: stateInSession } = session;
+    const currentUrl: URL = new URL(req.nextUrl);
+    const params = validateAuthResponse(as, client, currentUrl, stateInSession);
+    if (isOAuth2Error(params)) {
+      throw new Error(params.error_description);
+    }
+    const responseFromDigilocker = await authorizationCodeGrantRequest(as, client, params, redirect_uri, code_verifier);
+    const userToken = await processAuthorizationCodeOpenIDResponse(as, client, responseFromDigilocker);
+    if (isOAuth2Error(userToken)) {
+      throw new Error(userToken.error_description);
+    }
+    const idTokenClaims = getValidatedIdTokenClaims(userToken);
+    const redirectUrl = new URL("/dashboard/profile", req.url);
 
-// get token from session
-export async function getToken(req: NextRequest) {
-  const session: OpenIDTokenEndpointResponse = getSession(req, DIGILOCKER_USER_SESSION_NAME) as OpenIDTokenEndpointResponse;
-  if (!session) {
-    const errResp = NextResponse;
-    errResp.json({ error_description: "Session does not exist" });
-    errResp.error();
-    return errResp;
+    const response = NextResponse.json({ redirect: true }, { status: 302, headers: { Location: redirectUrl.toString() } });
+    setSession(response, { name: DIGILOCKER_USER_SESSION_NAME, value: { token: userToken, idTokenClaims } }, 600);
+    return response;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An error occured. Please check the logs for more details.";
+    return NextResponse.json({ message: errorMessage, ok: false }, { status: 503 });
   }
-
-  return session;
 }

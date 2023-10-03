@@ -4,14 +4,17 @@ import mongoose from "mongoose";
 
 // The `RegistrationResponseJSON` type is imported from the "@simplewebauthn/typescript-types" module.
 // It is used to define the structure of a registration response JSON object related to a web authentication process.
-import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
+import { AuthenticationResponseJSON, RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 
 // The `VerifiedRegistrationResponse` type is imported from the "@simplewebauthn/server" module.
 // It is used to define the structure of a verified registration response object, which contains information about a successful registration process.
-import { VerifiedRegistrationResponse } from "@simplewebauthn/server";
+import { VerifiedRegistrationResponse, verifyAuthenticationResponse } from "@simplewebauthn/server";
 
 // The `dbConnect` function is imported from a local file named "mongodb.js". Custom function responsible for establishing a connection to the MongoDB database.
 import toast from "react-hot-toast";
+import base64url from "base64url";
+import { AuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials"; // NextAuth credentials provider
 import { dbConnect } from "./mongodb";
 
 export interface passkeyObj {
@@ -125,3 +128,123 @@ export function handleRegistrationError(error: any) {
     toast.error(`Registration failed. ${(error as Error).message}`);
   }
 }
+
+// Retrieving environment variables
+const domain = process.env.APP_DOMAIN!; // The domain of the application
+const origin = process.env.NEXTAUTH_URL!; // The origin of the application
+
+// Configuration options for NextAuth
+export const authOptions: AuthOptions = {
+  providers: [
+    // Configuring the webauthn CredentialsProvider for NextAuth
+    CredentialsProvider({
+      id: "webauthn",
+      name: "Sign in with passkey",
+      credentials: {},
+      async authorize(cred: any, req: any): Promise<any> {
+        // Destructuring properties from the request body
+        const { id, rawId, type, clientDataJSON, authenticatorData, signature, userHandle } = req.body;
+
+        // Creating a credential object
+        const credential: AuthenticationResponseJSON = {
+          id,
+          rawId,
+          type,
+          response: {
+            clientDataJSON,
+            authenticatorData,
+            signature,
+            userHandle,
+          },
+          clientExtensionResults: {},
+        };
+
+        // Retrieving the authenticator from the database
+        const authenticator = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({
+          "passkeyInfo.credentialId": credential.id,
+        });
+
+        // Handling the case when the authenticator is not found
+        if (!authenticator) {
+          throw new Error("Authenticator not found");
+        }
+
+        // Retrieving the challenge for the authenticator
+        const challenge = await getChallenge(authenticator.userID);
+
+        // Handling the case when the challenge is not found
+        if (!challenge) {
+          throw new Error("Challenge not found");
+        }
+
+        try {
+          // Finding the passkey information for the given credential ID
+          const passkeyInfo = authenticator.passkeyInfo.find((obj) => {
+            return obj.credentialId === credential.id;
+          });
+
+          // Handling the case when the passkey information is not found
+          if (!passkeyInfo) {
+            throw new Error("Keys not found");
+          }
+
+          // Verifying the authentication response
+          // used to validate and verify the authenticity of a web authentication response by comparing it against the expected challenge, origin, RPID, and authenticator information
+          const { verified, authenticationInfo: info } = await verifyAuthenticationResponse({
+            expectedChallenge: challenge.value,
+            expectedOrigin: origin,
+            expectedRPID: domain,
+            authenticator: {
+              credentialPublicKey: passkeyInfo.registrationInfo.registrationInfo?.credentialPublicKey.buffer as Buffer,
+              credentialID: base64url.toBuffer(passkeyInfo.credentialId),
+              counter: passkeyInfo.registrationInfo.registrationInfo!.counter,
+            },
+            response: {
+              id,
+              rawId,
+              response: {
+                clientDataJSON,
+                authenticatorData,
+                signature,
+                userHandle,
+              },
+              clientExtensionResults: {},
+              type,
+            },
+          });
+
+          // Handling the case when verification fails
+          if (!verified || !info) {
+            throw new Error("Verification failed");
+          }
+
+          // Updating the counter value for the authenticator (commented out)
+          // await mongoose.connection.db
+          //   .collection<DbCredential>("credentials")
+          //   .updateOne(
+          //     {
+          //       _id: authenticator._id,
+          //     },
+          //     {
+          //       $set: {
+          //         counter: info.newCounter,
+          //       },
+          //     }
+          //   );
+        } catch (error) {
+          console.log(error);
+          throw new Error("Verification failed");
+        }
+
+        // Returning the user's email
+        return { email: authenticator.userID };
+      },
+    }),
+  ],
+  pages: {
+    error: "/signin",
+  },
+  session: {
+    strategy: "jwt",
+  },
+};

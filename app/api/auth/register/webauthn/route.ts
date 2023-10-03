@@ -4,7 +4,7 @@ import { dbConnect } from "@/lib/mongodb";
 
 // Import various functions and types from the "@/lib/webauthn" module
 // These functions and types are related to WebAuthn (Web Authentication) functionality
-import { DbCredential, getChallenge, saveChallenge, saveCredentials, updateCredentials } from "@/lib/webauthn";
+import { DbCredential, authOptions, getChallenge, saveChallenge, saveCredentials, updateCredentials } from "@/lib/webauthn";
 
 // Import the `generateRegistrationOptions` and `verifyRegistrationResponse` functions
 // from the "@simplewebauthn/server" module
@@ -22,10 +22,6 @@ import { getServerSession } from "next-auth";
 // Import the `NextRequest` and `NextResponse` types from the "next/server" module
 // Used to define the request and response objects for Next.js server functions
 import { NextRequest, NextResponse } from "next/server";
-
-// Import the `authOptions` object from the "@/app/api/auth/[...nextauth]/route" module
-// Contains configuration options for authentication with NextAuth.js
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // Import the `RegistrationResponseJSON` type from the "@simplewebauthn/typescript-types" module
 // Used to define the structure of a WebAuthn registration response in JSON format

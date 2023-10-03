@@ -1,5 +1,6 @@
 import cookie from "cookie"; // Importing the 'cookie' library for cookie serialization and parsing
 import jwt from "jsonwebtoken"; // Importing the 'jsonwebtoken' library for creating and verifying JSON Web Tokens
+import { NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server"; // Importing Next.js server utilities for handling requests and responses
 
 // Retrieving the secret for signing and verifying JWTs from environment variables
@@ -23,9 +24,7 @@ export function setSession(res: NextResponse, session: { name: string; value: an
     path: "/",
   });
 
-  // Setting the cookie in the response headers
   res.headers.set("Set-Cookie", cookieValue);
-  return res;
 }
 
 /**

@@ -6,7 +6,13 @@ const nextConfig = {
       test: /\.node$/,
       use: "raw-loader",
     });
+    config.experiments = { topLevelAwait: true };
     return config;
+  },
+  experimental: {
+    serverActions: true,
+    esmExternals: "loose",
+    serverComponentsExternalPackages: ["mongoose", "@typegoose/typegoose"],
   },
 };
 

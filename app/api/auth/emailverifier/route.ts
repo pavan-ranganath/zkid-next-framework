@@ -8,12 +8,11 @@ import { dbConnect } from "@/lib/mongodb"; // Importing the 'dbConnect' function
 import { getServerSession } from "next-auth"; // Importing the 'getServerSession' function from "next-auth" for retrieving the server session
 import { NextRequest, NextResponse } from "next/server"; // Importing 'NextRequest' and 'NextResponse' types from "next/server" for handling server-side requests and responses
 import mongoose from "mongoose"; // Importing the 'mongoose' module for interacting with MongoDB
-import { DbCredential } from "@/lib/webauthn"; // Importing the 'DbCredential' type from "@/lib/webauthn" module
+import { DbCredential, authOptions } from "@/lib/webauthn"; // Importing the 'DbCredential' type from "@/lib/webauthn" module
 import { generateToken, generateVerifyEmailToken, verifyToken } from "@/lib/services/token.service"; // Importing token generation and verification functions from "@/lib/services/token.service"
 import { sendVerificationEmail } from "@/lib/services/email.service"; // Importing the 'sendVerificationEmail' function from "@/lib/services/email.service"
 import { tokenTypes } from "@/lib/config/tokens"; // Importing the 'tokenTypes' constant from "@/lib/config/tokens"
 import { Token } from "@/lib/models/token.model"; // Importing the 'Token' model from "@/lib/models/token.model"
-import { authOptions } from "../[...nextauth]/route"; // Importing the 'authOptions' from "../[...nextauth]/route" module
 
 /**
  * Handles the POST request for sending a verification email to the user.

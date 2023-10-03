@@ -1,5 +1,4 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { getToken } from "@/app/api/auth/digilocker/route";
 import { NextRequest } from "next/server";
 import { OpenIDTokenEndpointResponse } from "oauth4webapi";
 import API_CONFIG, { generateDynamicPath } from "./apiConfig";
@@ -48,6 +47,22 @@ export const apiRequest = async ({ category, pathKey, params, data, headers }: A
 
     // Rethrow the error to allow the calling code to handle it further if needed
     throw error;
+  }
+};
+
+// Async function to fetch data from sepecified url
+export const fetcher = async (url: string) => {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error("Failed to fetch data");
   }
 };
 

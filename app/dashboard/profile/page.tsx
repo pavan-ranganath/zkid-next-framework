@@ -37,11 +37,11 @@ import moment from "moment";
 import { signIn } from "next-auth/react";
 import { ResponseInternal } from "next-auth/core";
 import { useRouter, useSearchParams } from "next/navigation";
-import { apiRequest } from "@/lib/services/apiService";
+import { apiRequest, fetcher } from "@/lib/services/apiService";
 import { useConfirm } from "material-ui-confirm";
 import PageTitle from "@/components/pageTitle";
 import Alert from "@mui/material/Alert";
-import { credentailsFromTb } from "../users/service";
+import { credentailsFromTb } from "../../../lib/services/userService";
 
 // Dashboard component
 export default function Profile() {
@@ -118,7 +118,7 @@ async function GetPasskeys({
       });
   }
 
-  function verifyMobile(event: any): void {
+  function verifyMobile(): void {
     alert("verify mobile work in progress");
   }
 
@@ -136,15 +136,7 @@ async function GetPasskeys({
               {/* Displaying user information */}
               <Typography gutterBottom variant="body1" component="div">
                 Email: {userInfo.userInfo?.email.value}
-                {
-                  userInfo.userInfo?.email.verified ? (
-                    <VerifiedIcon color="success" />
-                  ) : userInfo.userInfo?.fullName.verified ? (
-                    <Button size="small" onClick={verifyEmail}>
-                      Verify email
-                    </Button>
-                  ) : null // Choose to render nothing if neither email nor fullname is verified
-                }
+                <EmailButton userInfo={userInfo} _verifyEmail={verifyEmail} />
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 Name: {userInfo.userInfo?.fullName.value}
@@ -157,22 +149,12 @@ async function GetPasskeys({
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 Mobile:{userInfo.userInfo?.mobile.value}
-                {
-                  userInfo.userInfo?.mobile.verified ? (
-                    <VerifiedIcon color="success" />
-                  ) : userInfo.userInfo?.fullName.verified ? (
-                    <Button size="small" onClick={verifyMobile}>
-                      Verify mobile
-                    </Button>
-                  ) : null // Choose to render nothing if neither email nor fullname is verified
-                }
+                <VerifyMobileButton userInfo={userInfo} verifyMobile={verifyMobile} />
               </Typography>
-              {!userInfo.userInfo?.fullName.verified ? (
+              {!userInfo.userInfo?.fullName.verified && (
                 <Button size="small" onClick={verifyProfile}>
                   Verify Profile
                 </Button>
-              ) : (
-                <></>
               )}
             </CardContent>
           </Card>
@@ -204,22 +186,6 @@ async function GetPasskeys({
     </>
   );
 }
-
-// Async function to fetch data from sepecified url
-export const fetcher = async (url: string) => {
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw new Error("Failed to fetch data");
-  }
-};
 
 /**
  
@@ -318,23 +284,14 @@ const digiSignin = async () => {
   });
 };
 
-function verifyProfileWithDigiLocker() {
-  return fetch("/api/verifyProfile", {
-    method: "get",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  });
-}
-
 const confirmationDialogMessage = () => {
   return (
     <div>
       <List>
         <ListItem>
           <ListItemText>
-            To verify your identity, click "Verify Now" to grant Digilocker access for your name and DOB and to receive a
-            verification email.
+            To verify your identity, click &quot;Verify Now&quot; to grant Digilocker access for your name and DOB and to
+            receive a verification email.
           </ListItemText>
         </ListItem>
       </List>
@@ -344,3 +301,31 @@ const confirmationDialogMessage = () => {
     </div>
   );
 };
+
+function EmailButton({ userInfo, _verifyEmail }: { userInfo: credentailsFromTb; _verifyEmail: () => void }) {
+  if (userInfo.userInfo?.email.verified) {
+    return <VerifiedIcon color="success" />;
+  }
+  if (userInfo.userInfo?.fullName.verified) {
+    return (
+      <Button size="small" onClick={_verifyEmail}>
+        Verify email
+      </Button>
+    );
+  }
+  return null; // Render nothing if neither email nor fullname is verified
+}
+
+function VerifyMobileButton({ userInfo, verifyMobile }: { userInfo: credentailsFromTb; verifyMobile: () => void }) {
+  if (userInfo.userInfo?.mobile.verified) {
+    return <VerifiedIcon color="success" />;
+  }
+  if (userInfo.userInfo?.fullName.verified) {
+    return (
+      <Button size="small" onClick={verifyMobile}>
+        Verify mobile
+      </Button>
+    );
+  }
+  return null; // Render nothing if neither mobile nor fullname is verified
+}

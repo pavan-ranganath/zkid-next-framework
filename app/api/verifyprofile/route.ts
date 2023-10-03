@@ -4,9 +4,9 @@ import { getServerSession } from "next-auth";
 import { getSession } from "next-auth/react";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { OpenIDTokenEndpointResponse, protectedResourceRequest } from "oauth4webapi";
-import { credentailsFromTb } from "@/app/dashboard/users/service";
 import mongoose from "mongoose";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/webauthn";
+import { credentailsFromTb } from "@/lib/services/userService";
 
 export async function GET(req: NextRequest, event: NextFetchEvent) {
   // Retrieving the user session using the "getServerSession" function

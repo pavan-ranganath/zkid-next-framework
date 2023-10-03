@@ -9,7 +9,7 @@ import useSWR from "swr"; // Importing the 'useSWR' hook from the SWR library fo
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { fetcher } from "../dashboard/profile/page";
+import { fetcher } from "@/lib/services/apiService";
 
 // Styling the container using the 'styled' function from MUI
 const StyledContainer = styled(Container)(({ theme }) => ({

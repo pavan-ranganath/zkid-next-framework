@@ -31,7 +31,7 @@ export default function Dashboard() {
           /* ... */
         });
     }
-  }, [verifyStatus]);
+  }, [verifyStatus, confirm, router]);
   return (
     <>
       <PageTitle title="Home" />

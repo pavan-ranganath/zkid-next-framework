@@ -2,15 +2,14 @@ import { NextRequest, NextResponse } from "next/server"; // Importing NextReques
 import mongoose from "mongoose"; // Importing Mongoose for MongoDB database connection and querying
 import { dbConnect } from "@/lib/mongodb"; // Importing the "dbConnect" function from the local module "@/lib/mongodb" for connecting to the MongoDB database
 import { getServerSession } from "next-auth"; // Importing the "getServerSession" function from the "next-auth" module for retrieving the user session
-import { credentailsFromTb } from "@/app/dashboard/users/service"; // Importing the "credentailsFromTb" type from the local module "@/app/dashboard/users/service" for defining the type of a collection document
 import { getSession, removeSession } from "@/lib/sessionMgmt";
 import { OpenIDTokenEndpointResponse, getValidatedIdTokenClaims, protectedResourceRequest } from "oauth4webapi";
 import API_CONFIG from "@/lib/services/apiConfig";
 import { XadesClass } from "@/lib/services/XadesClass";
 import { AadhaarXmlParser, matchFormDataAndAadharData, setDigilockerInfo } from "@/lib/services/aadhaarService";
-import { DbCredential } from "@/lib/webauthn";
+import { DbCredential, authOptions } from "@/lib/webauthn";
 import { checkDigiLockerID } from "@/lib/services/storage";
-import { authOptions } from "../auth/[...nextauth]/route"; // Importing the "authOptions" object from the local module "../auth/[...nextauth]/route" for configuring authentication options
+import { credentailsFromTb } from "@/lib/services/userService";
 import { sendEmailVerification } from "../auth/emailverifier/route";
 
 // Defining a type for the filter object
@@ -116,9 +115,9 @@ export async function GET(req: NextRequest, context: any) {
     }
     // Returning a JSON response with the retrieved data
     return response;
-  } catch (error) {
+  } catch (_error) {
     // Handling any errors that occur during the API request processing
-    console.error("Error processing API request:", error);
+    console.error("Error processing API request:", _error);
 
     // Returning a JSON response with an error message and a status code of 500 (Internal Server Error)
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

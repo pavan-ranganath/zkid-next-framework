@@ -43,7 +43,10 @@
         "ts": "never",
         "tsx": "never"
       }
-    ]
+    ],
+    "no-labels": "warn",
+    "global-require": "warn",
+    "no-restricted-syntax": "warn"
   },
   "env": {
     "browser": true,
