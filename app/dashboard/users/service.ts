@@ -4,6 +4,7 @@ import { DbCredential } from "@/lib/webauthn";
 // Defining an interface credentailsFromTb that extends DbCredential and adds an _id property
 export interface credentailsFromTb extends DbCredential {
   _id: string;
+  error?: string;
 }
 
 // Defining a type dataFromServer that contains an array of credentailsFromTb, along with other properties

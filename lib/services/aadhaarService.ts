@@ -193,6 +193,8 @@ export const matchFormDataAndAadharData = async (poi: PersonInfo, _user: DbCrede
     }
     user.fullName.verified = true;
     user.dob.verified = true;
+    // check if digilockerID already exists in DB
+
     await updateUserProfile({ ..._user, userInfo: user });
     return true;
   } catch (error) {

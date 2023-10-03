@@ -40,15 +40,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { apiRequest } from "@/lib/services/apiService";
 import { useConfirm } from "material-ui-confirm";
 import PageTitle from "@/components/pageTitle";
+import Alert from "@mui/material/Alert";
 import { credentailsFromTb } from "../users/service";
 
 // Dashboard component
 export default function Profile() {
   const {
-    data: userInfo,
+    data: userInfoResp,
     error: errorUserInfo,
     isLoading: userInfoIsLoading,
-  } = useSWR<credentailsFromTb>("/api/passkeys", fetcher, {
+  } = useSWR<{ data: credentailsFromTb; error: string }>("/api/passkeys", fetcher, {
     suspense: true,
     // revalidateOnFocus: false,
     // revalidateOnReconnect: false,
@@ -56,20 +57,33 @@ export default function Profile() {
     // revalidateIfStale: false,
     // shouldRetryOnError: false,
   });
-
+  if (!userInfoResp) {
+    return <>Error</>;
+  }
+  const { data: userInfo, error } = userInfoResp;
   // const searchParams = useSearchParams()
   return (
     <>
       {/* Showing a loading message while fetching data */}
       <Suspense fallback={<p>Loading data...</p>}>
-        <GetPasskeys data={userInfo!} isLoading={userInfoIsLoading} error={errorUserInfo} />
+        <GetPasskeys data={userInfo!} isLoading={userInfoIsLoading} error={errorUserInfo} warningDisplay={error} />
       </Suspense>
     </>
   );
 }
 
 // Async function to fetch passkeys
-async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credentailsFromTb; error: any; isLoading: any }) {
+async function GetPasskeys({
+  data: userInfo,
+  error,
+  isLoading,
+  warningDisplay,
+}: {
+  data: credentailsFromTb;
+  error: any;
+  isLoading: any;
+  warningDisplay: string;
+}) {
   // get query param from url
   const confirm = useConfirm();
   // Display loading message while fetching data
@@ -112,6 +126,8 @@ async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credent
   return (
     <>
       <PageTitle title="Profile" />
+      {warningDisplay && <Alert severity="error">{warningDisplay}</Alert>}
+
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12} md={6} sm={6}>
           <Card variant="outlined">
@@ -119,7 +135,7 @@ async function GetPasskeys({ data: userInfo, error, isLoading }: { data: credent
             <CardContent>
               {/* Displaying user information */}
               <Typography gutterBottom variant="body1" component="div">
-                Email:{userInfo.userInfo?.email.value}
+                Email: {userInfo.userInfo?.email.value}
                 {
                   userInfo.userInfo?.email.verified ? (
                     <VerifiedIcon color="success" />

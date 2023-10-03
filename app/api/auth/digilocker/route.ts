@@ -58,6 +58,10 @@ export async function POST(req: NextRequest) {
   authorizationUrl.searchParams.set("response_type", "code");
   authorizationUrl.searchParams.set("scope", "openid");
   authorizationUrl.searchParams.set("state", state);
+  authorizationUrl.searchParams.set("acr", "driving_licence+pan+aadhaar");
+  authorizationUrl.searchParams.set("req_doctype", "aadhaar");
+
+  // acr=aadhaar+email+mobile
   const resp: ResponseInternal = { redirect: authorizationUrl.toString(), status: 200 };
   const response = NextResponse.json(resp);
   setSession(response, { name: DIGILOCKER_SESSION_NAME, value: { code_verifier, state } });
@@ -90,15 +94,11 @@ export async function GET(req: NextRequest, context: any) {
     errResp.error();
     return errResp;
   }
-  let idTokenClaims = getValidatedIdTokenClaims(userToken);
+  const idTokenClaims = getValidatedIdTokenClaims(userToken);
   const redirectUrl = new URL("/dashboard/profile", req.url);
   const response = NextResponse.redirect(redirectUrl.toString());
   // store userToken in session
-  setSession(
-    response,
-    { name: DIGILOCKER_USER_SESSION_NAME, value: { token: userToken, idTokenClaims: idTokenClaims } },
-    36000,
-  );
+  setSession(response, { name: DIGILOCKER_USER_SESSION_NAME, value: { token: userToken, idTokenClaims } }, 36000);
   // const resWithCookieVer = setSession(resWithCookie, { name: RUN_DIGI_LOCKERVERIFICATION_ALGORITHM, value: true }, 36000);
   // remove auth session
   // removeSession(response, DIGILOCKER_SESSION_NAME);

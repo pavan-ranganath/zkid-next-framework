@@ -9,6 +9,7 @@ import API_CONFIG from "@/lib/services/apiConfig";
 import { XadesClass } from "@/lib/services/XadesClass";
 import { AadhaarXmlParser, matchFormDataAndAadharData, setDigilockerInfo } from "@/lib/services/aadhaarService";
 import { DbCredential } from "@/lib/webauthn";
+import { checkDigiLockerID } from "@/lib/services/storage";
 import { authOptions } from "../auth/[...nextauth]/route"; // Importing the "authOptions" object from the local module "../auth/[...nextauth]/route" for configuring authentication options
 import { sendEmailVerification } from "../auth/emailverifier/route";
 
@@ -27,6 +28,7 @@ export async function GET(req: NextRequest, context: any) {
   // Retrieving the user session using the "getServerSession" function
   const session = await getServerSession(authOptions);
 
+  let error = "";
   // Extracting the user's email from the session
   const email = session?.user?.email;
 
@@ -39,11 +41,16 @@ export async function GET(req: NextRequest, context: any) {
   try {
     // check digilocker verification flag in session
     const digiLockerUserSession = getSession(req, "digiLockerUserSession") as any;
-    if (digiLockerUserSession) {
+    breakme: if (digiLockerUserSession) {
       const { token, idTokenClaims } = digiLockerUserSession;
       const { access_token } = token;
       const { method, pathTemplate } = API_CONFIG.DIGILOCKER.paths.eAadhaar;
       const { apiUrl } = API_CONFIG.DIGILOCKER;
+      const checkIfDigilockerIdExists = await checkDigiLockerID(idTokenClaims.user_sso_id, email);
+      if (checkIfDigilockerIdExists) {
+        error = "Digilocker already linked to an account";
+        break breakme;
+      }
       const responseDigilockerAaadhaar = await protectedResourceRequest(
         access_token,
         method,
@@ -55,14 +62,16 @@ export async function GET(req: NextRequest, context: any) {
       const xades = new XadesClass();
       const xmlVerify = xmlAadharString ? await xades.verifyXml(xmlAadharString) : false;
       if (!xmlVerify) {
+        error = "XML verification failed";
         console.error("XML verification failed");
-        throw new Error("XML verification failed");
+        break breakme;
       }
       const xmlAadhar = new AadhaarXmlParser(xmlAadharString);
       await xmlAadhar.parseXml();
       if (!xmlAadhar) {
         console.error("XML parsing failed");
-        throw new Error("XML parsing failed");
+        error = "XML parsing failed";
+        break breakme;
       }
       const poi = xmlAadhar.extractPoiAttributes;
       if (!poi) {
@@ -76,19 +85,22 @@ export async function GET(req: NextRequest, context: any) {
       });
       if (!credentials) {
         console.error("Credentials not found");
-        throw new Error("Credentials not found");
+        error = "Credentials not found";
+        break breakme;
       }
       const matched = await matchFormDataAndAadharData(poi, credentials);
       if (matched) {
         const storedAadhar = await setDigilockerInfo({ aadhaar: xmlAadharString, digiLockerUserInfo: idTokenClaims }, email);
         if (!storedAadhar) {
           console.error("Aadhaar not stored");
-          throw new Error("Aadhaar not stored");
+          error = "Aadhaar not stored";
+          break breakme;
         }
         await sendEmailVerification(email);
       } else {
         console.error("Aadhaar data does not match");
-        throw new Error("Aadhaar data does not match");
+        error = "Aadhaar data does not match";
+        break breakme;
       }
     }
 
@@ -97,9 +109,11 @@ export async function GET(req: NextRequest, context: any) {
 
     // Querying the collection to find a document with the matching userID
     const data = await collection.findOne({ userID: email });
-    const response = NextResponse.json(data);
+    const response = NextResponse.json({ data, error: error ? `Verification failed: ${error}` : "" }, { status: 200 });
     // remove  digilocker cookie
-    removeSession(response, "digiLockerUserSession");
+    if (!error) {
+      removeSession(response, "digiLockerUserSession");
+    }
     // Returning a JSON response with the retrieved data
     return response;
   } catch (error) {

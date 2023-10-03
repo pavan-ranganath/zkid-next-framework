@@ -35,9 +35,9 @@ const pages: {
   friendlyName: string;
   href: string;
 }[] = [
-    { id: 1, friendlyName: "Home", href: "/dashboard" },
-    // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
-  ];
+  { id: 1, friendlyName: "Home", href: "/dashboard" },
+  // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
+];
 
 export default function NavigationBar() {
   const { theme: themeState, setTheme } = useTheme(); // Using the useTheme hook to access the current theme and set the theme
@@ -76,31 +76,31 @@ export default function NavigationBar() {
     friendlyName: string;
     onClick: () => Promise<void>;
   }[] = [
-      {
-        id: 1,
-        friendlyName: `Profile`,
-        onClick: async () => {
-          router.push("/dashboard/profile");
-          handleCloseUserMenu();
-        },
+    {
+      id: 1,
+      friendlyName: `Profile`,
+      onClick: async () => {
+        router.push("/dashboard/profile");
+        handleCloseUserMenu();
       },
-      {
-        id: 2,
-        friendlyName: `Activate ${themeName} Theme`,
-        onClick: async () => {
-          setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
-          handleCloseUserMenu();
-        },
+    },
+    {
+      id: 2,
+      friendlyName: `Activate ${themeName} Theme`,
+      onClick: async () => {
+        setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
+        handleCloseUserMenu();
       },
-      {
-        id: 3,
-        friendlyName: "Logout",
-        onClick: async () => {
-          await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
-          handleCloseUserMenu();
-        },
+    },
+    {
+      id: 3,
+      friendlyName: "Logout",
+      onClick: async () => {
+        await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
+        handleCloseUserMenu();
       },
-    ];
+    },
+  ];
 
   return (
     <AppBar position="static" style={{ marginBottom: 20, paddingTop: 5, paddingBottom: 5 }}>
@@ -108,10 +108,7 @@ export default function NavigationBar() {
         <Toolbar disableGutters>
           {/* Logo */}
           <Link href="/dashboard">
-
-            <Box
-              sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54, paddingRight: 2 }}
-            >
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54, paddingRight: 2 }}>
               <AppLogoSVG theme={themeName} />
             </Box>
           </Link>
