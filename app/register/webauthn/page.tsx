@@ -25,6 +25,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
 import "yup-phone-lite";
+import AppLogoSVG from "@/components/appLogo";
 
 /**
  * The Register component handles the user registration process.
@@ -114,8 +115,8 @@ export default function Register(): JSX.Element {
   return (
     <>
       {/* Display branding */}
-      <div style={{ textAlign: "center" }}>
-        <img
+      <div style={{ textAlign: "center", margin: "0 10% 5% 10%" }}>
+        {/* <img
           src="/zkidLogo_v1.svg"
           alt="EGS Logo"
           style={{
@@ -124,7 +125,8 @@ export default function Register(): JSX.Element {
             marginBottom: "2rem",
             display: "inline-block",
           }}
-        />
+        /> */}
+        <AppLogoSVG theme="light" />
         {/* <Typography variant="h4" component="h2">
           zKID
         </Typography> */}

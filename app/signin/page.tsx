@@ -55,6 +55,7 @@ import { useEffect } from "react";
 // Importing the 'Link' component from the 'next/link' package
 // It is used for client-side navigation between pages in Next.js applications
 import Link from "next/link";
+import AppLogoSVG from "@/components/appLogo";
 
 /*
   - The code provides a sign-in feature for users using WebAuthn authentication.
@@ -128,8 +129,8 @@ export default function SignInComponent() {
   return (
     <>
       {/* Display branding */}
-      <div style={{ textAlign: "center" }}>
-        <img
+      <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+        {/* <img
           src="/zkidLogo_v1.svg"
           alt="EGS Logo"
           style={{
@@ -138,7 +139,8 @@ export default function SignInComponent() {
             marginBottom: "2rem",
             display: "inline-block",
           }}
-        />
+        /> */}
+        <AppLogoSVG theme="light" />
         {/* <Typography variant="h5" component="h2">
           Entrada Solutions
         </Typography> */}
