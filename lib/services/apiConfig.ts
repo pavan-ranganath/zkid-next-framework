@@ -30,6 +30,10 @@ const API_CONFIG: ApiConfig = {
         pathTemplate: "/public/oauth2/1/xml/:uri",
         method: "GET",
       },
+      accountDetails: {
+        pathTemplate: "/public/oauth2/1/user",
+        method: "GET",
+      },
     },
   },
   ZKIDAPI: {

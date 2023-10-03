@@ -16,6 +16,7 @@ import {
   isOAuth2Error,
   processAuthorizationCodeOpenIDResponse,
   OpenIDTokenEndpointResponse,
+  getValidatedIdTokenClaims,
 } from "oauth4webapi";
 // Import the `getSession` and `setSession` functions from the "@/lib/sessionMgmt" module
 // Used to get and set session data in the server response
@@ -89,11 +90,15 @@ export async function GET(req: NextRequest, context: any) {
     errResp.error();
     return errResp;
   }
+  let idTokenClaims = getValidatedIdTokenClaims(userToken);
   const redirectUrl = new URL("/dashboard/profile", req.url);
-  // redirectUrl.searchParams.set("digiLoginSuccess", "true");
   const response = NextResponse.redirect(redirectUrl.toString());
   // store userToken in session
-  setSession(response, { name: DIGILOCKER_USER_SESSION_NAME, value: userToken }, 36000);
+  setSession(
+    response,
+    { name: DIGILOCKER_USER_SESSION_NAME, value: { token: userToken, idTokenClaims: idTokenClaims } },
+    36000,
+  );
   // const resWithCookieVer = setSession(resWithCookie, { name: RUN_DIGI_LOCKERVERIFICATION_ALGORITHM, value: true }, 36000);
   // remove auth session
   // removeSession(response, DIGILOCKER_SESSION_NAME);

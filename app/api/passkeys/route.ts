@@ -4,10 +4,10 @@ import { dbConnect } from "@/lib/mongodb"; // Importing the "dbConnect" function
 import { getServerSession } from "next-auth"; // Importing the "getServerSession" function from the "next-auth" module for retrieving the user session
 import { credentailsFromTb } from "@/app/dashboard/users/service"; // Importing the "credentailsFromTb" type from the local module "@/app/dashboard/users/service" for defining the type of a collection document
 import { getSession, removeSession } from "@/lib/sessionMgmt";
-import { OpenIDTokenEndpointResponse, protectedResourceRequest } from "oauth4webapi";
+import { OpenIDTokenEndpointResponse, getValidatedIdTokenClaims, protectedResourceRequest } from "oauth4webapi";
 import API_CONFIG from "@/lib/services/apiConfig";
 import { XadesClass } from "@/lib/services/XadesClass";
-import { AadhaarXmlParser, matchFormDataAndAadharData, setAadhaar } from "@/lib/services/aadhaarService";
+import { AadhaarXmlParser, matchFormDataAndAadharData, setDigilockerInfo } from "@/lib/services/aadhaarService";
 import { DbCredential } from "@/lib/webauthn";
 import { authOptions } from "../auth/[...nextauth]/route"; // Importing the "authOptions" object from the local module "../auth/[...nextauth]/route" for configuring authentication options
 import { sendEmailVerification } from "../auth/emailverifier/route";
@@ -40,17 +40,18 @@ export async function GET(req: NextRequest, context: any) {
     // check digilocker verification flag in session
     const digiLockerUserSession = getSession(req, "digiLockerUserSession") as any;
     if (digiLockerUserSession) {
-      const { access_token, expires_in } = digiLockerUserSession;
+      const { token, idTokenClaims } = digiLockerUserSession;
+      const { access_token } = token;
       const { method, pathTemplate } = API_CONFIG.DIGILOCKER.paths.eAadhaar;
       const { apiUrl } = API_CONFIG.DIGILOCKER;
-      const responseDigi = await protectedResourceRequest(
+      const responseDigilockerAaadhaar = await protectedResourceRequest(
         access_token,
         method,
         new URL(apiUrl + pathTemplate),
         new Headers(),
         null,
       );
-      const xmlAadharString = await responseDigi.text();
+      const xmlAadharString = await responseDigilockerAaadhaar.text();
       const xades = new XadesClass();
       const xmlVerify = xmlAadharString ? await xades.verifyXml(xmlAadharString) : false;
       if (!xmlVerify) {
@@ -79,7 +80,7 @@ export async function GET(req: NextRequest, context: any) {
       }
       const matched = await matchFormDataAndAadharData(poi, credentials);
       if (matched) {
-        const storedAadhar = await setAadhaar(xmlAadharString, email);
+        const storedAadhar = await setDigilockerInfo({ aadhaar: xmlAadharString, digiLockerUserInfo: idTokenClaims }, email);
         if (!storedAadhar) {
           console.error("Aadhaar not stored");
           throw new Error("Aadhaar not stored");

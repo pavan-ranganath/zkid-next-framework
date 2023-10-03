@@ -43,10 +43,10 @@ const xmlParserOptions = {
   arrayMode: false,
   allowBooleanAttributes: true,
 };
-export const setAadhaar = async (aadhaar: string, userEmail: string) => {
-  return updateData(userEmail, aadhaar, "credentials", "aadhaar");
+export const setDigilockerInfo = async (digilockerInfo: { aadhaar: string; digiLockerUserInfo: any }, userEmail: string) => {
+  return updateData(userEmail, digilockerInfo, "credentials", "aadhaar");
 };
-export const getAadhaar = async (userEmail: string): Promise<any | null> => {
+export const getDigilockerInfo = async (userEmail: string): Promise<any | null> => {
   const data = await getData(userEmail, "credentials");
   return data ? (data as any) : null;
 };
