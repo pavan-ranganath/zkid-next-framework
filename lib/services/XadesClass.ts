@@ -3,6 +3,7 @@ import * as XAdES from "xadesjs";
 import { OptionsXAdES } from "xadesjs/build/types/signed_xml";
 import * as dom from "@xmldom/xmldom";
 import * as xpath from "xpath";
+
 const xadesjs = require("xadesjs") as typeof XAdES;
 
 const crypto = new Crypto();

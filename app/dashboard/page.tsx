@@ -21,8 +21,7 @@ export default function Dashboard() {
         confirmationText: "Go to profile",
         // cancellationText: "Cancel",
         hideCancelButton: true,
-        allowClose: false
-
+        allowClose: false,
       })
         .then(async () => {
           /* ... */
