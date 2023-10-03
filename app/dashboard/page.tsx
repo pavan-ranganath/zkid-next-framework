@@ -18,9 +18,11 @@ export default function Dashboard() {
       confirm({
         title: "Profile verification",
         description: "Please verify your profile to continue using the application features.",
-        confirmationText: "Verify",
+        confirmationText: "Go to profile",
         // cancellationText: "Cancel",
         hideCancelButton: true,
+        allowClose: false
+
       })
         .then(async () => {
           /* ... */
