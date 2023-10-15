@@ -1,3 +1,10 @@
+// In this file, we can define any type of request as follows:
+// export async function GET(Request) {}
+// export async function HEAD(Request) {}
+// export async function POST(Request) {}
+// export async function PUT(Request) {}
+// export async function DELETE(Request) {}
+
 import { NextRequest, NextResponse } from "next/server"; // Import Next.js server functions for handling requests and responses
 import mongoose from "mongoose"; // Import Mongoose library for MongoDB database interaction
 import { Sort } from "mongodb"; // Import MongoDB Sort interface for sorting query results

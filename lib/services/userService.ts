@@ -1,5 +1,6 @@
 // Importing the DbCredential interface from the "@/lib/webauthn" module
 import { DbCredential } from "@/lib/webauthn";
+import mongoose from "mongoose";
 
 // Defining an interface credentailsFromTb that extends DbCredential and adds an _id property
 export interface credentailsFromTb extends DbCredential {
@@ -38,4 +39,24 @@ export async function getData(query?: any): Promise<dataFromServer> {
 
   // Returning the JSON response from the fetch request
   return res.json();
+}
+
+/**
+ * check if user profile is verified
+ * Make sure db is connected before calling this function
+ * @param email string
+ * @returns
+ */
+export async function checkProfileVerifaction(email: string) {
+  // Accessing the "credentials" collection from the MongoDB database
+  const collection = mongoose.connection.db.collection<credentailsFromTb>("credentials");
+
+  // Querying the collection to find a document with the matching userID
+  const data = await collection.findOne({ userID: email });
+
+  // check for verification status of email, name and DOB
+  if (data?.userInfo?.email.verified && data?.userInfo.dob.verified && data?.userInfo.fullName.verified) {
+    return data;
+  }
+  return null;
 }

@@ -6,7 +6,7 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { OpenIDTokenEndpointResponse, protectedResourceRequest } from "oauth4webapi";
 import mongoose from "mongoose";
 import { authOptions } from "@/lib/webauthn";
-import { credentailsFromTb } from "@/lib/services/userService";
+import { checkProfileVerifaction, credentailsFromTb } from "@/lib/services/userService";
 
 export async function GET(req: NextRequest, event: NextFetchEvent) {
   // Retrieving the user session using the "getServerSession" function
@@ -23,14 +23,8 @@ export async function GET(req: NextRequest, event: NextFetchEvent) {
   // Establishing a connection to the database
   await dbConnect();
   try {
-    // Accessing the "credentials" collection from the MongoDB database
-    const collection = mongoose.connection.db.collection<credentailsFromTb>("credentials");
-
-    // Querying the collection to find a document with the matching userID
-    const data = await collection.findOne({ userID: email });
-
-    // check for verification status of email, name and DOB
-    if (data?.userInfo?.email.verified && data?.userInfo.dob.verified && data?.userInfo.fullName.verified) {
+    const profileVerified = await checkProfileVerifaction(email);
+    if (profileVerified) {
       // Returning a JSON response with the data and a status code of 200 (OK)
       return NextResponse.json({ status: true }, { status: 200 });
     }
