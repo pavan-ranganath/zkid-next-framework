@@ -23,7 +23,8 @@ export class XadesClass {
   }
 
   async signXml(xmlString: string, keys: CryptoKeyPair, algorithm: any, optionalSign: OptionsXAdES): Promise<string> {
-    const xmlDoc = new dom.DOMParser().parseFromString(xmlString, "application/xml");
+    // const xmlDoc = new dom.DOMParser().parseFromString(xmlString, "application/xml");
+    const xmlDoc = xadesjs.Parse(xmlString);
     const signedXml: XAdES.SignedXml = new this.xadesjs.SignedXml(xmlDoc);
     await signedXml.Sign(algorithm, keys.privateKey, xmlDoc, optionalSign);
     return signedXml.toString();
@@ -53,5 +54,20 @@ export class XadesClass {
 
     // Verify the signature
     return signedXml.Verify();
+  }
+  preparePem(pem: string) {
+    return (
+      pem
+        // remove BEGIN/END
+        .replace(/-----(BEGIN|END)[\w\d\s]+-----/g, "")
+        // remove \r, \n
+        .replace(/[\r\n]/g, "")
+    );
+  }
+
+  pem2der(pem: string) {
+    pem = this.preparePem(pem);
+    // convert base64 to ArrayBuffer
+    return new Uint8Array(Buffer.from(pem, "base64")).buffer;
   }
 }

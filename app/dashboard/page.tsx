@@ -39,7 +39,7 @@ export default function Dashboard() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ claimedAge: 21 }),
     });
     const data = await response.json();
     console.log(data);

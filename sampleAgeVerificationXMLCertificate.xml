@@ -1,0 +1,62 @@
+<Certificate name="Age verification" type="nAgeVerify" number="3ac1e257-eaa8-41af-8628-c01ae8bef946" issuedAt="Entrada Solutions Pvt Ltd" issueDate="10/15/2023" expiryDate="10/15/2025" status="Active">
+    <IssuedBy>
+        <Organization name="Entrada Solutions Pvt Ltd" type="nAgeVerify">
+            <CIN number="U74994KA2017PTC105365" />
+            <GSTIN number="29AAECE7440H1ZI" />
+            <address>
+                <locality>Bengaluru</locality>
+                <state>Karnataka</state>
+                <country>IN</country>
+            </address>
+        </Organization>
+    </IssuedBy>
+    <IssuedTo>
+        <Person uid="0000009172595314260709199400001696258921" name="pavan ranganath">
+            <Photo format="base64">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</Photo>
+        </Person>
+    </IssuedTo>
+    <CertificateData>
+        <ZKPROOF format="base64">eyJBIjpbIjEyMDgwNzUxNzQ5ODI3MDY0MzMyNzU4MzUyNjQ1NzQyMzg0MjMwMTk2MjUzNjMwNDcyMjU1NDg1NzU0MjI1NzU3MjM3Njg0OTg4NDgyIiwiMTk1MjEyNDY2MTk1NTY4MDEyMjcwNTM2MzkxNDI0MzA1MTY3NjM2NjQ0NDA0MDQyNzYzMjQ3NzE4NzI2ODU2MTEwMDAyMzgyNTY2NzYiLCIxIl0sIkIiOlsiMTM5NjczMTkyNTI0ODA3MjUyNDQxMTc4NTc2ODU3NzMyNTMxMjY3ODU1NDE4ODE3Njg1NDA2NjQ0ODAyMDE3NjUzOTc3ODE0MDk4ODciLCI3MDcyOTc3OTQ3OTIzNTUzMDIwNjE3Nzc4ODQwMTg3MTAyNjc1MDY2MTc2MjQ2OTIxODE1NjAyMjcxOTA0ODE2MTY0MjAzODc3MjgwIiwiMSJdLCJDIjpbIjE2MTA1ODY3MTUzMTY0MjgyMjU3MjI3NDM5OTEzNzAwOTcxMjYzMjA5NTI0NTExNjIwNDYzOTc4MDI3NjcyMDAzMDcwNjI0NzUzODU2IiwiMjYyMTY1NzUzNjYyMjUyODY4MDM2NzUxMTQ3MjgxNDM5NTk5NzI5Mzg1NTM1OTM5OTYwNjAwNTg0ODY2MTExNDExNzUxMzI5MTU2NCIsIjEiXSwiWiI6WyIxMzEzMjkzOTg3MjIwODkyNTc3Njg5Nzk3OTA4MzIzMDYzNjM0OTM0MjA3MzkyMDE0ODYyNjk5NjY2NzM5MDk2MzI1MDY2MDI5Mzk4MCIsIjE0NTczNDcwMzA0NDE2MTU4MTk5NzgyNTE3NDc1NDQ2NzU1NDgzNzk4NDAyNzU2Njk0NTE2MjM0NjY4MDI1MjkwMTY0Mzg5MjA5MDU3IiwiMSJdLCJUMSI6WyI1NzY2MzA0MjEwNzQzMDIxNzMyMDkxMTQ5MjQ4MDg0MDIzMjMxNzg2NjA1MjQ3MTgwMDUzNzExMzM1NTc0MDEzMjYzMDUyNjA3MjI5IiwiMTAzNjIwNTczMDUzNTI2NDkxNDUzNTI1MTg4NTAzOTA1MTI2NTQ1ODgzNzkzNzE4NTk3OTE0NjczNzU3NDY2NTU1MTAwNDg0MjEwNTUiLCIxIl0sIlQyIjpbIjE5MjEyODEzODk3MDkxMzI0NDkwMzc0ODYxNzQ1MTIzMjk5MzUwNTEwNjk5Njc1MTEzNjQ2OTI3ODYxNzI1MjIzOTgxODczMTA2OTM2IiwiMTE0MzY0MzAyMzI0MDA4NDA0MTMxNzUzNjEwMTU4NDc1Njk3MzQ3MDY4Mzg0MjcwMjYxOTAwODIzNjQ3MjkyMDg5MzI1NjM0NjE2MDIiLCIxIl0sIlQzIjpbIjQ1NTg4OTg4NTkwNDU0OTkxNjIwNjE4MDU2ODAxNzg5NzkyMzMzNDcyNTkyOTE4MTE4NTE0NjQ4NTQ5NjkzMzYwMzU2NzI4NzgzNTAiLCIxODg2NzMwOTY2NTI4NjYyMzI2NjQ1MTUzMzU4ODIwODU5MjQyMTMwNzQ2NjI0NTAyNzE3NzUyNDQ2MzgxNTUwOTg2NzY0MjY5NDE0NCIsIjEiXSwiV3hpIjpbIjE3MjczMDE3NTQ5NjQ5ODY3NjE4NDg2MzQ1NzA5MjQzNjY5NDkxMzc2OTMzODQwNTIzNTI0Njc5OTYxMDkzNTA5ODk3MDMxNTMxMTYxIiwiMTY4NDU4MzU3OTI2MDI4OTU1MjIzMDI4OTkxODkxNjEzNzg2MTg4MDY4MzkyNDU5NzgzNjYzMDQxNjQ0NDc2NDc2ODkzMDA1NDE0MDUiLCIxIl0sIld4aXciOlsiOTgwODI3ODc5NzAwNDIxMDI0NzQzODM1NzkyMDI2Nzc2OTk1Mjc4MjUyNTcwNzU0OTg4ODM5MDU0MDI4NzY3NDg0NDY1ODIzMjcwOSIsIjM2NDgyNzE5MDE4MDA2NDc1MjE1OTIwNTc1Nzc3OTc2NzY5OTY5MDk1OTI4NDY4NTYxNTYxMjkwMzEyOTMxNDc3MTY3NzEzNjc1MTMiLCIxIl0sImV2YWxfYSI6IjQ4OTI1NjI2MzU4OTYzMzMyODE1MjI0NTU5NjI5Mjg3NTI2NzgwMDY4NTAzMjU2NTg5MTk3NjkxMjY2Nzk4Mzk2MjU2MTQyNDM0MzIiLCJldmFsX2IiOiIxNTM5MTAxNjQxODM0NDQwNzg0Nzg1NDU4MDkzODIzMjI2OTc3NDM2NzMyMTQyOTg1OTY1NjQyODkwOTI0MTEyMjEwOTQwMDc2MDI1MiIsImV2YWxfYyI6IjE4NjgyNzM3MDA2MTM2ODYyNTUzNTIyODQwMTE4MjA2NjI5MzgyMjUwMzg5ODA2NzIzOTg1NDgzMjkwMzY0Mzg0ODQzMDMwODUzOTY4IiwiZXZhbF9zMSI6IjM5ODA2OTY4NTE3ODY0NTEzMDUyOTI2MjA3MDIwNjY5NTg0NjIxNzQ3NjA4MjE4NDk0MDM4MDI2ODQxNDU3MjU5NjExNDI5MzA1MTgiLCJldmFsX3MyIjoiMjE2NDM3NjE3NDMxMTM4NTkyOTU3ODg5NTc1MDYxOTA0NTYzNDYwNTU4NzE5MjYzMzM5OTgyNzcwMTQwODY5OTA4MTY2MjE5MTQ5NDgiLCJldmFsX3p3IjoiNzQ1MDE2Nzc5NjUzODUwNzMyNzc4NDE2NzIxMjE0Mzg1OTE2MTk0NDA5NzY4NjIzMzAzODkwMTkzNzI0MTU0NjQ1NjI4ODI4ODkyMCIsInByb3RvY29sIjoicGxvbmsiLCJjdXJ2ZSI6ImJuMTI4In0=</ZKPROOF>
+    </CertificateData>
+    <ds:Signature Id="id-cb5dc33f5043"
+        xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:SignedInfo>
+            <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+            <ds:SignatureMethod Algorithm="http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1" />
+            <ds:Reference>
+                <ds:Transforms>
+                    <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+                </ds:Transforms>
+                <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+                <ds:DigestValue>YUBj2grSI7tXjUYjr4o5DbTvoYmG5RaCs/gzHLScYjU=</ds:DigestValue>
+            </ds:Reference>
+            <ds:Reference URI="#xades-id-cb5dc33f5043" Type="http://uri.etsi.org/01903#SignedProperties">
+                <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+                <ds:DigestValue>OKdKff6zoU1ZSYU7U+LjtuAwGnWwWhS9/Pch5xVBD+c=</ds:DigestValue>
+            </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue>XjfWBzaiLaYHssNJjsNoMLw7p/d2FWLZL8Qug7/pGUQy5oBCMVKstwje4n7iFRflAASp9jdf7aGk+jAFQrfx6qlwp6X4BxIBfwMvbcCbXptvFbJErrRrEQAozJolBpw8tKP6TKr94joyOXPvOOZ8REALG4aSqXBhqwlEl9sv7Oh6E3f8y6OpHW8zYwB45hzhXGHKT3ep5p+nISRX3LT2M4OCtbOSyoiLrv0YRw+93vUswNfXS5BxJnY4ToniH5A8pJN3pwUZ5M/xdvg+QGDrGctQP4amZ8J6FiS2LOEm1+mHVsrKoBuzrp81eNncOYpNNWexTmvCPxdKq7YNYupF8w==</ds:SignatureValue>
+        <ds:Object>
+            <xades:QualifyingProperties Target="#id-cb5dc33f5043"
+                xmlns:xades="http://uri.etsi.org/01903/v1.3.2#">
+                <xades:SignedProperties Id="xades-id-cb5dc33f5043">
+                    <xades:SignedSignatureProperties>
+                        <xades:SigningTime>2023-10-15T13:55:09.719Z</xades:SigningTime>
+                        <xades:SigningCertificate>
+                            <xades:Cert>
+                                <xades:CertDigest>
+                                    <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+                                    <ds:DigestValue>nKBEJZKxiOeWrVuxj9OcnWyJ1tI+wkM344v3pluVjTg=</ds:DigestValue>
+                                </xades:CertDigest>
+                                <xades:IssuerSerial>
+                                    <ds:X509IssuerName>CN=Entrada Issuing CA</ds:X509IssuerName>
+                                    <ds:X509SerialNumber>629239421886561104118459064222868462113502370726</ds:X509SerialNumber>
+                                </xades:IssuerSerial>
+                            </xades:Cert>
+                        </xades:SigningCertificate>
+                    </xades:SignedSignatureProperties>
+                </xades:SignedProperties>
+            </xades:QualifyingProperties>
+        </ds:Object>
+    </ds:Signature>
+</Certificate>

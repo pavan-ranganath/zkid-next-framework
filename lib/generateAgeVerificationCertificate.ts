@@ -8,6 +8,7 @@ export interface InputData {
   person_name: string;
   ZKPROOF: string;
   Photo: string;
+  ClaimedAge: number;
 }
 
 export interface CertificateConfig {
@@ -89,11 +90,12 @@ export function generateXml(input: InputData, config?: CertificateConfig): strin
       CertificateData: {
         ZKPROOF: {
           "@format": "base64",
+          "@claimedAge": input.ClaimedAge,
           "#text": input.ZKPROOF,
         },
       },
     },
   });
 
-  return xml.toString({ prettyPrint: true });
+  return xml.toString({ format: "xml" });
 }

@@ -8,7 +8,7 @@
 import { dbConnect } from "@/lib/mongodb";
 import { AadhaarXmlParser } from "@/lib/services/aadhaarService";
 import { checkProfileVerifaction } from "@/lib/services/userService";
-import { generateProofForAgeverifcation } from "@/lib/services/zkProofGenerators/ageVerificationProofGenerator";
+import { generateProofForAgeverification } from "@/lib/services/zkProofGenerators/ageVerificationProofGenerator";
 import { authOptions } from "@/lib/webauthn";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,6 +21,11 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function POST(req: NextRequest, context: any) {
   try {
+    // const reqObj = await req.json()
+    const { claimedAge } = await req.json();
+    if (!claimedAge) {
+      return NextResponse.json({ error: "Claimed age not found" }, { status: 400 });
+    }
     // Retrieving the user session using the "getServerSession" function
     const session = await getServerSession(authOptions);
 
@@ -46,7 +51,6 @@ export async function POST(req: NextRequest, context: any) {
       return NextResponse.json({ error: "Profile info not found" }, { status: 401 });
     }
     const { dob, fullName } = userInfo;
-    const claimedAge = 21;
     // get photo from aadhar
     const xmlAadhar = new AadhaarXmlParser(aadhaar!.aadhaar);
     await xmlAadhar.parseXml();
@@ -59,8 +63,19 @@ export async function POST(req: NextRequest, context: any) {
       console.error("Photo not found");
       throw new Error("Photo not found");
     }
-    let t = await generateProofForAgeverifcation(new Date(dob.value), fullName.value, userSystemID, photo, claimedAge);
-    console.log("t", t);
+    let signedXmlCertificateWithZKproof = await generateProofForAgeverification(
+      new Date(dob.value),
+      fullName.value,
+      userSystemID,
+      photo,
+      claimedAge,
+    );
+
+    // store the xml certificate in db
+
+    console.log("signedXmlCertificateWithZKproof", signedXmlCertificateWithZKproof);
+    // Returning a JSON response with the user's email and a status code of 200 (OK)
+    return NextResponse.json({ signedXmlCertificateWithZKproof }, { status: 200 });
   } catch (error) {
     console.error(error);
     // Returning a JSON response with an error message and a status code of 500 (Internal Server Error)

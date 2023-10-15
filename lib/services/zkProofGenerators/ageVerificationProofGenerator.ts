@@ -4,15 +4,14 @@ import path from "path";
 import moment from "moment";
 
 import { serializeProofAndEncodeToBase64 } from "../utils";
-import { InputData, CertificateConfig, generateXml } from "@/lib/generateAgeVerificationCertificate";
-import { sign } from "crypto";
+import { InputData, generateXml } from "@/lib/generateAgeVerificationCertificate";
 import { XadesClass } from "../XadesClass";
+import { readCertificateFromFile, readCertificateSigningKeyPairFromFile } from "@/lib/generateCertificate";
 
 const wasmFilePath = path.join(process.cwd(), "lib/circomBuilds/ageVerifcation/ageProof.wasm");
 const zkeyFilePath = path.join(process.cwd(), "lib/circomBuilds/ageVerifcation/ageProof.zkey");
 const wasmFile = readFileSync(wasmFilePath);
 const zkeyFile = readFileSync(zkeyFilePath);
-// import * as snarkjs from "snarkjs";
 // import snarkjs from "../../../node_modules/snarkjs/build/snarkjs.js";
 /**
  * Generate Zero-knowledge proof for age verification using snarkjs
@@ -20,49 +19,52 @@ const zkeyFile = readFileSync(zkeyFilePath);
  * @param name Full name
  * @param claimedAge age claimed by user
  */
-export async function generateProofForAgeverifcation(
+export async function generateProofForAgeverification(
   dob: Date,
   name: string,
   userId: string,
   photo: string,
   ageThreshold: number,
 ) {
-  // await generateProof();
-  try {
-    const INPUT = {
-      DOBDay: moment(dob).date(),
-      DOBMonth: moment(dob).month() + 1,
-      DOBYear: moment(dob).year(),
-      ageThreshold: ageThreshold,
-      currentDay: moment().date(),
-      currentMonth: moment().month() + 1,
-      currentYear: moment().year(),
-    };
+  const INPUT = {
+    DOBDay: moment(dob).date(),
+    DOBMonth: moment(dob).month() + 1,
+    DOBYear: moment(dob).year(),
+    ageThreshold: ageThreshold,
+    currentDay: moment().date(),
+    currentMonth: moment().month() + 1,
+    currentYear: moment().year(),
+  };
 
-    const { proof, publicSignals } = await plonk.fullProve(INPUT, wasmFile, zkeyFile);
-    //Serialize the proof and encode it in base64 format.
-    const base64Proof = serializeProofAndEncodeToBase64(proof);
-    console.log("base64Proof", base64Proof);
+  const { proof, publicSignals } = await plonk.fullProve(INPUT, wasmFile, zkeyFile);
+  //Serialize the proof and encode it in base64 format.
+  const base64Proof = serializeProofAndEncodeToBase64(proof);
 
-    const inputDataForXMlCertificate: InputData = {
-      ZKID_ID: userId,
-      issueDate: new Date(),
-      expirydate: new Date("2025-10-15"),
-      person_name: name,
-      ZKPROOF: base64Proof,
-      Photo: photo,
-    };
+  const inputDataForXMlCertificate: InputData = {
+    ZKID_ID: userId,
+    issueDate: new Date(),
+    expirydate: new Date("2025-10-15"),
+    person_name: name,
+    ZKPROOF: base64Proof,
+    Photo: photo,
+    ClaimedAge: ageThreshold,
+  };
 
-    console.log("proof", proof);
-    const generatedXml = generateXml(inputDataForXMlCertificate);
-    console.log(generatedXml);
-    const xades = new XadesClass();
-    xades.signXml(generatedXml);
-  } catch (error) {
-    console.error(error);
-  }
-  console.log("Done");
-  // return true;
+  const generatedXml = generateXml(inputDataForXMlCertificate);
+  const xades = new XadesClass();
+
+  const hash = "SHA-256";
+  const alg = {
+    name: "RSA-PSS",
+    hash,
+  };
+  const x509 = await readCertificateFromFile();
+  const XMLcertSigningkeyPair = await readCertificateSigningKeyPairFromFile();
+  const xmlCertificate = await xades.signXml(generatedXml, XMLcertSigningkeyPair, alg, {
+    references: [{ hash, transforms: ["enveloped"] }],
+    signingCertificate: x509,
+  });
+  return xmlCertificate;
 }
 
 interface LoggerProps {
@@ -71,7 +73,7 @@ interface LoggerProps {
   info(message: string): void;
 }
 
-export const Logger = () => {
+const Logger = () => {
   const logger: LoggerProps = {
     debug: (message: string) => {
       console.log(`[DEBUG] ${message}`);
