@@ -18,11 +18,7 @@ import { handleRegistrationError } from "@/lib/webauthn";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 // MUI library imports
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import { Backdrop, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
 import "yup-phone-lite";
 import AppLogoSVG from "@/components/appLogo";

@@ -6,17 +6,8 @@
 "use client";
 
 // Importing UI components from Material-UI
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import CardActions from "@mui/material/CardActions";
-import ListItem from "@mui/material/ListItem";
+import { Grid, Card, CardHeader, CardContent, Typography, Button, List, ListItemButton, ListItemText, CardActions, ListItem } from "@mui/material";
+
 
 // Importing the startRegistration function from the "@simplewebauthn/browser" library
 import { startRegistration } from "@simplewebauthn/browser";

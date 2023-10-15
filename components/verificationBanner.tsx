@@ -1,12 +1,8 @@
+import { Fade, Paper, Typography, Button } from "@mui/material";
+import { Stack, Box } from "@mui/system";
 import * as React from "react";
-import Stack from "@mui/material/Stack";
-import TrapFocus from "@mui/material/Unstable_TrapFocus";
-import CssBaseline from "@mui/material/CssBaseline";
-import Paper from "@mui/material/Paper";
-import Fade from "@mui/material/Fade";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import TrapFocus from '@mui/material/Unstable_TrapFocus';
+
 
 export default function VerificationBanner() {
   const [bannerOpen, setBannerOpen] = React.useState(true);

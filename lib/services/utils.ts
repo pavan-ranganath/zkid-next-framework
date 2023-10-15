@@ -19,3 +19,21 @@ export function generateZKIDID(phone: string, dob: Date, aadhaarNumber: string =
 
   return output;
 }
+
+// Function to serialize a proof and encode it in base64 format
+export function serializeProofAndEncodeToBase64(proof: any) {
+  const proofString = JSON.stringify(proof);
+  const proofBuffer = Buffer.from(proofString);
+  const base64Proof = proofBuffer.toString("base64");
+  return base64Proof;
+}
+
+// Function to decode a base64-encoded proof and deserialize it
+export function decodeBase64AndDeserializeProof(
+  base64Proof: WithImplicitCoercion<string> | { [Symbol.toPrimitive](hint: "string"): string },
+) {
+  const proofBuffer = Buffer.from(base64Proof, "base64");
+  const proofString = proofBuffer.toString("utf8");
+  const proof = JSON.parse(proofString);
+  return proof;
+}

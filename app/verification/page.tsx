@@ -6,10 +6,10 @@ import ErrorIcon from "@mui/icons-material/Error"; // Importing the error icon f
 import useSWR from "swr"; // Importing the 'useSWR' hook from the SWR library for data fetching and caching
 
 // MUI imports
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+
 import { fetcher } from "@/lib/services/apiService";
+import { Typography, Button } from "@mui/material";
+import { Container } from "@mui/system";
 
 // Styling the container using the 'styled' function from MUI
 const StyledContainer = styled(Container)(({ theme }) => ({

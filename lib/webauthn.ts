@@ -38,6 +38,10 @@ export interface DbCredential {
     dob: Field<string>; // The last name of the user
     mobile: Field<string>; // The last name of the user
   };
+  aadhaar?: {
+    aadhaar: string;
+    digiLockerUserInfo: string;
+  };
 }
 
 /**

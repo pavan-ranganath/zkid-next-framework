@@ -5,7 +5,6 @@ import { useVerifyStatus } from "@/components/verificationStatusProvider";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
 // Dashboard component
 export default function Dashboard() {
   const verifyStatus = useVerifyStatus(); // Access verifyStatus from context
@@ -32,9 +31,24 @@ export default function Dashboard() {
         });
     }
   }, [verifyStatus, confirm, router]);
+
+  // API request to generate proof after button click
+  const generateProof = async () => {
+    const response = await fetch("/api/generateproof/ageverification", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    });
+    const data = await response.json();
+    console.log(data);
+
+  };
   return (
     <>
       <PageTitle title="Home" />
+      <button onClick={generateProof}>Generate proof</button>
     </>
   );
 }
