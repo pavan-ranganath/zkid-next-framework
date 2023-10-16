@@ -1,9 +1,9 @@
 import { updateData, getData, storeData } from "./services/storage";
 
-export const storeCertificate = async (certificateData: string, userId: string) => {
-  return storeData({ cert: certificateData, userId: userId }, "ZKIDXMLCertificate");
+export const storeCertificate = async (certificateData: string, userSystemID: string, type = "nAgeVerify") => {
+  return storeData({ cert: certificateData, userSystemID: userSystemID, type: type }, "ZKIDXMLCertificate");
 };
-export const getDigilockerInfo = async (userId: string): Promise<any | null> => {
-  const data = await getData(userId, "ZKIDXMLCertificate");
+export const getCertificateInfoBySystemUserID = async (userSystemID: string, type: string): Promise<any | null> => {
+  const data = await getData({ userSystemID,type }, "ZKIDXMLCertificate");
   return data ? (data as any) : null;
 };

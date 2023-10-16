@@ -1,6 +1,6 @@
 "use client";
 
-import CertificateDisplay from "@/components/AgeVerificateCertificateDisplay";
+import CertificateDisplay, { CertificateDisplayProps } from "@/components/AgeVerificateCertificateDisplay";
 import PageTitle from "@/components/pageTitle";
 import { useVerifyStatus } from "@/components/verificationStatusProvider";
 import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interface";
@@ -13,8 +13,7 @@ export default function Dashboard() {
   const verifyStatus = useVerifyStatus(); // Access verifyStatus from context
   const confirm = useConfirm();
   const router = useRouter();
-  // set state for xmlCertificate data
-  const [xmlCertificate, setXmlCertificate] = useState<string>("");
+  const [vertificateData, setVertificateData] = useState<CertificateDisplayProps>({ certificateData: "", shareUrl: "" });
   // display alert to navigate to profile page to verify profile if not verified
   useEffect(() => {
     if (!verifyStatus) {
@@ -39,7 +38,8 @@ export default function Dashboard() {
 
   // API request to generate proof after button click
   const generateProof = async () => {
-    const response = await fetch("/api/generateproof/ageverification", {
+
+    const response = await fetch("/api/proof/ageverification", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export default function Dashboard() {
     });
     const data = await response.json();
     console.log(data);
-    setXmlCertificate(data.certificateData);
+    setVertificateData(data);
 
   };
   return (
@@ -67,7 +67,7 @@ export default function Dashboard() {
           <Card variant="outlined">
             <CardHeader title="Certificates" />
             <CardContent>
-              <CertificateDisplay xmlData={xmlCertificate} />
+              <CertificateDisplay certificateData={vertificateData.certificateData} shareUrl={vertificateData.shareUrl} />
             </CardContent>
           </Card>
         </Grid>

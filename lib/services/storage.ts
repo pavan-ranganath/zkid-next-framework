@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-
+import "bson";
 export async function storeData(data: any, collectionName: string) {
   const db = mongoose.connection.db;
   const collection = db.collection(collectionName);
 
   try {
-    const result = await collection.insertOne({ data });
+    const result = await collection.insertOne({ ...data });
     console.log(`Data with key '${collectionName}' stored securely.`);
     return result; // Return the result of the insert operation
   } catch (error) {
@@ -21,10 +21,10 @@ export async function getData(key: any, collectionName: string) {
   const collection = db.collection(collectionName);
 
   try {
-    const result = await collection.findOne({ key });
+    const result = await collection.findOne({ ...key });
     if (result) {
       console.log(`Data with key '${key}' retrieved securely.`);
-      return result.data;
+      return result;
     }
     console.log(`Data with key '${key}' not found.`);
     return null;

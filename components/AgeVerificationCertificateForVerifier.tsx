@@ -4,14 +4,11 @@ import QRCode from 'qrcode.react'; // Install qrcode.react
 import { XMLParser } from "fast-xml-parser";
 import { AgeVerificatingCertificate } from '@/lib/interfaces/Certificate.interface';
 import Image from 'next/image';
+import { CertificateDisplayProps } from './AgeVerificateCertificateDisplay';
 
-export interface CertificateDisplayProps {
-    certificateData: string;
-    shareUrl: string;
-}
 
-export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
-    const [showQR, setShowQR] = useState(true);
+
+export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayProps) => {
 
     const [certificateInfo, setCertificateInfo] = useState<AgeVerificatingCertificate>({} as AgeVerificatingCertificate);
     const parser = new XMLParser({
@@ -35,9 +32,6 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
     if (!certificateInfo.Certificate) {
         return <div>Loading...</div>;
     }
-    const flipCard = () => {
-        setShowQR(!showQR);
-    };
     return (
         <Box sx={styles.cardContainer}>
             <Card sx={{ ...styles.card }}>
@@ -66,16 +60,14 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
                             <Typography>Expiry: {certificateInfo.Certificate.expiryDate}</Typography>
                         </Grid>
                     </Grid>
-                    {showQR && (<QRCode value={displayProps.shareUrl} />)}
+                    {/* <QRCode value={displayProps.shareUrl} /> */}
                     <Box sx={styles.buttonsContainer}>
-                        <Button variant="contained" color="primary" onClick={flipCard}>
-                            {!showQR ? "Display QR" : "Hide QR"}
+
+                        <Button variant="contained" color="primary">
+                            Verify Proof
                         </Button>
                         <Button variant="contained" color="primary">
-                            Share
-                        </Button>
-                        <Button variant="contained" color="primary">
-                            Download
+                            Verify Signature
                         </Button>
                     </Box>
                 </CardContent>
@@ -113,4 +105,4 @@ const styles = {
         },
     },
 };
-export default CertificateDisplay;
+export default CertificateDisplayForVerifier;

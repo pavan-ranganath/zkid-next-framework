@@ -73,13 +73,15 @@ export async function POST(req: NextRequest, context: any) {
     );
 
     // store the xml certificate in db
-    // const xmlDocSaved = await storeCertificate(signedXmlCertificateWithZKproof, userSystemID);
-    // if (!xmlDocSaved?.acknowledged) {
-    //   console.error("XML certificate not saved");
-    //   throw new Error("XML certificate not saved");
-    // }
-    // Returning a JSON response with the user's email and a status code of 200 (OK)
-    return NextResponse.json({ certificateData: signedXmlCertificateWithZKproof }, { status: 200 });
+    const xmlDocSaved = await storeCertificate(signedXmlCertificateWithZKproof, userSystemID);
+    if (!xmlDocSaved?.acknowledged) {
+      console.error("XML certificate not saved");
+      throw new Error("XML certificate not saved");
+    }
+    const insertedId = xmlDocSaved.insertedId.toString();
+    const origin = process.env.NEXTAUTH_URL!;
+    const url = `${origin}/verifyproof?userId=${userSystemID}&type=nAgeVerify`;
+    return NextResponse.json({ certificateData: signedXmlCertificateWithZKproof, shareUrl: url }, { status: 200 });
   } catch (error) {
     console.error(error);
     // Returning a JSON response with an error message and a status code of 500 (Internal Server Error)
