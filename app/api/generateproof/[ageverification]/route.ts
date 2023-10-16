@@ -10,6 +10,7 @@ import { AadhaarXmlParser } from "@/lib/services/aadhaarService";
 import { checkProfileVerifaction } from "@/lib/services/userService";
 import { generateProofForAgeverification } from "@/lib/services/zkProofGenerators/ageVerificationProofGenerator";
 import { authOptions } from "@/lib/webauthn";
+import { storeCertificate } from "@/lib/zkidCertificateService";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -72,10 +73,13 @@ export async function POST(req: NextRequest, context: any) {
     );
 
     // store the xml certificate in db
-
-    console.log("signedXmlCertificateWithZKproof", signedXmlCertificateWithZKproof);
+    // const xmlDocSaved = await storeCertificate(signedXmlCertificateWithZKproof, userSystemID);
+    // if (!xmlDocSaved?.acknowledged) {
+    //   console.error("XML certificate not saved");
+    //   throw new Error("XML certificate not saved");
+    // }
     // Returning a JSON response with the user's email and a status code of 200 (OK)
-    return NextResponse.json({ signedXmlCertificateWithZKproof }, { status: 200 });
+    return NextResponse.json({ certificateData: signedXmlCertificateWithZKproof }, { status: 200 });
   } catch (error) {
     console.error(error);
     // Returning a JSON response with an error message and a status code of 500 (Internal Server Error)

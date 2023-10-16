@@ -35,7 +35,7 @@ export const genderSynonyms: GenderSynonyms = {
   OTHERS: "O",
   o: "O",
 };
-const xmlParserOptions = {
+export const xmlParserOptions = {
   attributeNamePrefix: "",
   ignoreAttributes: false,
   parseNodeValue: true,

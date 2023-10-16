@@ -1,15 +1,19 @@
 "use client";
 
+import CertificateDisplay from "@/components/AgeVerificateCertificateDisplay";
 import PageTitle from "@/components/pageTitle";
 import { useVerifyStatus } from "@/components/verificationStatusProvider";
+import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interface";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // Dashboard component
 export default function Dashboard() {
   const verifyStatus = useVerifyStatus(); // Access verifyStatus from context
   const confirm = useConfirm();
   const router = useRouter();
+  // set state for xmlCertificate data
+  const [xmlCertificate, setXmlCertificate] = useState<string>("");
   // display alert to navigate to profile page to verify profile if not verified
   useEffect(() => {
     if (!verifyStatus) {
@@ -43,12 +47,14 @@ export default function Dashboard() {
     });
     const data = await response.json();
     console.log(data);
+    setXmlCertificate(data.certificateData);
 
   };
   return (
     <>
       <PageTitle title="Home" />
       <button onClick={generateProof}>Generate proof</button>
+      {xmlCertificate && <CertificateDisplay xmlData={xmlCertificate} />}
     </>
   );
 }
