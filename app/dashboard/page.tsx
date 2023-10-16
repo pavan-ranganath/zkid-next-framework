@@ -4,6 +4,7 @@ import CertificateDisplay from "@/components/AgeVerificateCertificateDisplay";
 import PageTitle from "@/components/pageTitle";
 import { useVerifyStatus } from "@/components/verificationStatusProvider";
 import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interface";
+import { Button, Card, CardContent, CardHeader, Grid } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -53,8 +54,25 @@ export default function Dashboard() {
   return (
     <>
       <PageTitle title="Home" />
-      <button onClick={generateProof}>Generate proof</button>
-      {xmlCertificate && <CertificateDisplay xmlData={xmlCertificate} />}
+      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid item xs={12} md={6} sm={6}>
+          <Card variant="outlined">
+            <CardHeader title="Generate Proof" />
+            <CardContent>
+              <Button variant="contained" color="primary" onClick={generateProof}>Age Verification</Button>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6} sm={6}>
+          <Card variant="outlined">
+            <CardHeader title="Certificates" />
+            <CardContent>
+              <CertificateDisplay xmlData={xmlCertificate} />
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
     </>
   );
 }

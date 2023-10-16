@@ -21,39 +21,38 @@ export const CertificateDisplay = ({ xmlData }: { xmlData: string }) => {
         setCertificateInfo(parsedData);
     }, [xmlData]);
 
+    if (!xmlData) {
+        return <div>No certificate data</div>;
+    }
     if (!certificateInfo.Certificate) {
         return <div>Loading...</div>;
     }
 
     return (
-        <>
-
-            <Card>
-                <CardHeader title={certificateInfo.Certificate.name} />
-                <CardContent>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <Typography variant="h6">Issued By:</Typography>
-                            <Typography>{certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography variant="h6">Issued To:</Typography>
-                            <Typography>{certificateInfo.Certificate.IssuedTo.Person.name}</Typography>
-                            <Image width={50} height={50} src={`data:image/jpeg;base64, ${certificateInfo.Certificate.IssuedTo.Person.Photo._}`} alt="Person's Photo" />
-                            <Typography>Claimed Age: {certificateInfo.Certificate.CertificateData?.ZKPROOF?.claimedAge}</Typography>
-                        </Grid>
+        <Card>
+            <CardHeader title={certificateInfo.Certificate.name} />
+            <CardContent>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <Typography variant="h6">Issued By:</Typography>
+                        <Typography>{certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
                     </Grid>
-                    <QRCode value={"https://google.com"} />
-                    <Button variant="contained" color="primary">
-                        Share
-                    </Button>
-                    <Button variant="contained" color="primary">
-                        Download
-                    </Button>
-                </CardContent>
-            </Card>
-        </>
-
+                    <Grid item xs={6}>
+                        <Typography variant="h6">Issued To:</Typography>
+                        <Typography>{certificateInfo.Certificate.IssuedTo.Person.name}</Typography>
+                        <Image width={100} height={100} src={`data:image/jpeg;base64, ${certificateInfo.Certificate.IssuedTo.Person.Photo._}`} alt="Person's Photo" />
+                        <Typography>Claimed Age: {certificateInfo.Certificate.CertificateData?.ZKPROOF?.claimedAge}</Typography>
+                    </Grid>
+                </Grid>
+                <QRCode value={"https://google.com"} />
+                <Button variant="contained" color="primary">
+                    Share
+                </Button>
+                <Button variant="contained" color="primary">
+                    Download
+                </Button>
+            </CardContent>
+        </Card>
     );
 };
 
