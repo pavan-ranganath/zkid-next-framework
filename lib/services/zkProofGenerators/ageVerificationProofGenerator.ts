@@ -29,15 +29,17 @@ export async function generateProofForAgeverification(
   userId: string,
   photo: string,
   ageThreshold: number,
+  claimDate: Date,
 ) {
+  let currentDay = moment(claimDate);
   const INPUT = {
     DOBDay: moment(dob).date(),
     DOBMonth: moment(dob).month() + 1,
     DOBYear: moment(dob).year(),
     ageThreshold: ageThreshold,
-    currentDay: moment().date(),
-    currentMonth: moment().month() + 1,
-    currentYear: moment().year(),
+    currentDay: currentDay.date(),
+    currentMonth: currentDay.month() + 1,
+    currentYear: currentDay.year(),
   };
 
   const { proof, publicSignals } = await plonk.fullProve(INPUT, wasmFile, zkeyFile);
@@ -53,6 +55,7 @@ export async function generateProofForAgeverification(
     ZKPROOF: base64Proof,
     Photo: photo,
     ClaimedAge: ageThreshold,
+    ClaimedDate: currentDay.toDate(),
   };
 
   const generatedXml = generateXml(inputDataForXMlCertificate);

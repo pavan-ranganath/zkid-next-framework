@@ -4,6 +4,7 @@ import QRCode from 'qrcode.react'; // Install qrcode.react
 import { XMLParser } from "fast-xml-parser";
 import { AgeVerificatingCertificate } from '@/lib/interfaces/Certificate.interface';
 import Image from 'next/image';
+import moment from 'moment';
 
 export interface CertificateDisplayProps {
     certificateData: string;
@@ -60,10 +61,10 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
                     </Grid>
                     <Grid container spacing={2}>
                         <Grid item xs={6} sx={styles.centeredContent}>
-                            <Typography>Issued: {certificateInfo.Certificate.issueDate}</Typography>
+                            <Typography>Issued: {moment(certificateInfo.Certificate.issueDate).format("DD, MMM, YYYY")}</Typography>
                         </Grid>
                         <Grid item xs={6} sx={styles.centeredContent}>
-                            <Typography>Expiry: {certificateInfo.Certificate.expiryDate}</Typography>
+                            <Typography>Expiry: {moment(certificateInfo.Certificate.expiryDate).format("DD, MMM, YYYY")}</Typography>
                         </Grid>
                     </Grid>
                     {showQR && (<QRCode value={displayProps.shareUrl} />)}

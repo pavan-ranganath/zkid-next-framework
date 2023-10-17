@@ -56,7 +56,7 @@ const AgeverificationVerifierInputModal: React.FC<AgeverificationVerifierInputMo
     // Form submission handler
     function onSubmit(dataFromUser: any) {
         console.log("data submitted", dataFromUser);
-        const issuedDate = new Date(data.Certificate.issueDate)
+        const issuedDate = new Date(data.Certificate.CertificateData.ZKPROOF.claimedDate)
         // check dateRequirementFromUser is less than or equal to issuedDate
         if (new Date(dataFromUser.date) > issuedDate) {
             alert("This proof does not align with your specified requirements.")
@@ -130,7 +130,7 @@ const AgeverificationVerifierInputModal: React.FC<AgeverificationVerifierInputMo
                                 sx={{ mb: 2 }}
                             />
                             <DialogContentText sx={{ marginBottom: 2 }}>
-                                {`On ${watch("date") || "____-__-__"}, the age of '${data?.Certificate.IssuedTo.Person.name}' is ${watch("age") || "___"} ?`}
+                                {`On ${watch("date") || "____-__-__"}, the age of '${data?.Certificate.IssuedTo.Person.name}' is equal to or below ${watch("age") || "___"} ?`}
 
                             </DialogContentText>
 

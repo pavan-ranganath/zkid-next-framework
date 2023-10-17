@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import moment from "moment";
 import { create } from "xmlbuilder2";
 
 export interface InputData {
@@ -9,6 +10,7 @@ export interface InputData {
   ZKPROOF: string;
   Photo: string;
   ClaimedAge: number;
+  ClaimedDate: Date;
 }
 
 export interface CertificateConfig {
@@ -42,16 +44,9 @@ const defaultConfig: CertificateConfig = {
 };
 
 export function generateXml(input: InputData, config?: CertificateConfig): string {
-  const issueDateFormatted = input.issueDate.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  const expiryDateFormatted = input.expirydate.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
+  const issueDateFormatted = moment(input.issueDate).toISOString();
+  const expiryDateFormatted = moment(input.expirydate).toISOString();
+  const claimDateFormatted = moment(input.ClaimedDate).toISOString();
 
   const mergedConfig = { ...defaultConfig, ...config };
 
@@ -91,6 +86,7 @@ export function generateXml(input: InputData, config?: CertificateConfig): strin
         ZKPROOF: {
           "@format": "base64",
           "@claimedAge": input.ClaimedAge,
+          "@claimedDate": claimDateFormatted,
           "#text": input.ZKPROOF,
         },
       },

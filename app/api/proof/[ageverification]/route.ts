@@ -23,9 +23,12 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest, context: any) {
   try {
     // const reqObj = await req.json()
-    const { claimedAge } = await req.json();
-    if (!claimedAge) {
+    const { claimAge, claimDate } = await req.json();
+    if (!claimAge) {
       return NextResponse.json({ error: "Claimed age not found" }, { status: 400 });
+    }
+    if (!claimDate) {
+      return NextResponse.json({ error: "Claimed date not found" }, { status: 400 });
     }
     // Retrieving the user session using the "getServerSession" function
     const session = await getServerSession(authOptions);
@@ -69,7 +72,8 @@ export async function POST(req: NextRequest, context: any) {
       fullName.value,
       userSystemID,
       photo,
-      claimedAge,
+      claimAge,
+      claimDate,
     );
 
     // store the xml certificate in db

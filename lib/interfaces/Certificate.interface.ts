@@ -34,6 +34,7 @@ export interface AgeVerificatingCertificateData {
       _: string;
       format: string;
       claimedAge: string;
+      claimedDate: string;
     };
   };
   "ds:Signature": {

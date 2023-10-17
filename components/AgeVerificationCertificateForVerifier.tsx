@@ -140,10 +140,10 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                         </Grid>
                         <Grid container spacing={2}>
                             <Grid item xs={6} sx={styles.centeredContent}>
-                                <Typography>Issued: {certificateInfo.Certificate.issueDate}</Typography>
+                                <Typography>Issued: {moment(certificateInfo.Certificate.issueDate).format("DD, MMM, YYYY")}</Typography>
                             </Grid>
                             <Grid item xs={6} sx={styles.centeredContent}>
-                                <Typography>Expiry: {certificateInfo.Certificate.expiryDate}</Typography>
+                                <Typography>Expiry: {moment(certificateInfo.Certificate.expiryDate).format("DD, MMM, YYYY")}</Typography>
                             </Grid>
                         </Grid>
                         {/* <QRCode value={displayProps.shareUrl} /> */}
