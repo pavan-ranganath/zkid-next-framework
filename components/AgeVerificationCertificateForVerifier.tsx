@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Backdrop, Box, Button, Card, CardContent, CardHeader, CircularProgress, Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
 import QRCode from 'qrcode.react'; // Install qrcode.react
 import { XMLParser } from "fast-xml-parser";
@@ -11,6 +11,7 @@ const snarkjs = require("snarkjs") as typeof import("snarkjs");
 import moment from 'moment';
 import { LoggerProps } from '@/lib/services/zkProofGenerators/ageVerificationProofGenerator';
 import { Check, Close, Help } from '@mui/icons-material'; // Import icons from Material-UI
+import AlertMessageDialog from './AlertMessageDialog';
 
 // import { readFileSync } from 'fs';
 // import path from 'path';
@@ -20,6 +21,7 @@ import { Check, Close, Help } from '@mui/icons-material'; // Import icons from M
 // const vKeyfile = readFileSync(vKeyfilePath);
 
 export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayProps) => {
+    const alertMessageDialogRef = useRef<{ handleAlertOpen: (message: string, severity: "success" | "error" | "warning" | "info") => void } | null>(null);
     const [isAgeverificationVerifierInputModalOpen, setAgeverificationVerifierInputModalOpen] = useState(false);
     const [isProofVerified, setIsProofVerified] = useState<boolean | null>(null);
     const [isSignatureVerified, setIsSignatureVerified] = useState<boolean | null>(null);
@@ -57,12 +59,17 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                     formData.age,
                 ]
 
-            // const publicSignalValues = Object.values(publicSignal).map(value => value.toString());
             const vkey = await fetch("ageProof.vkey.json").then(function (res) {
                 return res.json();
             });
-            const plonkResult = await snarkjs.plonk.verify(vkey, publicSignal, ZKproof, Logger());
-            console.log("plonkResult", plonkResult);
+            const plonkResult: boolean = await snarkjs.plonk.verify(vkey, publicSignal, ZKproof, Logger());
+            const message = plonkResult ? 'Proof verified successfully' : 'Proof verification failed';
+            const severity = plonkResult ? 'success' : 'error';
+
+            if (alertMessageDialogRef.current) {
+                alertMessageDialogRef.current.handleAlertOpen(message, severity);
+            }
+            setIsProofVerified(plonkResult);
         }
     };
     if (!displayProps.certificateData) {
@@ -136,6 +143,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                     {isSignatureVerified === null ? <Help sx={{ color: 'gray', fontSize: '1.5rem' }} /> : isSignatureVerified ? <Check sx={{ color: 'green', fontSize: '1.5rem' }} /> : <Close sx={{ color: 'red', fontSize: '1.5rem' }} />}
                 </ListItem>
             </List>
+            <AlertMessageDialog ref={alertMessageDialogRef} /> {/* Render the alert component */}
         </>
 
     );
