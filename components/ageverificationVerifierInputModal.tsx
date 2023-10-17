@@ -54,11 +54,24 @@ const AgeverificationVerifierInputModal: React.FC<AgeverificationVerifierInputMo
         resolver: yupResolver(yup.object().shape(ageVerificationVerifierForm)),
     });
     // Form submission handler
-    function onSubmit(data: any) {
-        console.log("data submitted", data);
+    function onSubmit(dataFromUser: any) {
+        console.log("data submitted", dataFromUser);
+        const issuedDate = new Date(data.Certificate.issueDate)
+        // check dateRequirementFromUser is less than or equal to issuedDate
+        if (new Date(dataFromUser.date) > issuedDate) {
+            alert("This proof does not align with your specified requirements.")
+            return
+        }
+        // check age
+        // check age is less than to data.Certificate.IssuedTo.Person.age
+        const claimedAge = +data.Certificate.CertificateData.ZKPROOF.claimedAge
+        if (+dataFromUser.age > +data.Certificate.CertificateData.ZKPROOF.claimedAge) {
+            alert("This proof does not align with your specified requirements.")
+            return
+        }
         const formData = {
-            date: watch("date"),
-            age: watch("age"),
+            date: issuedDate,
+            age: claimedAge,
         };
         handleClose(formData)
     }
