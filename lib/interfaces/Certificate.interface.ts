@@ -67,6 +67,17 @@ export interface AgeVerificatingCertificateData {
       ];
     };
     "ds:SignatureValue": string;
+    "ds:KeyInfo": {
+      "ds:KeyValue": {
+        "ds:RSAKeyValue": {
+          "ds:Modulus": string;
+          "ds:Exponent": string;
+        };
+      };
+      "ds:X509Data": {
+        "ds:X509Certificate": string;
+      }[];
+    };
     "ds:Object": {
       "xades:QualifyingProperties": {
         "xades:SignedProperties": {

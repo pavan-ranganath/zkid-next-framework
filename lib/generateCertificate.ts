@@ -3,6 +3,7 @@ import { Certificate, AttributeTypeAndValue } from "pkijs";
 import * as asn1js from "asn1js";
 import { readFileSync, writeFileSync } from "fs";
 import path from "path";
+import { pki } from "node-forge";
 // Create an instance of the WebCrypto API
 const crypto = new Crypto();
 
@@ -140,4 +141,13 @@ function importCertificateFromPem(pem: string) {
   const pemFooter = "-----END CERTIFICATE-----";
   const pemContents = pem.substring(pemHeader.length, pem.length - pemFooter.length);
   return pemContents;
+}
+export function parseX509Certificate(certString: string) {
+  try {
+    const certificate = pki.certificateFromPem(certString);
+    return certificate;
+  } catch (error) {
+    console.error("Error parsing X.509 certificate:", error);
+    return null;
+  }
 }

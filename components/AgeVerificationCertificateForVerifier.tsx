@@ -13,6 +13,9 @@ import { LoggerProps } from '@/lib/services/zkProofGenerators/ageVerificationPro
 import { Check, Close, Help } from '@mui/icons-material'; // Import icons from Material-UI
 import AlertMessageDialog from './AlertMessageDialog';
 import { XadesClass } from '@/lib/services/XadesClass';
+import { parseX509Certificate } from '@/lib/generateCertificate';
+import DigitalSignatureTag from './DigitalSignatureTag';
+import { pki } from 'node-forge';
 
 // import { readFileSync } from 'fs';
 // import path from 'path';
@@ -26,6 +29,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
     const [isAgeverificationVerifierInputModalOpen, setAgeverificationVerifierInputModalOpen] = useState(false);
     const [isProofVerified, setIsProofVerified] = useState<boolean | null>(null);
     const [isSignatureVerified, setIsSignatureVerified] = useState<boolean | null>(null);
+    const [signatureCertificate, setSignatureCertificate] = useState<{ signCert: pki.Certificate, signedDate: Date }>({} as { signCert: pki.Certificate, signedDate: Date });
     const [certificateInfo, setCertificateInfo] = useState<AgeVerificatingCertificate>({} as AgeVerificatingCertificate);
     const parser = new XMLParser({
         attributeNamePrefix: '',
@@ -83,8 +87,25 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
             alertMessageDialogRef.current.handleAlertOpen(message, severity);
         }
         setIsSignatureVerified(resultOfSignatureVerification);
+        showSignatureCertificate();
     }
+    function showSignatureCertificate() {
+        const base64CertString = (certificateInfo.Certificate['ds:Signature']['ds:KeyInfo']['ds:X509Data'][0]['ds:X509Certificate'])
+        // Decode the base64-encoded string
+        const binaryData = Buffer.from(base64CertString, 'base64');
 
+        // Format the binary data as a PEM certificate
+        const pemCertificate = `-----BEGIN CERTIFICATE-----\n${binaryData.toString('base64')}\n-----END CERTIFICATE-----`;
+
+        let x509Cert = parseX509Certificate(pemCertificate);
+        if (x509Cert === null) {
+            console.log("Error parsing certificate");
+            return;
+        }
+        setSignatureCertificate({ signCert: x509Cert, signedDate: new Date(certificateInfo.Certificate['ds:Signature']['ds:Object']['xades:QualifyingProperties']['xades:SignedProperties']['xades:SignedSignatureProperties']['xades:SigningTime']) });
+        // Use the getField method to get the organization field (OID 2.5.4.10)
+        // const organizationField = x509Cert.subject.getField({ type: '2.5.4.10' }).value;
+    }
     if (!displayProps.certificateData) {
         return <div>No certificate data</div>;
     }
@@ -154,7 +175,12 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                 <ListItem>
                     <ListItemText primary="Signature verification status" />
                     {isSignatureVerified === null ? <Help sx={{ color: 'gray', fontSize: '1.5rem' }} /> : isSignatureVerified ? <Check sx={{ color: 'green', fontSize: '1.5rem' }} /> : <Close sx={{ color: 'red', fontSize: '1.5rem' }} />}
+
                 </ListItem>
+                {isSignatureVerified === true && <ListItem>
+                    {/* <ListItemText primary="Signature Certificate" /> */}
+                    <DigitalSignatureTag certificate={signatureCertificate.signCert} signedDate={signatureCertificate.signedDate} />
+                </ListItem>}
             </List>
             <AlertMessageDialog ref={alertMessageDialogRef} /> {/* Render the alert component */}
         </>
@@ -210,3 +236,5 @@ const Logger = () => {
 
     return logger;
 };
+
+
