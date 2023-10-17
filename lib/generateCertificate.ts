@@ -76,7 +76,7 @@ export async function readCertificateSigningKeyPairFromFile() {
 
   const hash = "SHA-256";
   const alg = {
-    name: "RSA-PSS",
+    name: "RSASSA-PKCS1-v1_5",
     hash,
   };
   const privateKey = await crypto.subtle.importKey("pkcs8", privateKeyDer, alg, true, ["sign"]);
@@ -94,9 +94,17 @@ function preparePem(pem: string) {
       .replace(/[\r\n]/g, "")
   );
 }
-export async function readCertificateFromFile() {
+export async function readSigningCertificateFromFile() {
   // Read private key
   const cert = readFileSync(path.join(process.cwd(), "keys/ZKIDXMLCertificateSigner.pem"), {
+    encoding: "utf8",
+  });
+  return preparePem(cert);
+}
+
+export async function readIssuerCertificateFromFile() {
+  // Read private key
+  const cert = readFileSync(path.join(process.cwd(), "keys/EntradaIssuingCA.pem"), {
     encoding: "utf8",
   });
   return preparePem(cert);

@@ -12,6 +12,7 @@ import moment from 'moment';
 import { LoggerProps } from '@/lib/services/zkProofGenerators/ageVerificationProofGenerator';
 import { Check, Close, Help } from '@mui/icons-material'; // Import icons from Material-UI
 import AlertMessageDialog from './AlertMessageDialog';
+import { XadesClass } from '@/lib/services/XadesClass';
 
 // import { readFileSync } from 'fs';
 // import path from 'path';
@@ -72,6 +73,18 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
             setIsProofVerified(plonkResult);
         }
     };
+
+    const verifyXMLSignature = async () => {
+        const xades = new XadesClass();
+        const resultOfSignatureVerification = await xades.verifyXml(displayProps.certificateData);
+        const message = resultOfSignatureVerification ? 'Signature verified successfully' : 'Signature verification failed';
+        const severity = resultOfSignatureVerification ? 'success' : 'error';
+        if (alertMessageDialogRef.current) {
+            alertMessageDialogRef.current.handleAlertOpen(message, severity);
+        }
+        setIsSignatureVerified(resultOfSignatureVerification);
+    }
+
     if (!displayProps.certificateData) {
         return <div>No certificate data</div>;
     }
@@ -118,7 +131,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                             <Button onClick={() => setAgeverificationVerifierInputModalOpen(true)} variant="contained" color="primary">
                                 Verify Proof
                             </Button>
-                            <Button variant="contained" color="primary">
+                            <Button variant="contained" color="primary" onClick={verifyXMLSignature}>
                                 Verify Signature
                             </Button>
                         </Box>

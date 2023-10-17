@@ -26,8 +26,17 @@ export class XadesClass {
     // const xmlDoc = new dom.DOMParser().parseFromString(xmlString, "application/xml");
     const xmlDoc = xadesjs.Parse(xmlString);
     const signedXml: XAdES.SignedXml = new this.xadesjs.SignedXml(xmlDoc);
-    await signedXml.Sign(algorithm, keys.privateKey, xmlDoc, optionalSign);
-    return signedXml.toString();
+    const signature = await signedXml.Sign(algorithm, keys.privateKey, xmlDoc, optionalSign);
+    let sigElement = signature.GetXml();
+    if (!sigElement) {
+      throw new Error("Signature element not found in the XML.");
+    }
+    // append signature
+    xmlDoc.documentElement.appendChild(sigElement);
+    // serialize XML
+    const oSerializer = new XMLSerializer();
+    const sXML = oSerializer.serializeToString(xmlDoc);
+    return sXML.toString();
   }
 
   async verifyXml(xmlString: string): Promise<boolean> {
@@ -55,6 +64,7 @@ export class XadesClass {
     // Verify the signature
     return signedXml.Verify();
   }
+
   preparePem(pem: string) {
     return (
       pem

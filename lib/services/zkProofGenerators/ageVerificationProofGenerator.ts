@@ -6,7 +6,11 @@ import moment from "moment";
 import { serializeProofAndEncodeToBase64 } from "../utils";
 import { InputData, generateXml } from "@/lib/generateAgeVerificationCertificate";
 import { XadesClass } from "../XadesClass";
-import { readCertificateFromFile, readCertificateSigningKeyPairFromFile } from "@/lib/generateCertificate";
+import {
+  readSigningCertificateFromFile,
+  readCertificateSigningKeyPairFromFile,
+  readIssuerCertificateFromFile,
+} from "@/lib/generateCertificate";
 
 const wasmFilePath = path.join(process.cwd(), "lib/circomBuilds/ageVerifcation/ageProof.wasm");
 const zkeyFilePath = path.join(process.cwd(), "lib/circomBuilds/ageVerifcation/ageProof.zkey");
@@ -56,14 +60,17 @@ export async function generateProofForAgeverification(
 
   const hash = "SHA-256";
   const alg = {
-    name: "RSA-PSS",
+    name: "RSASSA-PKCS1-v1_5",
     hash,
   };
-  const x509 = await readCertificateFromFile();
+  const signingCert = await readSigningCertificateFromFile();
+  const issuerCert = await readIssuerCertificateFromFile();
   const XMLcertSigningkeyPair = await readCertificateSigningKeyPairFromFile();
   const xmlCertificate = await xades.signXml(generatedXml, XMLcertSigningkeyPair, alg, {
-    references: [{ hash, transforms: ["enveloped"] }],
-    signingCertificate: x509,
+    keyValue: XMLcertSigningkeyPair.publicKey,
+    references: [{ hash, transforms: ["c14n", "enveloped"] }],
+    x509: [signingCert, issuerCert],
+    signingCertificate: signingCert,
   });
   return xmlCertificate;
 }
