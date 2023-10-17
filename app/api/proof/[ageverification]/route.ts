@@ -78,7 +78,7 @@ export async function POST(req: NextRequest, context: any) {
       console.error("XML certificate not saved");
       throw new Error("XML certificate not saved");
     }
-    const insertedId = xmlDocSaved.insertedId.toString();
+    // const insertedId = xmlDocSaved.insertedId.toString();
     const origin = process.env.NEXTAUTH_URL!;
     const url = `${origin}/verifyproof?userId=${userSystemID}&type=nAgeVerify`;
     return NextResponse.json({ certificateData: signedXmlCertificateWithZKproof, shareUrl: url }, { status: 200 });

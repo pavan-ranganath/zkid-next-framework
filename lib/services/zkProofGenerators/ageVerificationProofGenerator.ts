@@ -37,6 +37,7 @@ export async function generateProofForAgeverification(
   };
 
   const { proof, publicSignals } = await plonk.fullProve(INPUT, wasmFile, zkeyFile);
+  console.log("Public signals: ", publicSignals);
   //Serialize the proof and encode it in base64 format.
   const base64Proof = serializeProofAndEncodeToBase64(proof);
 
@@ -67,10 +68,11 @@ export async function generateProofForAgeverification(
   return xmlCertificate;
 }
 
-interface LoggerProps {
+export interface LoggerProps {
   debug(message: string): void;
   error(message: string): void;
   info(message: string): void;
+  warn(message: string): void;
 }
 
 const Logger = () => {
@@ -83,6 +85,9 @@ const Logger = () => {
     },
     info: (message: string) => {
       console.log(`[INFO] ${message}`);
+    },
+    warn: (message: string) => {
+      console.log(`[WARN] ${message}`);
     },
   };
 

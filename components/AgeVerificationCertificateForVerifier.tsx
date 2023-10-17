@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Backdrop, Box, Button, Card, CardContent, CardHeader, CircularProgress, Grid, Typography } from '@mui/material';
+import { Backdrop, Box, Button, Card, CardContent, CardHeader, CircularProgress, Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
 import QRCode from 'qrcode.react'; // Install qrcode.react
 import { XMLParser } from "fast-xml-parser";
 import { AgeVerificatingCertificate } from '@/lib/interfaces/Certificate.interface';
 import Image from 'next/image';
 import { CertificateDisplayProps } from './AgeVerificateCertificateDisplay';
 import AgeverificationVerifierInputModal from './ageverificationVerifierInputModal';
+import { decodeBase64AndDeserializeProof } from '@/lib/services/utils';
+const snarkjs = require("snarkjs") as typeof import("snarkjs");
+import moment from 'moment';
+import { LoggerProps } from '@/lib/services/zkProofGenerators/ageVerificationProofGenerator';
+import { Check, Close, Help } from '@mui/icons-material'; // Import icons from Material-UI
+
+// import { readFileSync } from 'fs';
+// import path from 'path';
 
 
+// const vKeyfilePath = path.join(process.cwd(), "lib/circomBuilds/ageVerifcation/ageProof.vkey.json");
+// const vKeyfile = readFileSync(vKeyfilePath);
 
 export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayProps) => {
     const [isAgeverificationVerifierInputModalOpen, setAgeverificationVerifierInputModalOpen] = useState(false);
-
+    const [isProofVerified, setIsProofVerified] = useState<boolean | null>(null);
+    const [isSignatureVerified, setIsSignatureVerified] = useState<boolean | null>(null);
     const [certificateInfo, setCertificateInfo] = useState<AgeVerificatingCertificate>({} as AgeVerificatingCertificate);
     const parser = new XMLParser({
         attributeNamePrefix: '',
@@ -27,10 +38,32 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
         console.log(parsedData);
         setCertificateInfo(parsedData);
     }, [displayProps]);
-    const handleAgeverificationVerifierInputCloseModal = (formData: any) => {
+    const handleAgeverificationVerifierInputCloseModal = async (formData: { age: string, date: string }) => {
         setAgeverificationVerifierInputModalOpen(false);
         // Do something with the form data received from the modal
         console.log("Form data received from modal:", formData);
+        // Use the formData to verify the proof
+        // check if formdata is not null
+        if (formData) {
+            //Implement verification logic here
+            const encodedZKproof = certificateInfo.Certificate.CertificateData?.ZKPROOF._;
+            const ZKproof = decodeBase64AndDeserializeProof(encodedZKproof);
+            const publicSignal =
+                [
+                    '1',
+                    moment(formData.date).date().toString(),
+                    (moment(formData.date).month() + 1).toString(),
+                    moment(formData.date).year().toString(),
+                    formData.age,
+                ]
+
+            // const publicSignalValues = Object.values(publicSignal).map(value => value.toString());
+            const vkey = await fetch("ageProof.vkey.json").then(function (res) {
+                return res.json();
+            });
+            const plonkResult = await snarkjs.plonk.verify(vkey, publicSignal, ZKproof, Logger());
+            console.log("plonkResult", plonkResult);
+        }
     };
     if (!displayProps.certificateData) {
         return <div>No certificate data</div>;
@@ -82,6 +115,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                                 Verify Signature
                             </Button>
                         </Box>
+
                     </CardContent>
                 </Card>
 
@@ -91,6 +125,17 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                 onClose={handleAgeverificationVerifierInputCloseModal}
                 data={certificateInfo}
             />
+            {/* Separate section for verification status */}
+            <List sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '16px' }}>
+                <ListItem>
+                    <ListItemText primary="Proof verification status" />
+                    {isProofVerified === null ? <Help sx={{ color: 'gray', fontSize: '1.5rem' }} /> : isProofVerified ? <Check sx={{ color: 'green', fontSize: '1.5rem' }} /> : <Close sx={{ color: 'red', fontSize: '1.5rem' }} />}
+                </ListItem>
+                <ListItem>
+                    <ListItemText primary="Signature verification status" />
+                    {isSignatureVerified === null ? <Help sx={{ color: 'gray', fontSize: '1.5rem' }} /> : isSignatureVerified ? <Check sx={{ color: 'green', fontSize: '1.5rem' }} /> : <Close sx={{ color: 'red', fontSize: '1.5rem' }} />}
+                </ListItem>
+            </List>
         </>
 
     );
@@ -116,6 +161,7 @@ const styles = {
     },
     buttonsContainer: {
         marginTop: '16px',
+        marginBottom: '16px',
         display: 'flex',
         justifyContent: 'space-between',
         '& > button': {
@@ -124,3 +170,22 @@ const styles = {
     },
 };
 export default CertificateDisplayForVerifier;
+
+const Logger = () => {
+    const logger: LoggerProps = {
+        debug: (message: string) => {
+            console.log(`[DEBUG] ${message}`);
+        },
+        error: (message: string) => {
+            console.log(`[ERROR] ${message}`);
+        },
+        info: (message: string) => {
+            console.log(`[INFO] ${message}`);
+        },
+        warn(message: string) {
+            console.log(`[WARN] ${message}`);
+        },
+    };
+
+    return logger;
+};

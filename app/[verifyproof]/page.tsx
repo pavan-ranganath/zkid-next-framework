@@ -3,7 +3,7 @@ import { CertificateDisplayProps } from "@/components/AgeVerificateCertificateDi
 import CertificateDisplayForVerifier from "@/components/AgeVerificationCertificateForVerifier";
 import AppLogoSVG from "@/components/appLogo";
 import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interface";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from "react";
 
@@ -23,7 +23,12 @@ export default function VerifyProofComponent() {
         useEffect(() => {
             getData(userId).then()
         }, [userId])
-        if (certificateInfo.certificateData === undefined) return (<div>Loading...</div>)
+        if (certificateInfo.certificateData === undefined) return (<>
+            {/* Display a loading backdrop */}
+            <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+        </>)
         return (<CertificateDisplayForVerifier certificateData={certificateInfo.certificateData} shareUrl={certificateInfo.shareUrl} />)
     }
     return (
