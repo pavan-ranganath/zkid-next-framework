@@ -27,8 +27,7 @@ export default function VerifyProofComponent() {
         return (<CertificateDisplayForVerifier certificateData={certificateInfo.certificateData} shareUrl={certificateInfo.shareUrl} />)
     }
     return (
-        <
-            >
+        <>
             {/* Display branding */}
             <div style={{ textAlign: "center", marginBottom: "2rem" }}>
                 <AppLogoSVG theme="light" />

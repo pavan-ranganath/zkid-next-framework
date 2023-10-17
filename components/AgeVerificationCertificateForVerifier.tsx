@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { Backdrop, Box, Button, Card, CardContent, CardHeader, CircularProgress, Grid, Typography } from '@mui/material';
 import QRCode from 'qrcode.react'; // Install qrcode.react
 import { XMLParser } from "fast-xml-parser";
 import { AgeVerificatingCertificate } from '@/lib/interfaces/Certificate.interface';
 import Image from 'next/image';
 import { CertificateDisplayProps } from './AgeVerificateCertificateDisplay';
+import AgeverificationVerifierInputModal from './ageverificationVerifierInputModal';
 
 
 
 export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayProps) => {
+    const [isAgeverificationVerifierInputModalOpen, setAgeverificationVerifierInputModalOpen] = useState(false);
 
     const [certificateInfo, setCertificateInfo] = useState<AgeVerificatingCertificate>({} as AgeVerificatingCertificate);
     const parser = new XMLParser({
@@ -25,55 +27,71 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
         console.log(parsedData);
         setCertificateInfo(parsedData);
     }, [displayProps]);
-
+    const handleAgeverificationVerifierInputCloseModal = (formData: any) => {
+        setAgeverificationVerifierInputModalOpen(false);
+        // Do something with the form data received from the modal
+        console.log("Form data received from modal:", formData);
+    };
     if (!displayProps.certificateData) {
         return <div>No certificate data</div>;
     }
     if (!certificateInfo.Certificate) {
-        return <div>Loading...</div>;
+        return <>
+            {/* Display a loading backdrop */}
+            <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+        </>
     }
     return (
-        <Box sx={styles.cardContainer}>
-            <Card sx={{ ...styles.card }}>
-                <CardContent sx={styles.centeredContent}>
-                    <Typography variant="h4" sx={{ textTransform: 'capitalize' }}>{certificateInfo.Certificate.name} proof</Typography>
-                    <Typography>Issued By: {certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
-                    <Grid container spacing={2}>
-                        <Grid item xs={4} sx={styles.centeredContent}>
-                            <Image
-                                src={`data:image/jpeg;base64, ${certificateInfo.Certificate.IssuedTo.Person.Photo._}`}
-                                alt="Person's Photo"
-                                width={100}
-                                height={100}
-                            />
+        <>
+            <Box sx={styles.cardContainer}>
+                <Card sx={{ ...styles.card }}>
+                    <CardContent sx={styles.centeredContent}>
+                        <Typography variant="h4" sx={{ textTransform: 'capitalize' }}>{certificateInfo.Certificate.name} proof</Typography>
+                        <Typography>Issued By: {certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={4} sx={styles.centeredContent}>
+                                <Image
+                                    src={`data:image/jpeg;base64, ${certificateInfo.Certificate.IssuedTo.Person.Photo._}`}
+                                    alt="Person's Photo"
+                                    width={100}
+                                    height={100}
+                                />
+                            </Grid>
+                            <Grid item xs={8} sx={{ ...styles.centeredContent, alignItems: 'start' }}>
+                                <Typography variant="h5">{certificateInfo.Certificate.IssuedTo.Person.name}</Typography>
+                                <Typography variant="h6">Claimed Age: {certificateInfo.Certificate.CertificateData?.ZKPROOF?.claimedAge}</Typography>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={8} sx={{ ...styles.centeredContent, alignItems: 'start' }}>
-                            <Typography variant="h5">{certificateInfo.Certificate.IssuedTo.Person.name}</Typography>
-                            <Typography variant="h6">Claimed Age: {certificateInfo.Certificate.CertificateData?.ZKPROOF?.claimedAge}</Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6} sx={styles.centeredContent}>
+                                <Typography>Issued: {certificateInfo.Certificate.issueDate}</Typography>
+                            </Grid>
+                            <Grid item xs={6} sx={styles.centeredContent}>
+                                <Typography>Expiry: {certificateInfo.Certificate.expiryDate}</Typography>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6} sx={styles.centeredContent}>
-                            <Typography>Issued: {certificateInfo.Certificate.issueDate}</Typography>
-                        </Grid>
-                        <Grid item xs={6} sx={styles.centeredContent}>
-                            <Typography>Expiry: {certificateInfo.Certificate.expiryDate}</Typography>
-                        </Grid>
-                    </Grid>
-                    {/* <QRCode value={displayProps.shareUrl} /> */}
-                    <Box sx={styles.buttonsContainer}>
+                        {/* <QRCode value={displayProps.shareUrl} /> */}
+                        <Box sx={styles.buttonsContainer}>
 
-                        <Button variant="contained" color="primary">
-                            Verify Proof
-                        </Button>
-                        <Button variant="contained" color="primary">
-                            Verify Signature
-                        </Button>
-                    </Box>
-                </CardContent>
-            </Card>
+                            <Button onClick={() => setAgeverificationVerifierInputModalOpen(true)} variant="contained" color="primary">
+                                Verify Proof
+                            </Button>
+                            <Button variant="contained" color="primary">
+                                Verify Signature
+                            </Button>
+                        </Box>
+                    </CardContent>
+                </Card>
 
-        </Box>
+            </Box>
+            <AgeverificationVerifierInputModal
+                open={isAgeverificationVerifierInputModalOpen}
+                onClose={handleAgeverificationVerifierInputCloseModal}
+                data={certificateInfo}
+            />
+        </>
 
     );
 };
