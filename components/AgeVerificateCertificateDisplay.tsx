@@ -5,6 +5,7 @@ import { XMLParser } from "fast-xml-parser";
 import { AgeVerificatingCertificate } from '@/lib/interfaces/Certificate.interface';
 import Image from 'next/image';
 import moment from 'moment';
+import { saveAs } from 'file-saver';
 
 export interface CertificateDisplayProps {
     certificateData: string;
@@ -19,6 +20,10 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
         textNodeName: '_',
         ignoreAttributes: false,
     });
+    const handleDownload = () => {
+        const blob = new Blob([displayProps.certificateData], { type: 'application/xml' });
+        saveAs(blob, certificateInfo.Certificate.name + '.xml');
+    };
     useEffect(() => {
         // Parse the XML data and extract the required information
         // You can use a library like xml2js for this stepxw
@@ -72,7 +77,7 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
                         <Button variant="contained" color="primary">
                             Share
                         </Button>
-                        <Button variant="contained" color="primary">
+                        <Button variant="contained" color="primary" onClick={handleDownload}>
                             Download
                         </Button>
                     </Box>
