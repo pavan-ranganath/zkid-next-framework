@@ -6,6 +6,7 @@ import { AgeVerificatingCertificate } from '@/lib/interfaces/Certificate.interfa
 import Image from 'next/image';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
+import ShareButton from './ShareButtons';
 
 export interface CertificateDisplayProps {
     certificateData: string;
@@ -74,9 +75,10 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
                     <QRCode value={displayProps.shareUrl} style={styles.spacingBetween} />
                     <Box sx={styles.buttonsContainer}>
 
-                        <Button variant="contained" color="primary">
+                        {/* <Button variant="contained" color="primary">
                             Share
-                        </Button>
+                        </Button> */}
+                        <ShareButton style={{ marginRight: '6px' }} url={displayProps.shareUrl} />
                         <Button variant="contained" color="primary" onClick={handleDownload}>
                             Download
                         </Button>
