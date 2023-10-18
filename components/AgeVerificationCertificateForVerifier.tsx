@@ -179,7 +179,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                 </ListItem>
                 {isSignatureVerified === true && <ListItem>
                     {/* <ListItemText primary="Signature Certificate" /> */}
-                    <DigitalSignatureTag certificate={signatureCertificate.signCert} signedDate={signatureCertificate.signedDate} />
+                    <DigitalSignatureTag certificate={signatureCertificate.signCert} ageVerificationXMLCertificate={certificateInfo} />
                 </ListItem>}
             </List>
             <AlertMessageDialog ref={alertMessageDialogRef} /> {/* Render the alert component */}

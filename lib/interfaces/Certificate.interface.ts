@@ -94,7 +94,7 @@ export interface AgeVerificatingCertificateData {
                 };
                 "xades:IssuerSerial": {
                   "ds:X509IssuerName": string;
-                  "ds:X509SerialNumber": number;
+                  "ds:X509SerialNumber": BigInt;
                 };
               };
             };

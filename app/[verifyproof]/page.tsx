@@ -4,12 +4,14 @@ import CertificateDisplayForVerifier from "@/components/AgeVerificationCertifica
 import AppLogoSVG from "@/components/appLogo";
 import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interface";
 import { Backdrop, Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { useConfirm } from "material-ui-confirm";
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from "react";
 
 export default function VerifyProofComponent() {
     const searchParams = useSearchParams()
     const [certificateInfo, setCertificateInfo] = useState<CertificateDisplayProps>({} as CertificateDisplayProps);
+    const confirmDialog = useConfirm();
     const userId = useMemo(() => {
         return searchParams.get("userId");
     }, [searchParams]);

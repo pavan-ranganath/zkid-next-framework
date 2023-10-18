@@ -23,7 +23,7 @@ export default function Dashboard() {
   const [userInfo, setUserInfo] = useState<credentailsFromTb | null>(null);
   const [error, setError] = useState<any>(null);
   const [userInfoIsLoading, setUserInfoIsLoading] = useState<any>(null);
-
+  const confirmDialog = useConfirm();
   const handleAgeverificationProverInputCloseModal = async (formData: { claimAge: string, claimDate: string }) => {
     setAgeverificationProverInputModalOpen(false);
     await generateProof(formData)

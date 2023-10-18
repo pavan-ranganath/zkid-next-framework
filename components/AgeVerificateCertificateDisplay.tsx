@@ -7,6 +7,7 @@ import Image from 'next/image';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
 import ShareButton from './ShareButtons';
+import { ConfirmOptions } from 'material-ui-confirm';
 
 export interface CertificateDisplayProps {
     certificateData: string;
