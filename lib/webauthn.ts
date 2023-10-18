@@ -42,6 +42,7 @@ export interface DbCredential {
     aadhaar: string;
     digiLockerUserInfo: string;
   };
+  photo?: string;
 }
 
 /**

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { Backdrop, Box, Button, Card, CardContent, CardHeader, CircularProgress, Grid, Typography } from '@mui/material';
 import QRCode from 'qrcode.react'; // Install qrcode.react
 import { XMLParser } from "fast-xml-parser";
 import { AgeVerificatingCertificate } from '@/lib/interfaces/Certificate.interface';
@@ -12,7 +12,6 @@ export interface CertificateDisplayProps {
 }
 
 export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
-    const [showQR, setShowQR] = useState(true);
 
     const [certificateInfo, setCertificateInfo] = useState<AgeVerificatingCertificate>({} as AgeVerificatingCertificate);
     const parser = new XMLParser({
@@ -34,18 +33,18 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
         return <div>No certificate data</div>;
     }
     if (!certificateInfo.Certificate) {
-        return <div>Loading...</div>;
+        return <>
+            <CircularProgress color="inherit" />
+        </>
     }
-    const flipCard = () => {
-        setShowQR(!showQR);
-    };
+
     return (
         <Box sx={styles.cardContainer}>
             <Card sx={{ ...styles.card }}>
                 <CardContent sx={styles.centeredContent}>
-                    <Typography variant="h4" sx={{ textTransform: 'capitalize' }}>{certificateInfo.Certificate.name} proof</Typography>
-                    <Typography>Issued By: {certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
-                    <Grid container spacing={2}>
+                    <Typography variant="h5" sx={{ textTransform: 'capitalize' }}>{certificateInfo.Certificate.name} proof</Typography>
+                    <Typography >Issued By: {certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
+                    <Grid container spacing={2} style={styles.spacingBetween}>
                         <Grid item xs={4} sx={styles.centeredContent}>
                             <Image
                                 src={`data:image/jpeg;base64, ${certificateInfo.Certificate.IssuedTo.Person.Photo._}`}
@@ -59,7 +58,7 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
                             <Typography variant="h6">Claimed Age: {certificateInfo.Certificate.CertificateData?.ZKPROOF?.claimedAge}</Typography>
                         </Grid>
                     </Grid>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={2} style={styles.spacingBetween}>
                         <Grid item xs={6} sx={styles.centeredContent}>
                             <Typography>Issued: {moment(certificateInfo.Certificate.issueDate).format("DD, MMM, YYYY")}</Typography>
                         </Grid>
@@ -67,11 +66,9 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
                             <Typography>Expiry: {moment(certificateInfo.Certificate.expiryDate).format("DD, MMM, YYYY")}</Typography>
                         </Grid>
                     </Grid>
-                    {showQR && (<QRCode value={displayProps.shareUrl} />)}
+                    <QRCode value={displayProps.shareUrl} style={styles.spacingBetween} />
                     <Box sx={styles.buttonsContainer}>
-                        <Button variant="contained" color="primary" onClick={flipCard}>
-                            {!showQR ? "Display QR" : "Hide QR"}
-                        </Button>
+
                         <Button variant="contained" color="primary">
                             Share
                         </Button>
@@ -113,5 +110,8 @@ const styles = {
             marginRight: '6px', // Adjust the margin to your preference
         },
     },
+    spacingBetween: {
+        paddingTop: '5px',
+    }
 };
 export default CertificateDisplay;

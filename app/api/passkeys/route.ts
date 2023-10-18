@@ -108,7 +108,23 @@ export async function GET(req: NextRequest, context: any) {
 
     // Querying the collection to find a document with the matching userID
     const data = await collection.findOne({ userID: email });
-    const response = NextResponse.json({ data, error: error ? `Verification failed: ${error}` : "" }, { status: 200 });
+    if (!data) {
+      // Returning a JSON response with an error message and a status code of 404 (Not Found)
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    const { aadhaar } = data;
+    if (!aadhaar) {
+      // Returning a JSON response with an error message and a status code of 404 (Not Found)
+      return NextResponse.json({ error: "Aadhaar not found" }, { status: 404 });
+    }
+    const xmlAadhar = new AadhaarXmlParser(aadhaar.aadhaar);
+    await xmlAadhar.parseXml();
+    const pht = xmlAadhar.extractPhtValue;
+    await xmlAadhar.parseXml();
+    const response = NextResponse.json(
+      { data: { ...data, photo: pht }, error: error ? `Verification failed: ${error}` : "" },
+      { status: 200 },
+    );
     // remove  digilocker cookie
     if (!error) {
       removeSession(response, "digiLockerUserSession");

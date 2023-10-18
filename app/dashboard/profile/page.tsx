@@ -75,7 +75,6 @@ async function GetPasskeys({
   isLoading: any;
   warningDisplay: string;
 }) {
-  // get query param from url
   const confirm = useConfirm();
   // Display loading message while fetching data
   if (isLoading) return <div>loading...</div>;
