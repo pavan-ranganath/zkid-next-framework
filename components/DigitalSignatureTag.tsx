@@ -20,10 +20,10 @@ function DigitalSignatureTag({ certificate, ageVerificationXMLCertificate }: { c
     // display ageVerificationXMLCertificate signed info and digest info
     const signingCert = ageVerificationXMLCertificate.Certificate['ds:Signature']['ds:Object']['xades:QualifyingProperties']['xades:SignedProperties']['xades:SignedSignatureProperties']['xades:SigningCertificate']['xades:Cert']['xades:IssuerSerial']
     return (
-        <div style={{ border: '1px solid', padding: '10px', borderRadius: '5px', maxWidth: '300px' }}>
+        <div style={{ border: '1px solid', padding: '10px', borderRadius: '5px' }}>
             <Typography variant='body2'>Digitally signed by</Typography>
-            <Typography variant='body2'> {organizationName} </Typography>
-            <Typography variant='body2'> Date: {moment(ageVerificationXMLCertificate.Certificate.issueDate).format('DD, MMM, YYYY')}</Typography>
+            <Typography variant='body1'> {organizationName} </Typography>
+            <Typography variant='body1'> Date: {moment(ageVerificationXMLCertificate.Certificate.issueDate).format('DD, MMM, YYYY')}</Typography>
             {/* more info button */}
             <Button variant='text' fullWidth size='small' onClick={handleOpen}>More info</Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby="certificate-dialog">
@@ -83,7 +83,7 @@ function DigitalSignatureTag({ certificate, ageVerificationXMLCertificate }: { c
                         <Typography variant="body1">
                             <strong>Serial no.:</strong>
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography variant="body2" style={{ wordBreak: 'break-all' }}>
                             {BigInt(signingCert['ds:X509SerialNumber'] as bigint).toString()}
                         </Typography>
                     </Box>

@@ -177,11 +177,10 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                     {isSignatureVerified === null ? <Help sx={{ color: 'gray', fontSize: '1.5rem' }} /> : isSignatureVerified ? <Check sx={{ color: 'green', fontSize: '1.5rem' }} /> : <Close sx={{ color: 'red', fontSize: '1.5rem' }} />}
 
                 </ListItem>
-                {isSignatureVerified === true && <ListItem>
-                    {/* <ListItemText primary="Signature Certificate" /> */}
-                    <DigitalSignatureTag certificate={signatureCertificate.signCert} ageVerificationXMLCertificate={certificateInfo} />
-                </ListItem>}
+
             </List>
+            {isSignatureVerified === true &&
+                <DigitalSignatureTag certificate={signatureCertificate.signCert} ageVerificationXMLCertificate={certificateInfo} />}
             <AlertMessageDialog ref={alertMessageDialogRef} /> {/* Render the alert component */}
         </>
 
