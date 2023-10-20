@@ -9,6 +9,7 @@ import { Suspense, useEffect } from "react";
 import useSWR from "swr";
 import Image from 'next/image';
 import moment from "moment";
+import { epochToDate } from "@/lib/services/utils";
 export const ZKidDigitalCardDisplay = () => {
     const {
         data: userInfoResp,
@@ -89,7 +90,7 @@ function DisplayUserCard({
                         </Grid>
                         <Grid item xs={8} sx={{ ...styles.centeredContent, alignItems: 'start' }}>
                             <Typography variant="h6">{userInfo.userInfo?.fullName.value}</Typography>
-                            <Typography variant="body1">{moment(userInfo.userInfo?.dob.value).format('DD, MMM, YYYY')}</Typography>
+                            <Typography variant="body1">{userInfo.userInfo?.dob.value ? moment(epochToDate(userInfo.userInfo?.dob.value)).format('DD, MMM, YYYY') : ''}</Typography>
                             <Typography variant="body1">{userInfo.userInfo?.mobile.value}</Typography>
                             <Typography variant="body1">{userInfo.userInfo?.email.value}</Typography>
                         </Grid>

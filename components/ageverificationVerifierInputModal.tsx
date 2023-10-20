@@ -14,6 +14,8 @@ import * as yup from "yup"; // Yup library for form validation
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { AgeVerificatingCertificate } from '@/lib/interfaces/Certificate.interface';
+import { epochToDate } from '@/lib/services/utils';
+import moment from 'moment';
 
 interface AgeverificationVerifierInputModalProps {
     open: boolean;
@@ -56,9 +58,10 @@ const AgeverificationVerifierInputModal: React.FC<AgeverificationVerifierInputMo
     // Form submission handler
     function onSubmit(dataFromUser: any) {
         console.log("data submitted", dataFromUser);
-        const issuedDate = new Date(data.Certificate.CertificateData.ZKPROOF.claimedDate)
+        const issuedDate = moment.unix(+data.Certificate.CertificateData.ZKPROOF.claimedDate / 1000).startOf('day')
+        const dateRequirementFromUser = moment(dataFromUser.date).startOf('day')
         // check dateRequirementFromUser is less than or equal to issuedDate
-        if (new Date(dataFromUser.date) > issuedDate) {
+        if (dateRequirementFromUser.isBefore(issuedDate)) {
             alert("This proof does not align with your specified requirements.")
             return
         }
@@ -70,7 +73,7 @@ const AgeverificationVerifierInputModal: React.FC<AgeverificationVerifierInputMo
             return
         }
         const formData = {
-            date: issuedDate,
+            date: issuedDate.toDate(),
             age: claimedAge,
         };
         handleClose(formData)

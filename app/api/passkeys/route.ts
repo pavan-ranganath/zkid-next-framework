@@ -11,7 +11,8 @@ import { DbCredential, authOptions } from "@/lib/webauthn";
 import { checkDigiLockerID } from "@/lib/services/storage";
 import { credentailsFromTb } from "@/lib/services/userService";
 import { sendEmailVerification } from "../auth/emailverifier/route";
-
+const phtPlaceholder =
+  "/9j/4AAQSkZJRgABAQACWAJYAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBCQkJDAsMGA0NGDIhHCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMv/CABEIAMgAyAMBIgACEQEDEQH/xAAtAAEAAwEBAQAAAAAAAAAAAAAAAwQFAgEHAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAAA+vCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZpcpVRJJXF65i9G2ilAAAAAAAAKNCSMCgALGrhbkegAAAAAAc9cGKKAAAbeJsxIAAAAAABBPRKAoAABrZN+LwAAAAAAFW1yYiaGgAAGnS1Y6AAAAAAABWy93JIBQAnLtkgAAAAAAABSs5xXFANDPsRqo5AAAAAAA4ql2PMhJoSgAAJtPGRusi0XXHYAABHncwgUAAAAAAAsVxsyZGvADkMQUAAAAAAAAA2yOgf/8QAMRAAAQIDBAgGAQUAAAAAAAAAAQIDBBEhABIwUQUTIDEyQEFhIjNScXKBEBRDU3CR/9oACAEBAAE/AP6gdiWmhVQKvSN9nI91VESQO2+36h7+Vf8AtkRr6d6gr5CyNIqn42wRmmzTyHhNBnmOo5IkAEkyAtExhWbjRkjqc9pC1NrCkGRFmHg+3eFCKEZHkdIOkANA76qwIN3VvgT8KqHkYhzWvrV0nIe2BOVbJM0A5jHWZIUcgThIM20nsMd7yHPicJjyG/iMeKdS20Qqc1AgSwoV1DjQCZzSADPH0l+2ffC0ducPtjx6L0Pe9JnhQCLsPe9RnjrQHEKQrcRI2iIcw6wJzBEwZYEPDmIWROQAmTKyEBtCUJ3ASHIRrWsYmN6a/WBBNatiZ3qr9clFMahynCqo2oVjXu14U1Pfk9I+W38jtaO8tz5DknHkNJmtQGQ6m0VEh8gBMkpz67ULE6gqBSSlWXSzbyHUzQoHMdRyDsQ01xLE8hU2iXg+7fAIEpVwIZ4MO3yCRKVLNRDTvCsTyNDiLeba41gdutnNIIFG0FXc0s5FvOb1SGSaYjcW83uVMZKrZvSCDRxBT3FbIebd4Fg9uu288hhF5X0M7OxjrlAbick8k1GOt0JvpyVZl5D6LyfsZbMS6Xn1GdBQe3KQzpafSZ0ND7bCzdbUcgTyyDebScwD+P/EABQRAQAAAAAAAAAAAAAAAAAAAHD/2gAIAQIBAT8AKf/EABQRAQAAAAAAAAAAAAAAAAAAAHD/2gAIAQMBAT8AKf/Z";
 // Defining a type for the filter object
 export type filter = {
   id: string;
@@ -45,6 +46,7 @@ export async function GET(req: NextRequest, context: any) {
       const { access_token } = token;
       const { method, pathTemplate } = API_CONFIG.DIGILOCKER.paths.eAadhaar;
       const { apiUrl } = API_CONFIG.DIGILOCKER;
+      console.log("idTokenClaims", idTokenClaims);
       const checkIfDigilockerIdExists = await checkDigiLockerID(idTokenClaims.user_sso_id, email);
       if (checkIfDigilockerIdExists) {
         error = "Digilocker already linked to an account";
@@ -57,7 +59,21 @@ export async function GET(req: NextRequest, context: any) {
         new Headers(),
         null,
       );
+      const status = responseDigilockerAaadhaar.status;
+      if (status !== 200) {
+        const err = await responseDigilockerAaadhaar.json();
+        if (err === "insufficient_scope") {
+          error = "Please provide consent for Aadhaar";
+          console.error("Insufficient scope");
+          break breakme;
+        }
+        error = err.description ? err.description : "Failed to fetch Aadhaar from Digilocker";
+        console.error("Failed to fetch Aadhaar from Digilocker");
+        break breakme;
+      }
       const xmlAadharString = await responseDigilockerAaadhaar.text();
+
+      console.log("xmlAadharString", xmlAadharString);
       const xades = new XadesClass();
       const xmlVerify = xmlAadharString ? await xades.verifyXml(xmlAadharString) : false;
       if (!xmlVerify) {
@@ -108,27 +124,25 @@ export async function GET(req: NextRequest, context: any) {
 
     // Querying the collection to find a document with the matching userID
     const data = await collection.findOne({ userID: email });
+    let pht = phtPlaceholder;
     if (!data) {
       // Returning a JSON response with an error message and a status code of 404 (Not Found)
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     const { aadhaar } = data;
-    if (!aadhaar) {
-      // Returning a JSON response with an error message and a status code of 404 (Not Found)
-      return NextResponse.json({ error: "Aadhaar not found" }, { status: 404 });
+    if (aadhaar) {
+      const xmlAadhar = new AadhaarXmlParser(aadhaar.aadhaar);
+      await xmlAadhar.parseXml();
+      if (xmlAadhar.extractPhtValue) {
+        pht = xmlAadhar.extractPhtValue;
+      }
     }
-    const xmlAadhar = new AadhaarXmlParser(aadhaar.aadhaar);
-    await xmlAadhar.parseXml();
-    const pht = xmlAadhar.extractPhtValue;
-    await xmlAadhar.parseXml();
     const response = NextResponse.json(
       { data: { ...data, photo: pht }, error: error ? `Verification failed: ${error}` : "" },
       { status: 200 },
     );
     // remove  digilocker cookie
-    if (!error) {
-      removeSession(response, "digiLockerUserSession");
-    }
+    removeSession(response, "digiLockerUserSession");
     // Returning a JSON response with the retrieved data
     return response;
   } catch (_error) {

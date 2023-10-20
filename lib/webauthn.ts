@@ -35,7 +35,7 @@ export interface DbCredential {
   userInfo?: {
     fullName: Field<string>; // The first name of the user
     email: Field<string>; // The email address of the user
-    dob: Field<string>; // The last name of the user
+    dob: Field<number>; // The last name of the user
     mobile: Field<string>; // The last name of the user
   };
   aadhaar?: {

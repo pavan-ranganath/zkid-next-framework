@@ -24,7 +24,7 @@ export default function Dashboard() {
   const [error, setError] = useState<any>(null);
   const [userInfoIsLoading, setUserInfoIsLoading] = useState<any>(null);
   const confirmDialog = useConfirm();
-  const handleAgeverificationProverInputCloseModal = async (formData: { claimAge: string, claimDate: string }) => {
+  const handleAgeverificationProverInputCloseModal = async (formData: { claimAge: string, claimDate: number }) => {
     setAgeverificationProverInputModalOpen(false);
     await generateProof(formData)
   }
@@ -32,6 +32,7 @@ export default function Dashboard() {
   const getCertificateData = async () => {
     const response = await fetch("/api/proof");
     if (response.status !== 200) {
+      setVertificateData({ certificateData: "", shareUrl: "" })
       return;
     }
     const data = await response.json();
@@ -70,7 +71,7 @@ export default function Dashboard() {
     }
   }, [verifyStatus, confirm, router]);
   // API request to generate proof after button click
-  const generateProof = async (formData: { claimAge: string, claimDate: string }) => {
+  const generateProof = async (formData: { claimAge: string, claimDate: number }) => {
 
     const response = await fetch("/api/proof/ageverification", {
       method: "POST",

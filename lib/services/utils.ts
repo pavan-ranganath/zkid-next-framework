@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export function generateZKIDID(phone: string, dob: Date, aadhaarNumber: string = "0000"): string {
   // Remove special characters from phone
   const cleanedPhone = phone.replace(/[^0-9]/g, "");
@@ -36,4 +38,12 @@ export function decodeBase64AndDeserializeProof(
   const proofString = proofBuffer.toString("utf8");
   const proof = JSON.parse(proofString);
   return proof;
+}
+
+export function dateToEpoch(date: string | Date): number {
+  return moment(date).valueOf();
+}
+
+export function epochToDate(epoch: string): Date {
+  return moment.unix(+epoch / 1000).toDate(); // Convert seconds to milliseconds for Date object
 }

@@ -19,6 +19,7 @@ import { pki } from 'node-forge';
 
 // import { readFileSync } from 'fs';
 // import path from 'path';
+import { epochToDate } from '../lib/services/utils';
 
 
 // const vKeyfilePath = path.join(process.cwd(), "lib/circomBuilds/ageVerifcation/ageProof.vkey.json");
@@ -45,7 +46,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
         console.log(parsedData);
         setCertificateInfo(parsedData);
     }, [displayProps]);
-    const handleAgeverificationVerifierInputCloseModal = async (formData: { age: string, date: string }) => {
+    const handleAgeverificationVerifierInputCloseModal = async (formData: { age: string, date: number }) => {
         setAgeverificationVerifierInputModalOpen(false);
         // Do something with the form data received from the modal
         console.log("Form data received from modal:", formData);
@@ -140,10 +141,10 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
                         </Grid>
                         <Grid container spacing={2}>
                             <Grid item xs={6} sx={styles.centeredContent}>
-                                <Typography>Issued: {moment(certificateInfo.Certificate.issueDate).format("DD, MMM, YYYY")}</Typography>
+                                <Typography>Issued: {moment(epochToDate(certificateInfo.Certificate.issueDate)).format("DD, MMM, YYYY")}</Typography>
                             </Grid>
                             <Grid item xs={6} sx={styles.centeredContent}>
-                                <Typography>Expiry: {moment(certificateInfo.Certificate.expiryDate).format("DD, MMM, YYYY")}</Typography>
+                                <Typography>Expiry: {moment(epochToDate(certificateInfo.Certificate.expiryDate)).format("DD, MMM, YYYY")}</Typography>
                             </Grid>
                         </Grid>
                         {/* <QRCode value={displayProps.shareUrl} /> */}

@@ -1,6 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { storeData, getData, updateData } from "./storage";
 import { DbCredential } from "../webauthn";
+import { epochToDate } from "./utils";
 
 export interface PersonInfo {
   dob: string;
@@ -174,7 +175,7 @@ export const updateUserProfile = async (userProfile: DbCredential) => {
 export const matchFormDataAndAadharData = async (poi: PersonInfo, _user: DbCredential) => {
   try {
     const user = _user.userInfo!;
-    const userDateObject = user.dob.value ? new Date(user.dob.value) : new Date();
+    const userDateObject = user.dob.value ? epochToDate(user.dob.value.toString()) : new Date();
     const formattedUserDate = `${userDateObject.getDate().toString().padStart(2, "0")}-${(userDateObject.getMonth() + 1)
       .toString()
       .padStart(2, "0")}-${userDateObject.getFullYear()}`;

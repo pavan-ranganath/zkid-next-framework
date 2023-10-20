@@ -1,6 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Modal, DialogTitle, DialogContent, TextField, DialogContentText, Button } from "@mui/material";
 import { Box } from "@mui/system";
+import moment from "moment";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 interface AgeverificationProverInputModalProps {
@@ -35,12 +36,12 @@ export const AgeverificationProverInputModal: React.FC<AgeverificationProverInpu
     });
     function onSubmit(dataFromUser: any) {
         const formData = {
-            claimDate: watch("claimDate"),
+            claimDate: moment(watch("claimDate")).valueOf(),
             claimAge: watch("claimAge"),
         };
         handleClose(formData)
     }
-    const handleClose = (formData: { claimDate: Date; claimAge: number; } | null) => {
+    const handleClose = (formData: { claimDate: number; claimAge: number; } | null) => {
         // Trigger the callback and send form data to the parent component
 
         onClose(formData);

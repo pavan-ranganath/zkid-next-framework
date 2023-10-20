@@ -62,7 +62,8 @@ export const fetcher = async (url: string) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    throw new Error("Failed to fetch data");
+    console.error(error);
+    throw new Error((error as Error).message);
   }
 };
 

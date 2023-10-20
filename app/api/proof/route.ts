@@ -43,6 +43,10 @@ export async function GET(req: NextRequest, context: any) {
     userSystemID = _userSystemId;
   }
   let dbDataFromCertificateTable = await getCertificateInfoBySystemUserID(userSystemID, type);
+  if (!dbDataFromCertificateTable) {
+    // Returning a JSON response with an error message and a status code of 404 (Not Found)
+    return NextResponse.json({ error: "Certificate not found" }, { status: 404 });
+  }
   const url = `${origin}/verifyproof?userId=${userSystemID}&type=nAgeVerify`;
   return NextResponse.json({ certificateData: dbDataFromCertificateTable.cert, shareUrl: url }, { status: 200 });
 }

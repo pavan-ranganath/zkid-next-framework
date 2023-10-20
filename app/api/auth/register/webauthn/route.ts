@@ -30,7 +30,7 @@ import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 // Import the `getSession` and `setSession` functions from the "@/lib/sessionMgmt" module
 // Used to get and set session data in the server response
 import { getSession, setSession } from "@/lib/sessionMgmt";
-import { generateZKIDID } from "@/lib/services/utils";
+import { dateToEpoch, generateZKIDID } from "@/lib/services/utils";
 
 export const dynamic = "force-dynamic"; // to supress Error processing API request: DynamicServerError: Dynamic server usage: nextUrl.searchParams
 
@@ -58,7 +58,7 @@ const appName = process.env.APP_NAME!;
  * @param {string} dob - The user's DOB.
  * @returns {object} An object containing the generated registration options.
  */
-const generateWebAuthnOptions = (email: string, fullName: string, dob: string) => {
+const generateWebAuthnOptions = (email: string, fullName: string) => {
   /**
    * Generate registration options using the provided user details.
    *
@@ -166,11 +166,7 @@ export async function GET(req: NextRequest, context: any) {
     });
 
     // Generate registration options based on the user's email and credentials
-    const options = await generateWebAuthnOptions(
-      email,
-      credentials?.userInfo?.fullName.value!,
-      credentials?.userInfo?.dob.value!,
-    );
+    const options = await generateWebAuthnOptions(email, credentials?.userInfo?.fullName.value!);
     // Check if options are generated
     if (!options) {
       return NextResponse.json({ error: "Error generating options" }, { status: 400 });
@@ -209,7 +205,7 @@ export async function GET(req: NextRequest, context: any) {
   }
 
   // Generate registration options based on the provided user details
-  const options = await generateWebAuthnOptions(email, fullName, dob);
+  const options = await generateWebAuthnOptions(email, fullName);
 
   // Check if options are generated
   if (!options) {
@@ -286,7 +282,7 @@ export async function POST(req: NextRequest, context: any) {
       userInfo: {
         email: { value: user.email, verified: false },
         fullName: { value: user.fullName, verified: false },
-        dob: { value: user.dob, verified: false },
+        dob: { value: dateToEpoch(user.dob), verified: false },
         mobile: { value: user.mobile, verified: false },
       },
     });

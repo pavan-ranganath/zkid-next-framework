@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from "fs";
 import path from "path";
 import moment from "moment";
 
-import { serializeProofAndEncodeToBase64 } from "../utils";
+import { dateToEpoch, serializeProofAndEncodeToBase64 } from "../utils";
 import { InputData, generateXml } from "@/lib/generateAgeVerificationCertificate";
 import { XadesClass } from "../XadesClass";
 import {
@@ -49,13 +49,13 @@ export async function generateProofForAgeverification(
 
   const inputDataForXMlCertificate: InputData = {
     ZKID_ID: userId,
-    issueDate: new Date(),
-    expirydate: new Date("2025-10-15"),
+    issueDate: moment().valueOf(),
+    expirydate: moment().add(1, "years").valueOf(),
     person_name: name,
     ZKPROOF: base64Proof,
     Photo: photo,
     ClaimedAge: ageThreshold,
-    ClaimedDate: currentDay.toDate(),
+    ClaimedDate: currentDay.toDate().valueOf(),
   };
 
   const generatedXml = generateXml(inputDataForXMlCertificate);

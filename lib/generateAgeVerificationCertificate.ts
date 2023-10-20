@@ -4,13 +4,13 @@ import { create } from "xmlbuilder2";
 
 export interface InputData {
   ZKID_ID: string;
-  issueDate: Date;
-  expirydate: Date;
+  issueDate: number;
+  expirydate: number;
   person_name: string;
   ZKPROOF: string;
   Photo: string;
   ClaimedAge: number;
-  ClaimedDate: Date;
+  ClaimedDate: number;
 }
 
 export interface CertificateConfig {
@@ -44,9 +44,9 @@ const defaultConfig: CertificateConfig = {
 };
 
 export function generateXml(input: InputData, config?: CertificateConfig): string {
-  const issueDateFormatted = moment(input.issueDate).toISOString();
-  const expiryDateFormatted = moment(input.expirydate).toISOString();
-  const claimDateFormatted = moment(input.ClaimedDate).toISOString();
+  const issueDateFormatted = moment(input.issueDate).valueOf();
+  const expiryDateFormatted = moment(input.expirydate).valueOf();
+  const claimDateFormatted = moment(input.ClaimedDate).valueOf();
 
   const mergedConfig = { ...defaultConfig, ...config };
 

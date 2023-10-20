@@ -8,6 +8,7 @@ import moment from 'moment';
 import { saveAs } from 'file-saver';
 import ShareButton from './ShareButtons';
 import { ConfirmOptions } from 'material-ui-confirm';
+import { epochToDate } from '@/lib/services/utils';
 
 export interface CertificateDisplayProps {
     certificateData: string;
@@ -32,12 +33,12 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
         // Extract the relevant data and update the certificateInfo state
         if (displayProps.certificateData === "") return;
         const parsedData = parser.parse(displayProps.certificateData); // Implement your own parseXML function
-        console.log(parsedData);
+        console.log("certificateData", parsedData);
         setCertificateInfo(parsedData);
     }, [displayProps]);
 
-    if (!displayProps.certificateData) {
-        return <div>No certificate data</div>;
+    if (displayProps.certificateData === "") {
+        return <></>;
     }
     if (!certificateInfo.Certificate) {
         return <>
@@ -67,10 +68,10 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
                     </Grid>
                     <Grid container spacing={2} style={styles.spacingBetween}>
                         <Grid item xs={6} sx={styles.centeredContent}>
-                            <Typography>Issued: {moment(certificateInfo.Certificate.issueDate).format("DD, MMM, YYYY")}</Typography>
+                            <Typography>Issued: {moment(epochToDate(certificateInfo.Certificate.issueDate)).format("DD, MMM, YYYY")}</Typography>
                         </Grid>
                         <Grid item xs={6} sx={styles.centeredContent}>
-                            <Typography>Expiry: {moment(certificateInfo.Certificate.expiryDate).format("DD, MMM, YYYY")}</Typography>
+                            <Typography>Expiry: {moment(epochToDate(certificateInfo.Certificate.expiryDate)).format("DD, MMM, YYYY")}</Typography>
                         </Grid>
                     </Grid>
                     <QRCode value={displayProps.shareUrl} style={styles.spacingBetween} />

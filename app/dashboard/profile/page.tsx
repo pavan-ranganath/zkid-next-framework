@@ -33,6 +33,7 @@ import { useConfirm } from "material-ui-confirm";
 import PageTitle from "@/components/pageTitle";
 import Alert from "@mui/material/Alert";
 import { credentailsFromTb } from "../../../lib/services/userService";
+import { epochToDate } from "@/lib/services/utils";
 
 // Dashboard component
 export default function Profile() {
@@ -134,7 +135,7 @@ async function GetPasskeys({
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 Date of Birth:{" "}
-                {userInfo.userInfo?.dob.value ? moment(userInfo.userInfo?.dob.value).format("MMMM Do YYYY") : ""}
+                {userInfo.userInfo?.dob.value ? moment(epochToDate(userInfo.userInfo?.dob.value)).format("MMMM Do YYYY") : ""}
                 {userInfo.userInfo?.dob.verified ? <VerifiedIcon color="success" /> : <></>}
               </Typography>
               <Typography gutterBottom variant="body1" component="div">

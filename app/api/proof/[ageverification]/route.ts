@@ -8,9 +8,11 @@
 import { dbConnect } from "@/lib/mongodb";
 import { AadhaarXmlParser } from "@/lib/services/aadhaarService";
 import { checkProfileVerifaction } from "@/lib/services/userService";
+import { epochToDate } from "@/lib/services/utils";
 import { generateProofForAgeverification } from "@/lib/services/zkProofGenerators/ageVerificationProofGenerator";
 import { authOptions } from "@/lib/webauthn";
 import { storeCertificate } from "@/lib/zkidCertificateService";
+import moment from "moment";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -68,12 +70,12 @@ export async function POST(req: NextRequest, context: any) {
       throw new Error("Photo not found");
     }
     let signedXmlCertificateWithZKproof = await generateProofForAgeverification(
-      new Date(dob.value),
+      moment(dob.value).toDate(),
       fullName.value,
       userSystemID,
       photo,
       claimAge,
-      claimDate,
+      moment(claimDate).toDate(),
     );
 
     // store the xml certificate in db
