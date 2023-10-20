@@ -2,6 +2,7 @@
 
 import CertificateDisplay, { CertificateDisplayProps } from "@/components/AgeVerificateCertificateDisplay";
 import AgeverificationProverInputModal from "@/components/AgeVerificationProverInputModal";
+import LoadingSpinner from "@/components/Loading";
 import ZKidDigitalCardDisplay from "@/components/ZKidDigitalCard";
 import PageTitle from "@/components/pageTitle";
 import { useVerifyStatus } from "@/components/verificationStatusProvider";
@@ -23,10 +24,18 @@ export default function Dashboard() {
   const [userInfo, setUserInfo] = useState<credentailsFromTb | null>(null);
   const [error, setError] = useState<any>(null);
   const [userInfoIsLoading, setUserInfoIsLoading] = useState<any>(null);
-  const confirmDialog = useConfirm();
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
   const handleAgeverificationProverInputCloseModal = async (formData: { claimAge: string, claimDate: number }) => {
     setAgeverificationProverInputModalOpen(false);
+    if (!formData) {
+      return;
+    }
+    if (formData.claimAge === "" || formData.claimDate === 0) {
+      return;
+    }
+    setLoadingMessage("Generating proof...");
     await generateProof(formData)
+    setLoadingMessage("");
   }
   //Get certificate data from backend
   const getCertificateData = async () => {
@@ -72,7 +81,6 @@ export default function Dashboard() {
   }, [verifyStatus, confirm, router]);
   // API request to generate proof after button click
   const generateProof = async (formData: { claimAge: string, claimDate: number }) => {
-
     const response = await fetch("/api/proof/ageverification", {
       method: "POST",
       headers: {
@@ -81,11 +89,11 @@ export default function Dashboard() {
       body: JSON.stringify(formData),
     });
     const data = await response.json();
+    setLoadingMessage("");
     if (data.error) {
       alert(data.error);
       return;
     }
-    console.log(data);
     setVertificateData(data);
   };
 
@@ -107,6 +115,7 @@ export default function Dashboard() {
         </Grid>
       </Grid>
       <AgeverificationProverInputModal open={isAgeverificationProverInputModalOpen} onClose={handleAgeverificationProverInputCloseModal} />
+      {loadingMessage && <LoadingSpinner message={loadingMessage} />}
     </>
   );
 }

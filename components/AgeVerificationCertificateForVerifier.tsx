@@ -20,6 +20,7 @@ import { pki } from 'node-forge';
 // import { readFileSync } from 'fs';
 // import path from 'path';
 import { epochToDate } from '../lib/services/utils';
+import LoadingSpinner from './Loading';
 
 
 // const vKeyfilePath = path.join(process.cwd(), "lib/circomBuilds/ageVerifcation/ageProof.vkey.json");
@@ -32,6 +33,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
     const [isSignatureVerified, setIsSignatureVerified] = useState<boolean | null>(null);
     const [signatureCertificate, setSignatureCertificate] = useState<{ signCert: pki.Certificate, signedDate: Date }>({} as { signCert: pki.Certificate, signedDate: Date });
     const [certificateInfo, setCertificateInfo] = useState<AgeVerificatingCertificate>({} as AgeVerificatingCertificate);
+    const [loadingMessage, setLoadingMessage] = useState<string>("");
     const parser = new XMLParser({
         attributeNamePrefix: '',
         textNodeName: '_',
@@ -48,11 +50,13 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
     }, [displayProps]);
     const handleAgeverificationVerifierInputCloseModal = async (formData: { age: string, date: number }) => {
         setAgeverificationVerifierInputModalOpen(false);
+
         // Do something with the form data received from the modal
         console.log("Form data received from modal:", formData);
         // Use the formData to verify the proof
         // check if formdata is not null
         if (formData) {
+            setLoadingMessage("Verifying proof...");
             //Implement verification logic here
             const encodedZKproof = certificateInfo.Certificate.CertificateData?.ZKPROOF._;
             const ZKproof = decodeBase64AndDeserializeProof(encodedZKproof);
@@ -77,9 +81,11 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
             }
             setIsProofVerified(plonkResult);
         }
+        setLoadingMessage("");
     };
 
     const verifyXMLSignature = async () => {
+        setLoadingMessage("Verifying signature...");
         const xades = new XadesClass();
         const resultOfSignatureVerification = await xades.verifyXml(displayProps.certificateData);
         const message = resultOfSignatureVerification ? 'Signature verified successfully' : 'Signature verification failed';
@@ -89,6 +95,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
         }
         setIsSignatureVerified(resultOfSignatureVerification);
         showSignatureCertificate();
+        setLoadingMessage("");
     }
     function showSignatureCertificate() {
         const base64CertString = (certificateInfo.Certificate['ds:Signature']['ds:KeyInfo']['ds:X509Data'][0]['ds:X509Certificate'])
@@ -183,6 +190,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
             {isSignatureVerified === true &&
                 <DigitalSignatureTag certificate={signatureCertificate.signCert} ageVerificationXMLCertificate={certificateInfo} />}
             <AlertMessageDialog ref={alertMessageDialogRef} /> {/* Render the alert component */}
+            {loadingMessage && <LoadingSpinner message={loadingMessage} />}
         </>
 
     );
