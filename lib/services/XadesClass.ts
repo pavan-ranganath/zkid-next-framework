@@ -27,7 +27,7 @@ export class XadesClass {
     const xmlDoc = xadesjs.Parse(xmlString);
     const signedXml: XAdES.SignedXml = new this.xadesjs.SignedXml(xmlDoc);
     const signature = await signedXml.Sign(algorithm, keys.privateKey, xmlDoc, optionalSign);
-    let sigElement = signature.GetXml();
+    const sigElement = signature.GetXml();
     if (!sigElement) {
       throw new Error("Signature element not found in the XML.");
     }
@@ -63,21 +63,5 @@ export class XadesClass {
 
     // Verify the signature
     return signedXml.Verify();
-  }
-
-  preparePem(pem: string) {
-    return (
-      pem
-        // remove BEGIN/END
-        .replace(/-----(BEGIN|END)[\w\d\s]+-----/g, "")
-        // remove \r, \n
-        .replace(/[\r\n]/g, "")
-    );
-  }
-
-  pem2der(pem: string) {
-    pem = this.preparePem(pem);
-    // convert base64 to ArrayBuffer
-    return new Uint8Array(Buffer.from(pem, "base64")).buffer;
   }
 }

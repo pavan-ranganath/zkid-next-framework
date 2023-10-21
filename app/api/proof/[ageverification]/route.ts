@@ -69,7 +69,7 @@ export async function POST(req: NextRequest, context: any) {
       console.error("Photo not found");
       throw new Error("Photo not found");
     }
-    let signedXmlCertificateWithZKproof = await generateProofForAgeverification(
+    const signedXmlCertificateWithZKproof = await generateProofForAgeverification(
       moment(dob.value).toDate(),
       fullName.value,
       userSystemID,

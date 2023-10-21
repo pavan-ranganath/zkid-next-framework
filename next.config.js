@@ -26,14 +26,18 @@ const nextConfig = {
       }),
     );
     if (isServer) {
-      config.externals = {
+      Object.assign(config.externals, {
         snarkjs: "snarkjs",
-      };
+      });
     }
     // config.externals = {
     //   snarkjs: "snarkjs",
     // };
-    config.experiments = { asyncWebAssembly: true, syncWebAssembly: true, layers: true };
+    Object.assign(config.experiments, {
+      asyncWebAssembly: true,
+      syncWebAssembly: true,
+      layers: true,
+    });
     return config;
   },
   // transpilePackages: ["snarkjs"],

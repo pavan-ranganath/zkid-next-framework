@@ -6,8 +6,19 @@
 "use client";
 
 // Importing UI components from Material-UI
-import { Grid, Card, CardHeader, CardContent, Typography, Button, List, ListItemButton, ListItemText, CardActions, ListItem } from "@mui/material";
-
+import {
+  Grid,
+  Card,
+  CardHeader,
+  CardContent,
+  Typography,
+  Button,
+  List,
+  ListItemButton,
+  ListItemText,
+  CardActions,
+  ListItem,
+} from "@mui/material";
 
 // Importing the startRegistration function from the "@simplewebauthn/browser" library
 import { startRegistration } from "@simplewebauthn/browser";
@@ -32,8 +43,8 @@ import { apiRequest, fetcher } from "@/lib/services/apiService";
 import { useConfirm } from "material-ui-confirm";
 import PageTitle from "@/components/pageTitle";
 import Alert from "@mui/material/Alert";
-import { credentailsFromTb } from "../../../lib/services/userService";
 import { epochToDate } from "@/lib/services/utils";
+import { credentailsFromTb } from "../../../lib/services/userService";
 
 // Dashboard component
 export default function Profile() {
@@ -135,7 +146,9 @@ async function GetPasskeys({
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 Date of Birth:{" "}
-                {userInfo.userInfo?.dob.value ? moment(epochToDate(userInfo.userInfo?.dob.value)).format("MMMM Do YYYY") : ""}
+                {userInfo.userInfo?.dob.value
+                  ? moment(epochToDate(userInfo.userInfo?.dob.value)).format("MMMM Do YYYY")
+                  : ""}
                 {userInfo.userInfo?.dob.verified ? <VerifiedIcon color="success" /> : <></>}
               </Typography>
               <Typography gutterBottom variant="body1" component="div">

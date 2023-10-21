@@ -35,14 +35,14 @@ export async function GET(req: NextRequest, context: any) {
     // Querying the collection to find a document with the matching userID
     const data = await collection.findOne({ userID: email });
 
-    let _userSystemId = data?.userSystemID;
+    const _userSystemId = data?.userSystemID;
     if (!_userSystemId) {
       // Returning a JSON response with an error message and a status code of 404 (Not Found)
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     userSystemID = _userSystemId;
   }
-  let dbDataFromCertificateTable = await getCertificateInfoBySystemUserID(userSystemID, type);
+  const dbDataFromCertificateTable = await getCertificateInfoBySystemUserID(userSystemID, type);
   if (!dbDataFromCertificateTable) {
     // Returning a JSON response with an error message and a status code of 404 (Not Found)
     return NextResponse.json({ error: "Certificate not found" }, { status: 404 });

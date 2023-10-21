@@ -22,6 +22,9 @@ import { Backdrop, Button, CircularProgress, TextField, Typography } from "@mui/
 import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
 import "yup-phone-lite";
 import AppLogoSVG from "@/components/appLogo";
+import LoadingSpinner from "@/components/Loading";
+import React from "react";
+import { time } from "console";
 
 /**
  * The Register component handles the user registration process.
@@ -37,6 +40,7 @@ import AppLogoSVG from "@/components/appLogo";
 export default function Register(): JSX.Element {
   // Retrieving session data and status using NextAuth hook
   const { status } = useSession();
+  const [loadingMessage, setLoadingMessage] = React.useState<string>("");
 
   // Checking authorization status
   const authorized = status === "authenticated";
@@ -79,8 +83,10 @@ export default function Register(): JSX.Element {
   });
 
   // Form submission handler
-  function onSubmit(data: any) {
-    registerWebauthn(data.email, data.fullName, data.dob, data.mobile, router);
+  async function onSubmit(data: any) {
+    setLoadingMessage("Registering...");
+    await registerWebauthn(data.email, data.fullName, data.dob, data.mobile, router);
+    setLoadingMessage("");
   }
 
   // Effect hook to handle page navigation based on session status
@@ -209,8 +215,9 @@ export default function Register(): JSX.Element {
 
       {/* Sign-in link */}
       <small>
-        Already have an account? <Link href="/signin">Sign in Here</Link>
+        Already have an account? <Link style={{ textDecoration: "underline" }} href="/signin">Sign in Here</Link>
       </small>
+      {loadingMessage && <LoadingSpinner message={loadingMessage} />}
     </>
   );
 }
@@ -264,7 +271,10 @@ async function registerWebauthn(email: string, fullName: string, dob: string, mo
     } else {
       toast.success("Your WebAuthn credentials have been registered.", { duration: 10000 });
       // Redirect to the sign-in page
-      router.push("/signin");
+      setTimeout(() => {
+        router.push("/signin");
+      }
+        , 5000);
     }
   } catch (err) {
     handleRegistrationError(err);

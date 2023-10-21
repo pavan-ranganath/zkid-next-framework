@@ -11,6 +11,7 @@ import { DbCredential, authOptions } from "@/lib/webauthn";
 import { checkDigiLockerID } from "@/lib/services/storage";
 import { credentailsFromTb } from "@/lib/services/userService";
 import { sendEmailVerification } from "../auth/emailverifier/route";
+
 const phtPlaceholder =
   "/9j/4AAQSkZJRgABAQACWAJYAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBCQkJDAsMGA0NGDIhHCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMv/CABEIAMgAyAMBIgACEQEDEQH/xAAtAAEAAwEBAQAAAAAAAAAAAAAAAwQFAgEHAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAAA+vCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZpcpVRJJXF65i9G2ilAAAAAAAAKNCSMCgALGrhbkegAAAAAAc9cGKKAAAbeJsxIAAAAAABBPRKAoAABrZN+LwAAAAAAFW1yYiaGgAAGnS1Y6AAAAAAABWy93JIBQAnLtkgAAAAAAABSs5xXFANDPsRqo5AAAAAAA4ql2PMhJoSgAAJtPGRusi0XXHYAABHncwgUAAAAAAAsVxsyZGvADkMQUAAAAAAAAA2yOgf/8QAMRAAAQIDBAgGAQUAAAAAAAAAAQIDBBEhABIwUQUTIDEyQEFhIjNScXKBEBRDU3CR/9oACAEBAAE/AP6gdiWmhVQKvSN9nI91VESQO2+36h7+Vf8AtkRr6d6gr5CyNIqn42wRmmzTyHhNBnmOo5IkAEkyAtExhWbjRkjqc9pC1NrCkGRFmHg+3eFCKEZHkdIOkANA76qwIN3VvgT8KqHkYhzWvrV0nIe2BOVbJM0A5jHWZIUcgThIM20nsMd7yHPicJjyG/iMeKdS20Qqc1AgSwoV1DjQCZzSADPH0l+2ffC0ducPtjx6L0Pe9JnhQCLsPe9RnjrQHEKQrcRI2iIcw6wJzBEwZYEPDmIWROQAmTKyEBtCUJ3ASHIRrWsYmN6a/WBBNatiZ3qr9clFMahynCqo2oVjXu14U1Pfk9I+W38jtaO8tz5DknHkNJmtQGQ6m0VEh8gBMkpz67ULE6gqBSSlWXSzbyHUzQoHMdRyDsQ01xLE8hU2iXg+7fAIEpVwIZ4MO3yCRKVLNRDTvCsTyNDiLeba41gdutnNIIFG0FXc0s5FvOb1SGSaYjcW83uVMZKrZvSCDRxBT3FbIebd4Fg9uu288hhF5X0M7OxjrlAbick8k1GOt0JvpyVZl5D6LyfsZbMS6Xn1GdBQe3KQzpafSZ0ND7bCzdbUcgTyyDebScwD+P/EABQRAQAAAAAAAAAAAAAAAAAAAHD/2gAIAQIBAT8AKf/EABQRAQAAAAAAAAAAAAAAAAAAAHD/2gAIAQMBAT8AKf/Z";
 // Defining a type for the filter object
@@ -59,7 +60,7 @@ export async function GET(req: NextRequest, context: any) {
         new Headers(),
         null,
       );
-      const status = responseDigilockerAaadhaar.status;
+      const { status } = responseDigilockerAaadhaar;
       if (status !== 200) {
         const err = await responseDigilockerAaadhaar.json();
         if (err === "insufficient_scope") {

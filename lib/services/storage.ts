@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import "bson";
+
 export async function storeData(data: any, collectionName: string) {
-  const db = mongoose.connection.db;
+  const { db } = mongoose.connection;
   const collection = db.collection(collectionName);
 
   try {
@@ -16,7 +17,7 @@ export async function storeData(data: any, collectionName: string) {
 }
 
 export async function getData(key: any, collectionName: string) {
-  const db = mongoose.connection.db;
+  const { db } = mongoose.connection;
 
   const collection = db.collection(collectionName);
 
@@ -36,7 +37,7 @@ export async function getData(key: any, collectionName: string) {
 
 // update collection in table for a key
 export async function updateData(userID: any, data: any, collectionName: string, key: string, isArrayUpdate = false) {
-  const db = mongoose.connection.db;
+  const { db } = mongoose.connection;
 
   // Check if the collection exists, and create it if it doesn't
   if (!(await db.listCollections({ name: collectionName }).hasNext())) {
@@ -58,7 +59,7 @@ export async function updateData(userID: any, data: any, collectionName: string,
 }
 
 export async function checkDigiLockerID(user_sso_id: string, userId: string) {
-  const db = mongoose.connection.db;
+  const { db } = mongoose.connection;
 
   const collection = db.collection("credentials");
   const digiLockerIDDoc = await collection.findOne({

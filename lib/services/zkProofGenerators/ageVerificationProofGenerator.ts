@@ -3,14 +3,14 @@ import { readFileSync, writeFileSync } from "fs";
 import path from "path";
 import moment from "moment";
 
-import { dateToEpoch, serializeProofAndEncodeToBase64 } from "../utils";
 import { InputData, generateXml } from "@/lib/generateAgeVerificationCertificate";
-import { XadesClass } from "../XadesClass";
 import {
   readSigningCertificateFromFile,
   readCertificateSigningKeyPairFromFile,
   readIssuerCertificateFromFile,
 } from "@/lib/generateCertificate";
+import { dateToEpoch, serializeProofAndEncodeToBase64 } from "../utils";
+import { XadesClass } from "../XadesClass";
 
 const wasmFilePath = path.join(process.cwd(), "lib/circomBuilds/ageVerifcation/ageProof.wasm");
 const zkeyFilePath = path.join(process.cwd(), "lib/circomBuilds/ageVerifcation/ageProof.zkey");
@@ -31,12 +31,12 @@ export async function generateProofForAgeverification(
   ageThreshold: number,
   claimDate: Date,
 ) {
-  let currentDay = moment(claimDate);
+  const currentDay = moment(claimDate);
   const INPUT = {
     DOBDay: moment(dob).date(),
     DOBMonth: moment(dob).month() + 1,
     DOBYear: moment(dob).year(),
-    ageThreshold: ageThreshold,
+    ageThreshold,
     currentDay: currentDay.date(),
     currentMonth: currentDay.month() + 1,
     currentYear: currentDay.year(),
@@ -44,7 +44,7 @@ export async function generateProofForAgeverification(
 
   const { proof, publicSignals } = await plonk.fullProve(INPUT, wasmFile, zkeyFile);
   console.log("Public signals: ", publicSignals);
-  //Serialize the proof and encode it in base64 format.
+  // Serialize the proof and encode it in base64 format.
   const base64Proof = serializeProofAndEncodeToBase64(proof);
 
   const inputDataForXMlCertificate: InputData = {

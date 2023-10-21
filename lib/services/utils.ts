@@ -1,5 +1,7 @@
 import moment from "moment";
 
+type WithImplicitCoercion<T> = T | { valueOf(): T };
+
 export function generateZKIDID(phone: string, dob: Date, aadhaarNumber: string = "0000"): string {
   // Remove special characters from phone
   const cleanedPhone = phone.replace(/[^0-9]/g, "");

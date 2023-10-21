@@ -6,7 +6,6 @@ import { Backdrop, CircularProgress } from "@mui/material";
 // Importing the Backdrop and CircularProgress components from the Material-UI library
 // These components are used to display a loading indicator backdrop while content is being loaded or processed
 
-
 // Importing the useSession hook from the next-auth/react package
 // This hook is used to access the user session information provided by Next.js authentication
 import { useSession } from "next-auth/react";
