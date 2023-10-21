@@ -25,6 +25,7 @@ import AppLogoSVG from "@/components/appLogo";
 import LoadingSpinner from "@/components/Loading";
 import React from "react";
 import { time } from "console";
+import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 
 /**
  * The Register component handles the user registration process.
@@ -41,7 +42,7 @@ export default function Register(): JSX.Element {
   // Retrieving session data and status using NextAuth hook
   const { status } = useSession();
   const [loadingMessage, setLoadingMessage] = React.useState<string>("");
-
+  const confirm = useConfirm();
   // Checking authorization status
   const authorized = status === "authenticated";
   const unAuthorized = status === "unauthenticated";
@@ -85,7 +86,7 @@ export default function Register(): JSX.Element {
   // Form submission handler
   async function onSubmit(data: any) {
     setLoadingMessage("Registering...");
-    await registerWebauthn(data.email, data.fullName, data.dob, data.mobile, router);
+    await registerWebauthn(data.email, data.fullName, data.dob, data.mobile, router, confirm);
     setLoadingMessage("");
   }
 
@@ -229,7 +230,7 @@ export default function Register(): JSX.Element {
 // - Sends the registration data to the server for verification and storage
 // - If the registration request is successful (status 201), displays a success toast and can redirect to the sign-in page
 // - If any error occurs during the process, displays an error toast and logs the error message or response
-async function registerWebauthn(email: string, fullName: string, dob: string, mobile: string, router: AppRouterInstance) {
+async function registerWebauthn(email: string, fullName: string, dob: string, mobile: string, router: AppRouterInstance, confirm: (options?: ConfirmOptions | undefined) => Promise<void>) {
   // Construct the registration URL
   const url = new URL("/api/auth/register/webauthn", window.location.origin);
   url.search = new URLSearchParams({ email, fullName, dob, mobile }).toString();
@@ -241,7 +242,8 @@ async function registerWebauthn(email: string, fullName: string, dob: string, mo
   // Handle error if the options request failed
   if (optionsResponse.status !== 200) {
     console.error(opt);
-    toast.error(opt.error);
+    alert("Error: " + opt.error);
+    // toast.error(opt.error);
     return;
   }
 
@@ -265,16 +267,18 @@ async function registerWebauthn(email: string, fullName: string, dob: string, mo
 
     // Handle error if the registration request failed
     if (response.status !== 201) {
-      toast.error("Could not register WebAuthn credentials.");
+      // toast.error("Could not register WebAuthn credentials.");
+      alert("Error: " + "Could not register WebAuthn credentials.");
       const errorResp = await response.json();
       console.error(errorResp);
     } else {
-      toast.success("Your WebAuthn credentials have been registered.", { duration: 10000 });
+      // toast.success("Your WebAuthn credentials have been registered.", { duration: 10000 });
+      alert("Your WebAuthn credentials have been registered.");
       // Redirect to the sign-in page
       setTimeout(() => {
         router.push("/signin");
       }
-        , 5000);
+        , 2000);
     }
   } catch (err) {
     handleRegistrationError(err);

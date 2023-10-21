@@ -210,9 +210,11 @@ async function signInWithWebauthn(email: any) {
     console.error(optionsResponse);
     const { error } = await optionsResponse.json();
     if (error) {
-      toast.error(error);
+      // toast.error(error);
+      alert(error);
     } else {
-      toast.error("Could not get authentication options from the server");
+      // toast.error("Could not get authentication options from the server");
+      alert("Could not get authentication options from the server");
     }
     throw new Error("Could not get authentication options from the server");
     // return;
@@ -238,7 +240,8 @@ async function signInWithWebauthn(email: any) {
 
   // Check if there are any registered credentials available for the user.
   if (!opt.allowCredentials || opt.allowCredentials.length === 0) {
-    toast.error("There is no registered credential.");
+    // toast.error("There is no registered credential.");
+    alert("There is no registered credential.");
     throw new Error("There is no registered credential.");
     // return;
   }
