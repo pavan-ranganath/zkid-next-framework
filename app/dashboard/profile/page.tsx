@@ -147,7 +147,7 @@ async function GetPasskeys({
               <Typography gutterBottom variant="body1" component="div">
                 Date of Birth:{" "}
                 {userInfo.userInfo?.dob.value
-                  ? moment(epochToDate(userInfo.userInfo?.dob.value)).format("MMMM Do YYYY")
+                  ? moment(epochToDate(userInfo.userInfo?.dob.value.toString())).format("MMMM Do YYYY")
                   : ""}
                 {userInfo.userInfo?.dob.verified ? <VerifiedIcon color="success" /> : <></>}
               </Typography>

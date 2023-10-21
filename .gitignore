@@ -36,3 +36,5 @@ next-env.d.ts
 next.zip
 ._truffle-config.js
 keys/ZKIDXMLCertificateSigner.csr
+public/workbox-*.js
+public/sw.js

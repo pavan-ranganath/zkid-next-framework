@@ -46,14 +46,13 @@ import { redirect } from "next/navigation";
 
 // Importing the 'useEffect' function from the 'react' package
 // It is a React Hook used to perform side effects in functional components
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Importing the 'Link' component from the 'next/link' package
 // It is used for client-side navigation between pages in Next.js applications
 import Link from "next/link";
 import AppLogoSVG from "@/components/appLogo";
 import LoadingSpinner from "@/components/Loading";
-import React from "react";
 
 /*
   - The code provides a sign-in feature for users using WebAuthn authentication.
@@ -69,7 +68,7 @@ import React from "react";
 export default function SignInComponent() {
   // Retrieve the session status and data using the useSession hook from next-auth/react.
   const { status } = useSession();
-  const [loadingMessage, setLoadingMessage] = React.useState("");
+  const [loadingMessage, setLoadingMessage] = useState("");
 
   // Determine the user's authorization status based on the session status.
   const authorized = status === "authenticated";
@@ -97,7 +96,7 @@ export default function SignInComponent() {
   const onSubmit = async (data: { email: string }) => {
     setLoadingMessage("Signing in...");
     await signInWithWebauthn(data.email); // Call the signInWithWebauthn function to initiate WebAuthn authentication.
-    setLoadingMessage("")
+    setLoadingMessage("");
   };
 
   // Perform side effects after the component is rendered.
@@ -171,7 +170,10 @@ export default function SignInComponent() {
       </form>
       {/* Link to register */}
       <small>
-        Do not have an account? <Link style={{ textDecoration: "underline" }} href="/register/webauthn">Register Here</Link>
+        Do not have an account?{" "}
+        <Link style={{ textDecoration: "underline" }} href="/register/webauthn">
+          Register Here
+        </Link>
       </small>
       {loadingMessage && <LoadingSpinner message={loadingMessage} />}
     </>
