@@ -27,8 +27,9 @@ const oidcClientSecret = process.env.DIGILOCKER_CLIENT_SECRET;
 const oidcTokenUrl = process.env.DIGILOCKER_CLIENT_TOKEN_URL;
 const oidcAuthorizationnUrl = process.env.DIGILOCKER_AUTH_TOKEN_URL;
 const digilockerIssuerUrl = process.env.DIGILOCKER_ISSUER_URL;
+const nextAuthAppUrl = process.env.NEXTAUTH_URL!;
 
-const redirect_uri = "http://localhost:3000/api/auth/digilocker";
+const redirect_uri = `${nextAuthAppUrl}/api/auth/digilocker`;
 const client: Client = {
   issuer: digilockerIssuerUrl,
   client_id: oidcClientId,

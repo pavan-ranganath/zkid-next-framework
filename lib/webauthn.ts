@@ -147,6 +147,8 @@ export const authOptions: AuthOptions = {
       name: "Sign in with passkey",
       credentials: {},
       async authorize(cred: any, req: any): Promise<any> {
+        await dbConnect(); // Connecting to the database;
+
         // Destructuring properties from the request body
         const { id, rawId, type, clientDataJSON, authenticatorData, signature, userHandle } = req.body;
 

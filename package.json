@@ -9,7 +9,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check **/*.ts*",
-    "prettier:fix": "prettier --write **/*.ts"
+    "prettier:fix": "prettier --write **/*.ts",
+    "deploy:local": "next build && pm2 startOrRestart ecosystem.config.js --env local",
+    "deploy:dev": "next build && pm2 startOrRestart ecosystem.config.js --env dev",
+    "deploy:prod": "next build && pm2 startOrRestart ecosystem.config.js --env prod"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

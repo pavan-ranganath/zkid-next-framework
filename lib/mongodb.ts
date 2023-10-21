@@ -10,7 +10,7 @@ const options: ConnectOptions = {
 
 // Represents the connection state of the database
 const conn = {
-  isConnected: ConnectionStates.disconnected,
+  isConnected: ConnectionStates ? ConnectionStates.disconnected : false, // Initialize to the 'disconnected' state
 };
 
 // Function to establish a connection to the database
@@ -21,7 +21,7 @@ export async function dbConnect() {
   }
 
   // Checking if already connected to the database
-  if (conn.isConnected) {
+  if (conn.isConnected === ConnectionStates.connected) {
     return;
   }
 
@@ -30,10 +30,10 @@ export async function dbConnect() {
 
   // Updating the connection state based on the ready state of the connection
   conn.isConnected = db.connections[0].readyState;
+
+  // Event listener for successful database connection
+  connection.on("connected", () => console.log("Mongodb connected to db"));
+
+  // Event listener for database connection errors
+  connection.on("error", (err) => console.error("Mongodb Error:", err.message));
 }
-
-// Event listener for successful database connection
-connection.on("connected", () => console.log("Mongodb connected to db"));
-
-// Event listener for database connection errors
-connection.on("error", (err) => console.error("Mongodb Error:", err.message));

@@ -94,9 +94,14 @@ export default function SignInComponent() {
 
   // Handle form submission.
   const onSubmit = async (data: { email: string }) => {
-    setLoadingMessage("Signing in...");
-    await signInWithWebauthn(data.email); // Call the signInWithWebauthn function to initiate WebAuthn authentication.
-    setLoadingMessage("");
+    try {
+      setLoadingMessage("Signing in...");
+      await signInWithWebauthn(data.email); // Call the signInWithWebauthn function to initiate WebAuthn authentication.
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingMessage("");
+    }
   };
 
   // Perform side effects after the component is rendered.

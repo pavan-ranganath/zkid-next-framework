@@ -118,8 +118,8 @@ export const sendEmailVerification = async (email: string) => {
       return NextResponse.json({ error: "Authentication is required" }, { status: 401 });
     }
 
-    // Establishing a connection to the database
-    await dbConnect();
+    // // Establishing a connection to the database
+    // await dbConnect();
 
     // Retrieve credentials from the database for the user's email
     const user = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({

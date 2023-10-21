@@ -39,13 +39,14 @@ const nextConfig = {
       asyncWebAssembly: true,
       syncWebAssembly: true,
       layers: true,
+      topLevelAwait: true,
     });
     return config;
   },
   // transpilePackages: ["snarkjs"],
   experimental: {
     serverActions: true,
-    serverComponentsExternalPackages: ["mongoose"],
+    serverComponentsExternalPackages: ["mongoose", "snarkjs"],
   },
   modularizeImports: {
     "@mui/icons-material/?(((\\w*)?/?)*)": {
