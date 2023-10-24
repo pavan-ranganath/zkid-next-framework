@@ -25,12 +25,11 @@ import { signOut } from "next-auth/react"; // Importing the signOut function fro
 
 import { useTheme as useNextTheme } from "next-themes"; // Importing the useTheme hook from next-themes with an alias
 
-import { useTheme as useMUITheme } from '@mui/material/styles'; // Importing the useTheme hook from MUI with an alias
+import { useTheme as useMUITheme } from "@mui/material/styles"; // Importing the useTheme hook from MUI with an alias
 
 import { DEFAULT_THEME, getOtherTheme } from "@/app/theme"; // Importing custom theme-related functions from the "@/app/theme" module
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import AppLogoSVG from "../appLogo";
-import { Palette } from "@mui/material/styles"
 
 // An array of page objects containing page information
 const pages: {
@@ -38,11 +37,11 @@ const pages: {
   friendlyName: string;
   href: string;
 }[] = [
-    { id: 1, friendlyName: "Home", href: "/dashboard" },
-    { id: 2, friendlyName: "Profile", href: "/dashboard/profile" },
-    { id: 3, friendlyName: "Help", href: "/dashboard/help" },
-    // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
-  ];
+  { id: 1, friendlyName: "Home", href: "/dashboard" },
+  { id: 2, friendlyName: "Profile", href: "/dashboard/profile" },
+  { id: 3, friendlyName: "Help", href: "/dashboard/help" },
+  // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
+];
 
 export default function NavigationBar() {
   const { theme: themeState, setTheme } = useNextTheme(); // Using the useTheme hook to access the current theme and set the theme
@@ -81,31 +80,31 @@ export default function NavigationBar() {
     friendlyName: string;
     onClick: () => Promise<void>;
   }[] = [
-      // {
-      //   id: 1,
-      //   friendlyName: `Profile`,
-      //   onClick: async () => {
-      //     router.push("/dashboard/profile");
-      //     handleCloseUserMenu();
-      //   },
-      // },
-      {
-        id: 2,
-        friendlyName: `Activate ${themeName} Theme`,
-        onClick: async () => {
-          setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
-          handleCloseUserMenu();
-        },
+    // {
+    //   id: 1,
+    //   friendlyName: `Profile`,
+    //   onClick: async () => {
+    //     router.push("/dashboard/profile");
+    //     handleCloseUserMenu();
+    //   },
+    // },
+    {
+      id: 2,
+      friendlyName: `Activate ${themeName} Theme`,
+      onClick: async () => {
+        setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
+        handleCloseUserMenu();
       },
-      {
-        id: 3,
-        friendlyName: "Logout",
-        onClick: async () => {
-          await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
-          handleCloseUserMenu();
-        },
+    },
+    {
+      id: 3,
+      friendlyName: "Logout",
+      onClick: async () => {
+        await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
+        handleCloseUserMenu();
       },
-    ];
+    },
+  ];
 
   return (
     <AppBar position="static" style={{ marginBottom: 20, paddingTop: 5, paddingBottom: 5 }}>
@@ -152,11 +151,18 @@ export default function NavigationBar() {
             >
               {/* Pages */}
               {pages.map((page) => (
-                <MenuItem key={page.id} component={Link} href={page.href} onClick={handleCloseNavMenu} sx={{
-                  color: currentPath === page.href ? muiTheme.palette.primary.main : "inherit", // Use primary color for the current page
-
-                }}>
-                  <Typography textAlign="center" sx={{ fontWeight: currentPath === page.href ? "bold" : "normal" }}>{page.friendlyName}</Typography>
+                <MenuItem
+                  key={page.id}
+                  component={Link}
+                  href={page.href}
+                  onClick={handleCloseNavMenu}
+                  sx={{
+                    color: currentPath === page.href ? muiTheme.palette.primary.main : "inherit", // Use primary color for the current page
+                  }}
+                >
+                  <Typography textAlign="center" sx={{ fontWeight: currentPath === page.href ? "bold" : "normal" }}>
+                    {page.friendlyName}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -228,4 +234,3 @@ export default function NavigationBar() {
     </AppBar>
   );
 }
-
