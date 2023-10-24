@@ -77,13 +77,13 @@ export async function deleteProfile(email: string): Promise<boolean | null> {
       return null; // User not found, nothing to delete
     }
 
-    const userSystemID = user.userSystemID;
+    const { userSystemID } = user;
 
     // Access the "ZKIDXMLCertificate" collection
     const certificateCollection = mongoose.connection.db.collection("ZKIDXMLCertificate");
 
     // Delete all certificates based on userSystemID
-    await certificateCollection.deleteMany({ userSystemID: userSystemID });
+    await certificateCollection.deleteMany({ userSystemID });
 
     // Delete the user's profile
     const profileDeleteResult = await credentialsCollection.deleteOne({ userID: email });

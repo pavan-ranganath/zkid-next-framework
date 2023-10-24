@@ -13,7 +13,7 @@ import ShareButton from "./ShareButtons";
 export interface CertificateDisplayProps {
   certificateData: string;
   shareUrl: string;
-  deleteButton: () => void;
+  deleteButton?: () => void;
 }
 
 export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {

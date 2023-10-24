@@ -13,6 +13,7 @@ import { Button, Card, CardContent, CardHeader, Grid } from "@mui/material";
 import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import useSWR from "swr";
 // Dashboard component
 export default function Dashboard() {
@@ -21,9 +22,9 @@ export default function Dashboard() {
   const confirm = useConfirm();
   const router = useRouter();
   const [vertificateData, setVertificateData] = useState<CertificateDisplayProps | null>(null);
-  const [userInfo, setUserInfo] = useState<credentailsFromTb | null>(null);
-  const [error, setError] = useState<any>(null);
-  const [userInfoIsLoading, setUserInfoIsLoading] = useState<any>(null);
+  // const [userInfo, setUserInfo] = useState<credentailsFromTb | null>(null);
+  // const [error, setError] = useState<any>(null);
+  // const [userInfoIsLoading, setUserInfoIsLoading] = useState<any>(null);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const handleAgeverificationProverInputCloseModal = async (formData: { claimAge: string; claimDate: number }) => {
     setAgeverificationProverInputModalOpen(false);
@@ -41,7 +42,7 @@ export default function Dashboard() {
   const getCertificateData = async () => {
     const response = await fetch("/api/proof");
     if (response.status !== 200) {
-      setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
+      setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => {} });
       return;
     }
     const data = await response.json();
@@ -53,7 +54,7 @@ export default function Dashboard() {
       setVertificateData(data);
       return;
     }
-    setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
+    setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => {} });
   };
 
   // display alert to navigate to profile page to verify profile if not verified
@@ -115,53 +116,58 @@ export default function Dashboard() {
         headers: { "Content-Type": "application/json" },
       });
       if (deleteProof.status === 200) {
+        toast.success("Age verification proof deleted successfully");
         // if delete is successful, refresh page
-        router.refresh()
+        setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => {} });
       } else {
         const resp = await deleteProof.json();
         console.log("deleteProof error", resp);
         // else show error message
         alert("Error deleting age verification proof");
       }
-
     });
-  }
+  };
   return (
     <>
       <PageTitle title="Home" />
-      {!verifyStatus &&
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-          <div style={{ textAlign: 'center', flex: '1' }}>
+      {!verifyStatus && (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+          <div style={{ textAlign: "center", flex: "1" }}>
             <h2>Please verify your profile to continue using the application features</h2>
             <Button variant="contained" onClick={() => router.push("/dashboard/profile")}>
               Verify profile
             </Button>
           </div>
         </div>
-
-      }
-      {verifyStatus && <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={12} md={6} sm={6}>
-          <ZKidDigitalCardDisplay />
+      )}
+      {verifyStatus && (
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12} md={6} sm={6}>
+            <ZKidDigitalCardDisplay />
+          </Grid>
+          <Grid item xs={12} md={6} sm={6}>
+            <Card variant="outlined">
+              <CardHeader title="nZKP Certificates" />
+              <CardContent>
+                {vertificateData !== null ? (
+                  <CertificateDisplay
+                    certificateData={vertificateData.certificateData}
+                    shareUrl={vertificateData.shareUrl}
+                    deleteButton={deleteAgeVerificationproof}
+                  />
+                ) : (
+                  <p>Loading...</p>
+                )}
+                {vertificateData?.certificateData === "" && (
+                  <Button variant="contained" onClick={() => setAgeverificationProverInputModalOpen(true)}>
+                    Generate new proof
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6} sm={6}>
-          <Card variant="outlined">
-            <CardHeader title="nZKP Certificates" />
-            <CardContent>
-              {vertificateData !== null ? (
-                <CertificateDisplay certificateData={vertificateData.certificateData} shareUrl={vertificateData.shareUrl} deleteButton={deleteAgeVerificationproof} />
-              ) : (
-                <p>Loading...</p>
-              )}
-              {vertificateData?.certificateData === "" && (
-                <Button variant="contained" onClick={() => setAgeverificationProverInputModalOpen(true)}>
-                  Generate new proof
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>}
+      )}
       <AgeverificationProverInputModal
         open={isAgeverificationProverInputModalOpen}
         onClose={handleAgeverificationProverInputCloseModal}

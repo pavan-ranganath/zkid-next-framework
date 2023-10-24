@@ -124,11 +124,11 @@ export async function DELETE(req: NextRequest, context: any) {
     const { userSystemID } = profileInfo!;
 
     // delete the xml certificate in db
-    // const xmlDocDeleted = await deleteCertificate(userSystemID, nZKPCertType);
-    // if (!xmlDocDeleted?.acknowledged) {
-    //   console.error("Age verification not deleted");
-    //   throw new Error("Age verification not deleted");
-    // }
+    const xmlDocDeleted = await deleteCertificate(userSystemID, nZKPCertType);
+    if (!xmlDocDeleted?.acknowledged) {
+      console.error("Age verification not deleted");
+      throw new Error("Age verification not deleted");
+    }
     return NextResponse.json({ message: "Age verification proof deleted" }, { status: 200 });
   } catch (error) {
     console.error(error);

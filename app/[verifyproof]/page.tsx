@@ -12,7 +12,6 @@ import { useEffect, useMemo, useState } from "react";
 export default function VerifyProofComponent() {
   const searchParams = useSearchParams();
   const [certificateInfo, setCertificateInfo] = useState<CertificateDisplayProps>({} as CertificateDisplayProps);
-  const confirmDialog = useConfirm();
   const userId = useMemo(() => {
     return searchParams.get("userId");
   }, [searchParams]);

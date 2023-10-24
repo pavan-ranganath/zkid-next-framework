@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+
 const isDev = process.env.NODE_ENV !== "production";
 
 export default function Pwa() {
@@ -20,7 +21,7 @@ export default function Pwa() {
           console.log("Service Worker registration failed: ", err);
         });
     }
-  }, [sw, isDev]);
+  }, [sw]);
 
   return <></>;
 }

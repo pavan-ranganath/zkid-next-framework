@@ -44,12 +44,12 @@ import { useConfirm } from "material-ui-confirm";
 import PageTitle from "@/components/pageTitle";
 import Alert from "@mui/material/Alert";
 import { epochToDate } from "@/lib/services/utils";
-import { credentailsFromTb } from "../../../lib/services/userService";
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import LoadingSpinner from "@/components/Loading";
 import { set } from "mongoose";
+import { credentailsFromTb } from "../../../lib/services/userService";
 
 // Dashboard component
 export default function Profile() {
@@ -140,16 +140,15 @@ async function GetPasskeys({
   }
   async function sendDeleteProfileRequest() {
     const resp = await apiRequest({
-      category: 'ZKIDAPI',
-      pathKey: 'deleteProfile',
-      params: {}
+      category: "ZKIDAPI",
+      pathKey: "deleteProfile",
+      params: {},
     });
     if (resp.status === 200) {
       toast.success("Profile deleted successfully");
       setTimeout(async () => {
-        await signOut({ callbackUrl: "/signin" })
+        await signOut({ callbackUrl: "/signin" });
       }, 2000);
-
     } else {
       toast.error("Failed to delete profile");
     }
@@ -161,7 +160,8 @@ async function GetPasskeys({
     // if error, display error message
     confirm({
       title: "Delete Profile",
-      description: "Are you sure you want to delete your profile? This action is irreversible and will result in the permanent deletion of your profile and all associated data. Please note that you won't be able to recover your profile once it's deleted.",
+      description:
+        "Are you sure you want to delete your profile? This action is irreversible and will result in the permanent deletion of your profile and all associated data. Please note that you won't be able to recover your profile once it's deleted.",
       confirmationText: "Delete",
       cancellationText: "Cancel",
     })
@@ -177,7 +177,8 @@ async function GetPasskeys({
   function addNewPasskey(event: any): void {
     confirm({
       title: "Add new passkey",
-      description: "By adding a new passkey to your account, you can access your account from different devices or locations. This means you can have multiple passkeys for the same account, offering greater flexibility while maintaining a strong level of protection.",
+      description:
+        "By adding a new passkey to your account, you can access your account from different devices or locations. This means you can have multiple passkeys for the same account, offering greater flexibility while maintaining a strong level of protection.",
       confirmationText: "Add passkey",
       cancellationText: "Cancel",
     })
@@ -221,7 +222,6 @@ async function GetPasskeys({
                 Mobile:{userInfo.userInfo?.mobile.value}
                 <VerifyMobileButton userInfo={userInfo} verifyMobile={verifyMobile} />
               </Typography>
-
             </CardContent>
             <CardActions>
               <Button color="error" size="small" onClick={() => DeleteProfile()}>
@@ -246,11 +246,7 @@ async function GetPasskeys({
                       primary={passkey.friendlyName}
                       secondary={`Credential Backup: ${passkey.registrationInfo.registrationInfo?.credentialBackedUp}`}
                     />
-                    <IconButton
-                      edge="end"
-                      aria-label="edit"
-                      onClick={() => handleEdit(passkey.credentialId)}
-                    >
+                    <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(passkey.credentialId)}>
                       <EditIcon />
                     </IconButton>
                     <IconButton
@@ -277,8 +273,6 @@ async function GetPasskeys({
     </>
   );
 }
-
-
 
 /**
  
@@ -383,7 +377,8 @@ const confirmationDialogMessage = () => {
       <List>
         <ListItem>
           <ListItemText>
-            To verify your identity, please click &quot;Verify Now&quot; in order to grant Digilocker access. This will allow us to access your Aadhaar information to verify your name and date of birth and send you a verification email.
+            To verify your identity, please click &quot;Verify Now&quot; in order to grant Digilocker access. This will allow
+            us to access your Aadhaar information to verify your name and date of birth and send you a verification email.
           </ListItemText>
         </ListItem>
       </List>
