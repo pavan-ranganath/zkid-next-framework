@@ -23,7 +23,6 @@ export type filter = {
 // Handling the GET request
 // retrieves data based on the user's email
 export async function GET(req: NextRequest, context: any) {
-  console.log("GET /api/passkeys");
   // Establishing a connection to the database
   await dbConnect();
 

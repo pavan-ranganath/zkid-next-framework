@@ -20,17 +20,11 @@ import Link from "next/link";
 // MuiContent component
 // This component represents the main content of the application
 const MuiContent = () => {
-  // State to track the current theme name, initialized with the default theme
-  const [themeName] = useState(DEFAULT_THEME);
-
   return (
     // Stack component serves as the main container with vertical orientation and padding
     <Stack sx={{ minHeight: "100vh", padding: "64px" }}>
       {/* Stack component for the main content section */}
       <Stack sx={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }} component="main">
-        {/* Typography component to display the current theme name */}
-        <Typography variant="h5">main content with Theme: {`${themeName}`}</Typography>
-
         {/* Link component for the "Sign In" page */}
         <Link className="underline" href="/signin">
           <Typography variant="h5">Sign In</Typography>

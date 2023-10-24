@@ -6,6 +6,12 @@ import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
 import Providers from "./Providers";
+import Pwa from "./Pwa";
+
+export const metadata = {
+  manifest: "/manifest.json",
+  themeColor: "#ffffff",
+};
 
 // RootLayout component
 // This component represents the root layout of the application
@@ -30,6 +36,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
         {/* This component is used for providing authentication context to its children */}
         <AuthProvider>{children}</AuthProvider>
       </Providers>
+      <Pwa />
     </body>
   </html>
 );

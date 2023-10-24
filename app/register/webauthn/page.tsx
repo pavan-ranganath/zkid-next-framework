@@ -277,12 +277,12 @@ async function registerWebauthn(
     // Handle error if the registration request failed
     if (response.status !== 201) {
       // toast.error("Could not register WebAuthn credentials.");
-      alert("Error: Could not register WebAuthn credentials.");
+      alert("Error: Could not register nZKid credentials.");
       const errorResp = await response.json();
       console.error(errorResp);
     } else {
       // toast.success("Your WebAuthn credentials have been registered.", { duration: 10000 });
-      alert("Your WebAuthn credentials have been registered.");
+      alert("Your nZKid credentials have been registered.");
       // Redirect to the sign-in page
       setTimeout(() => {
         router.push("/signin");

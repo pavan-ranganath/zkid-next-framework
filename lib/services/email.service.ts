@@ -128,11 +128,11 @@ export const sendVerificationEmail = async (to: any, token: any): Promise<any> =
     <body>
       <div class="container">
         <h1 class="title">Dear user,</h1>
-        <p class="message">Thank you for creating an account with ZKID! Please verify your email address by clicking on the button below:</p>
+        <p class="message">Thank you for creating an account with nZKid! Please verify your email address by clicking on the button below:</p>
         <a href="${verificationEmailUrl}" class="button">Verify Email</a>
         <p class="message">By verifying your email, you will have access to all the features and benefits of our platform.</p>
         <p class="message">If you did not create an account, then please ignore this email.</p>
-        <p class="message">Best regards,<br/>The ZKID Team</p>
+        <p class="message">Best regards,<br/>The nZKid Team</p>
         <div>
           <img src="${logoUrl}" alt="Company Logo" class="logo">
           <p class="company-name">Entrada Global Solutions</p>

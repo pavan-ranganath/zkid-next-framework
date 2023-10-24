@@ -12,12 +12,11 @@ module.exports = {
       },
       env_dev: {
         APP_ENV: "dev", // APP_ENV=dev
-        PORT: 8000, // Set the port for the development environment
+        PORT: 8080, // Set the port for the development environment
       },
       env_prod: {
         APP_ENV: "prod", // APP_ENV=prod
         PORT: 8000, // Set the port for the production environment
-        HOST: "0.0.0.0",
       },
     },
   ],
