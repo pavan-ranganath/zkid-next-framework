@@ -60,3 +60,42 @@ export async function checkProfileVerification(email: string) {
   }
   return null;
 }
+
+/**
+ * Delete a user profile if it exists
+ * Make sure the database is connected before calling this function
+ * @param email string
+ * @returns boolean | null
+ */
+export async function deleteProfile(email: string): Promise<boolean | null> {
+  try {
+    // Access the "credentials" collection from the MongoDB database
+    const credentialsCollection = mongoose.connection.db.collection<credentailsFromTb>("credentials");
+    const user = await credentialsCollection.findOne({ userID: email });
+
+    if (!user) {
+      return null; // User not found, nothing to delete
+    }
+
+    const userSystemID = user.userSystemID;
+
+    // Access the "ZKIDXMLCertificate" collection
+    const certificateCollection = mongoose.connection.db.collection("ZKIDXMLCertificate");
+
+    // Delete all certificates based on userSystemID
+    await certificateCollection.deleteMany({ userSystemID: userSystemID });
+
+    // Delete the user's profile
+    const profileDeleteResult = await credentialsCollection.deleteOne({ userID: email });
+
+    if (profileDeleteResult.deletedCount === 0) {
+      return null; // Profile deletion failed
+    }
+
+    return true; // Profile and certificates deleted successfully
+  } catch (error) {
+    // Handle any potential errors (e.g., database connection issues)
+    console.error("Error while deleting user profile:", error);
+    return null;
+  }
+}

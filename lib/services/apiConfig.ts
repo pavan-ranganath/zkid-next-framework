@@ -39,9 +39,13 @@ const API_CONFIG: ApiConfig = {
   ZKIDAPI: {
     apiUrl: "",
     paths: {
-      verifyProfile: {
-        pathTemplate: "/api/verifyProfile",
+      getprofile: {
+        pathTemplate: "/api/profile",
         method: "GET",
+      },
+      deleteProfile: {
+        pathTemplate: "/api/profile",
+        method: "DELETE",
       },
     },
   },

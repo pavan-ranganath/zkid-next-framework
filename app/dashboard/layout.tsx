@@ -28,13 +28,13 @@ import Providers from "../Providers";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   // // set state for profile verification
   // const [profileVerified, setProfileVerified] = React.useState(false);
-  // check for profile verification by making API call to /api/verifyprofile
+  // check for profile verification by making API call to /api/profile
   // if not verified, redirect to profile page to verify and display a message to indicate that the profile is not verified
   const {
     data: verifyStatus,
     error: errorVerifyStatus,
     isLoading: verifyStatusIsLoading,
-  } = useSWR<{ status: boolean }>("/api/verifyprofile", fetcher, {
+  } = useSWR<{ status: boolean }>("/api/profile", fetcher, {
     // suspense: true,
   });
   if (errorVerifyStatus) {

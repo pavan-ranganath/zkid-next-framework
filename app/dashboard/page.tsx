@@ -64,8 +64,8 @@ export default function Dashboard() {
         title: "Profile verification",
         description: "Please verify your profile to continue using the application features.",
         confirmationText: "Go to profile",
-        // cancellationText: "Cancel",
-        hideCancelButton: true,
+        cancellationText: "Cancel",
+        // hideCancelButton: true,
         allowClose: false,
       })
         .then(async () => {
@@ -115,8 +115,8 @@ export default function Dashboard() {
         headers: { "Content-Type": "application/json" },
       });
       if (deleteProof.status === 200) {
-        // if delete is successful, redirect to home page
-        window.location.href = "/";
+        // if delete is successful, refresh page
+        router.refresh()
       } else {
         const resp = await deleteProof.json();
         console.log("deleteProof error", resp);
@@ -129,9 +129,20 @@ export default function Dashboard() {
   return (
     <>
       <PageTitle title="Home" />
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      {!verifyStatus &&
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+          <div style={{ textAlign: 'center', flex: '1' }}>
+            <h2>Please verify your profile to continue using the application features</h2>
+            <Button variant="contained" onClick={() => router.push("/dashboard/profile")}>
+              Verify profile
+            </Button>
+          </div>
+        </div>
+
+      }
+      {verifyStatus && <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12} md={6} sm={6}>
-          {verifyStatus && <ZKidDigitalCardDisplay />}
+          <ZKidDigitalCardDisplay />
         </Grid>
         <Grid item xs={12} md={6} sm={6}>
           <Card variant="outlined">
@@ -150,7 +161,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </Grid>
-      </Grid>
+      </Grid>}
       <AgeverificationProverInputModal
         open={isAgeverificationProverInputModalOpen}
         onClose={handleAgeverificationProverInputCloseModal}

@@ -18,6 +18,7 @@ import {
   ListItemText,
   CardActions,
   ListItem,
+  IconButton,
 } from "@mui/material";
 
 // Importing the startRegistration function from the "@simplewebauthn/browser" library
@@ -27,7 +28,7 @@ import { startRegistration } from "@simplewebauthn/browser";
 import toast from "react-hot-toast";
 
 // Importing the Suspense component from React
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 // Importing the useSWR hook from the "swr" library
 import useSWR from "swr";
@@ -36,15 +37,19 @@ import useSWR from "swr";
 import { handleRegistrationError } from "@/lib/webauthn";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import moment from "moment";
-import { signIn } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { ResponseInternal } from "next-auth/core";
-import { useRouter, useSearchParams } from "next/navigation";
 import { apiRequest, fetcher } from "@/lib/services/apiService";
 import { useConfirm } from "material-ui-confirm";
 import PageTitle from "@/components/pageTitle";
 import Alert from "@mui/material/Alert";
 import { epochToDate } from "@/lib/services/utils";
 import { credentailsFromTb } from "../../../lib/services/userService";
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import LoadingSpinner from "@/components/Loading";
+import { set } from "mongoose";
 
 // Dashboard component
 export default function Profile() {
@@ -64,7 +69,6 @@ export default function Profile() {
     return <>Error</>;
   }
   const { data: userInfo, error } = userInfoResp;
-  // const searchParams = useSearchParams()
   return (
     <>
       {/* Showing a loading message while fetching data */}
@@ -87,6 +91,7 @@ async function GetPasskeys({
   isLoading: any;
   warningDisplay: string;
 }) {
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
   const confirm = useConfirm();
   // Display loading message while fetching data
   if (isLoading) return <div>loading...</div>;
@@ -124,12 +129,73 @@ async function GetPasskeys({
     alert("verify mobile work in progress");
   }
 
+  function handleEdit(credentialId: any): void {
+    alert("edit work in progress");
+    // throw new Error("Function not implemented.");
+  }
+
+  function handleDelete(credentialId: any): void {
+    alert("delete work in progress");
+    // throw new Error("Function not implemented.");
+  }
+  async function sendDeleteProfileRequest() {
+    const resp = await apiRequest({
+      category: 'ZKIDAPI',
+      pathKey: 'deleteProfile',
+      params: {}
+    });
+    if (resp.status === 200) {
+      toast.success("Profile deleted successfully");
+      setTimeout(async () => {
+        await signOut({ callbackUrl: "/signin" })
+      }, 2000);
+
+    } else {
+      toast.error("Failed to delete profile");
+    }
+  }
+  function DeleteProfile(): void {
+    // Show confirm to get confirmation before deleteting profile
+    // send HTTP DELETE request to /api/profile
+    // if success, redirect to signin page
+    // if error, display error message
+    confirm({
+      title: "Delete Profile",
+      description: "Are you sure you want to delete your profile? This action is irreversible and will result in the permanent deletion of your profile and all associated data. Please note that you won't be able to recover your profile once it's deleted.",
+      confirmationText: "Delete",
+      cancellationText: "Cancel",
+    })
+      .then(async () => {
+        setLoadingMessage("Deleting profile...");
+        await sendDeleteProfileRequest();
+        setLoadingMessage("");
+      })
+      .catch(() => {
+        /* ... */
+      });
+  }
+  function addNewPasskey(event: any): void {
+    confirm({
+      title: "Add new passkey",
+      description: "By adding a new passkey to your account, you can access your account from different devices or locations. This means you can have multiple passkeys for the same account, offering greater flexibility while maintaining a strong level of protection.",
+      confirmationText: "Add passkey",
+      cancellationText: "Cancel",
+    })
+      .then(async () => {
+        setLoadingMessage("Adding new passkey...");
+        await registerWebauthn();
+        setLoadingMessage("");
+      })
+      .catch(() => {
+        /* ... */
+      });
+  }
+
   // Displaying user info and passkeys
   return (
     <>
       <PageTitle title="Profile" />
       {warningDisplay && <Alert severity="error">{warningDisplay}</Alert>}
-
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12} md={6} sm={6}>
           <Card variant="outlined">
@@ -155,12 +221,18 @@ async function GetPasskeys({
                 Mobile:{userInfo.userInfo?.mobile.value}
                 <VerifyMobileButton userInfo={userInfo} verifyMobile={verifyMobile} />
               </Typography>
+
+            </CardContent>
+            <CardActions>
+              <Button color="error" size="small" onClick={() => DeleteProfile()}>
+                Delete Profile
+              </Button>
               {!userInfo.userInfo?.fullName.verified && (
                 <Button size="small" onClick={verifyProfile}>
                   Verify Profile
                 </Button>
               )}
-            </CardContent>
+            </CardActions>
           </Card>
         </Grid>
         <Grid item xs={12} md={6} sm={6}>
@@ -168,28 +240,45 @@ async function GetPasskeys({
             <CardHeader title="Passkeys" />
             <CardContent>
               <List sx={{ width: "100%" }} component="nav">
-                {/* Displaying passkey information */}
                 {userInfo.passkeyInfo?.map((passkey: any) => (
                   <ListItemButton key={passkey.credentialId}>
                     <ListItemText
                       primary={passkey.friendlyName}
                       secondary={`Credential Backup: ${passkey.registrationInfo.registrationInfo?.credentialBackedUp}`}
                     />
+                    <IconButton
+                      edge="end"
+                      aria-label="edit"
+                      onClick={() => handleEdit(passkey.credentialId)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => handleDelete(passkey.credentialId)}
+                      sx={{ marginLeft: 1 }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </ListItemButton>
                 ))}
               </List>
             </CardContent>
             <CardActions>
-              <Button size="small" onClick={registerWebauthn}>
+              <Button size="small" onClick={addNewPasskey}>
                 Add new passkey
               </Button>
             </CardActions>
           </Card>
         </Grid>
       </Grid>
+      {loadingMessage && <LoadingSpinner message={loadingMessage} />}
     </>
   );
 }
+
+
 
 /**
  
@@ -294,8 +383,7 @@ const confirmationDialogMessage = () => {
       <List>
         <ListItem>
           <ListItemText>
-            To verify your identity, click &quot;Verify Now&quot; to grant Digilocker access for your name and DOB and to
-            receive a verification email.
+            To verify your identity, please click &quot;Verify Now&quot; in order to grant Digilocker access. This will allow us to access your Aadhaar information to verify your name and date of birth and send you a verification email.
           </ListItemText>
         </ListItem>
       </List>
