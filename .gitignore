@@ -38,3 +38,4 @@ next.zip
 keys/ZKIDXMLCertificateSigner.csr
 public/workbox-*.js
 public/sw.js
+.env.production

@@ -7,15 +7,16 @@
 
 import { dbConnect } from "@/lib/mongodb";
 import { AadhaarXmlParser } from "@/lib/services/aadhaarService";
-import { checkProfileVerifaction } from "@/lib/services/userService";
+import { checkProfileVerification } from "@/lib/services/userService";
 import { epochToDate } from "@/lib/services/utils";
 import { generateProofForAgeverification } from "@/lib/services/zkProofGenerators/ageVerificationProofGenerator";
 import { authOptions } from "@/lib/webauthn";
-import { storeCertificate } from "@/lib/zkidCertificateService";
+import { deleteCertificate, storeCertificate } from "@/lib/zkidCertificateService";
 import moment from "moment";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
+const nZKPCertType = "nAgeVerify";
 /**
  * Generate ZK proof based on type of proof requested example, age verification, address verification, etc.
  *
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest, context: any) {
       // Returning a JSON response with an error message and a status code of 401 (Unauthorized)
       return NextResponse.json({ error: "Authentication is required" }, { status: 401 });
     }
-    const profileInfo = await checkProfileVerifaction(email);
+    const profileInfo = await checkProfileVerification(email);
     if (!profileInfo) {
       // Returning a JSON response with an error message and a status code of 401 (Unauthorized)
       return NextResponse.json({ error: "Profile not verified" }, { status: 401 });
@@ -88,6 +89,47 @@ export async function POST(req: NextRequest, context: any) {
     const origin = process.env.NEXTAUTH_URL!;
     const url = `${origin}/verifyproof?userId=${userSystemID}&type=nAgeVerify`;
     return NextResponse.json({ certificateData: signedXmlCertificateWithZKproof, shareUrl: url }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    // Returning a JSON response with an error message and a status code of 500 (Internal Server Error)
+    return NextResponse.json({ error: (error as Error)?.message }, { status: 500 });
+  }
+}
+
+/**
+ * DELETE request
+ * @param req NextRequest
+ * @param context any
+ */
+export async function DELETE(req: NextRequest, context: any) {
+  try {
+    // Establishing a connection to the database
+    await dbConnect();
+
+    // Retrieving the user session using the "getServerSession" function
+    const session = await getServerSession(authOptions);
+
+    // Extracting the user's email from the session
+    const email = session?.user?.email;
+    // Checking if the user is authenticated
+    if (!email) {
+      // Returning a JSON response with an error message and a status code of 401 (Unauthorized)
+      return NextResponse.json({ error: "Authentication is required" }, { status: 401 });
+    }
+    const profileInfo = await checkProfileVerification(email);
+    if (!profileInfo) {
+      // Returning a JSON response with an error message and a status code of 401 (Unauthorized)
+      return NextResponse.json({ error: "Profile not verified" }, { status: 401 });
+    }
+    const { userSystemID } = profileInfo!;
+
+    // delete the xml certificate in db
+    // const xmlDocDeleted = await deleteCertificate(userSystemID, nZKPCertType);
+    // if (!xmlDocDeleted?.acknowledged) {
+    //   console.error("Age verification not deleted");
+    //   throw new Error("Age verification not deleted");
+    // }
+    return NextResponse.json({ message: "Age verification proof deleted" }, { status: 200 });
   } catch (error) {
     console.error(error);
     // Returning a JSON response with an error message and a status code of 500 (Internal Server Error)

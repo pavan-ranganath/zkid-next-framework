@@ -58,6 +58,26 @@ export async function updateData(userID: any, data: any, collectionName: string,
   }
 }
 
+// Delete data
+export async function deleteData(key: any, collectionName: string) {
+  const { db } = mongoose.connection;
+
+  const collection = db.collection(collectionName);
+
+  try {
+    const result = await collection.deleteOne({ ...key });
+    if (result) {
+      console.log(`Data with key '${key}' deleted securely.`);
+      return result;
+    }
+    console.log(`Data with key '${key}' not found.`);
+    return null;
+  } catch (error) {
+    console.error(`Error deleting data with key '${key}':`, error);
+    return null;
+  }
+}
+
 export async function checkDigiLockerID(user_sso_id: string, userId: string) {
   const { db } = mongoose.connection;
 

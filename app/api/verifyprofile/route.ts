@@ -6,7 +6,7 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { OpenIDTokenEndpointResponse, protectedResourceRequest } from "oauth4webapi";
 import mongoose from "mongoose";
 import { authOptions } from "@/lib/webauthn";
-import { checkProfileVerifaction, credentailsFromTb } from "@/lib/services/userService";
+import { checkProfileVerification, credentailsFromTb } from "@/lib/services/userService";
 
 export async function GET(req: NextRequest, event: NextFetchEvent) {
   // Retrieving the user session using the "getServerSession" function
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, event: NextFetchEvent) {
   // Establishing a connection to the database
   await dbConnect();
   try {
-    const profileVerified = await checkProfileVerifaction(email);
+    const profileVerified = await checkProfileVerification(email);
     if (profileVerified) {
       // Returning a JSON response with the data and a status code of 200 (OK)
       return NextResponse.json({ status: true }, { status: 200 });

@@ -6,18 +6,19 @@ import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interfa
 import Image from "next/image";
 import moment from "moment";
 import { saveAs } from "file-saver";
-import { ConfirmOptions } from "material-ui-confirm";
+import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 import { epochToDate } from "@/lib/services/utils";
 import ShareButton from "./ShareButtons";
 
 export interface CertificateDisplayProps {
   certificateData: string;
   shareUrl: string;
+  deleteButton: () => void;
 }
 
 export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
   const [certificateInfo, setCertificateInfo] = useState<AgeVerificatingCertificate>({} as AgeVerificatingCertificate);
-
+  const confirm = useConfirm();
   const handleDownload = () => {
     const blob = new Blob([displayProps.certificateData], { type: "application/xml" });
     saveAs(blob, `${certificateInfo.Certificate.name}.xml`);
@@ -86,9 +87,9 @@ export const CertificateDisplay = (displayProps: CertificateDisplayProps) => {
           </Grid>
           <QRCode value={displayProps.shareUrl} style={styles.spacingBetween} />
           <Box sx={styles.buttonsContainer}>
-            {/* <Button variant="contained" color="primary">
-                            Share
-                        </Button> */}
+            <Button variant="contained" color="error" onClick={displayProps.deleteButton}>
+              Delete
+            </Button>
             <ShareButton style={{ marginRight: "6px" }} url={displayProps.shareUrl} />
             <Button variant="contained" color="primary" onClick={handleDownload}>
               Download

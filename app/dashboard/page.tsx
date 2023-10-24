@@ -10,7 +10,7 @@ import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interfa
 import { fetcher } from "@/lib/services/apiService";
 import { credentailsFromTb } from "@/lib/services/userService";
 import { Button, Card, CardContent, CardHeader, Grid } from "@mui/material";
-import { useConfirm } from "material-ui-confirm";
+import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import useSWR from "swr";
@@ -41,7 +41,7 @@ export default function Dashboard() {
   const getCertificateData = async () => {
     const response = await fetch("/api/proof");
     if (response.status !== 200) {
-      setVertificateData({ certificateData: "", shareUrl: "" });
+      setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
       return;
     }
     const data = await response.json();
@@ -53,7 +53,7 @@ export default function Dashboard() {
       setVertificateData(data);
       return;
     }
-    setVertificateData({ certificateData: "", shareUrl: "" });
+    setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
   };
 
   // display alert to navigate to profile page to verify profile if not verified
@@ -96,7 +96,36 @@ export default function Dashboard() {
     }
     setVertificateData(data);
   };
+  const deleteAgeVerificationproof = () => {
+    // Implement the delete logic here
+    // use a library like material-ui-confirm for confirmation dialog
+    // make Delete http request to /api/ageverification to delete the certificate from the database
+    const confirmOptions: ConfirmOptions = {
+      title: "Delete Age Verification Proof",
+      description: "Are you sure you want to delete this age verification proof?",
+      confirmationText: "Delete",
+      cancellationText: "Cancel",
+      dialogProps: { maxWidth: "sm" },
+    };
+    confirm(confirmOptions).then(async () => {
+      console.log("deleted");
+      // send DELETE request to /api/ageverification
+      const deleteProof = await fetch("/api/proof/ageverification", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (deleteProof.status === 200) {
+        // if delete is successful, redirect to home page
+        window.location.href = "/";
+      } else {
+        const resp = await deleteProof.json();
+        console.log("deleteProof error", resp);
+        // else show error message
+        alert("Error deleting age verification proof");
+      }
 
+    });
+  }
   return (
     <>
       <PageTitle title="Home" />
@@ -109,7 +138,7 @@ export default function Dashboard() {
             <CardHeader title="nZKP Certificates" />
             <CardContent>
               {vertificateData !== null ? (
-                <CertificateDisplay certificateData={vertificateData.certificateData} shareUrl={vertificateData.shareUrl} />
+                <CertificateDisplay certificateData={vertificateData.certificateData} shareUrl={vertificateData.shareUrl} deleteButton={deleteAgeVerificationproof} />
               ) : (
                 <p>Loading...</p>
               )}

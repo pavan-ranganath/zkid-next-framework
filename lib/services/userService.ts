@@ -47,7 +47,7 @@ export async function getData(query?: any): Promise<dataFromServer> {
  * @param email string
  * @returns
  */
-export async function checkProfileVerifaction(email: string) {
+export async function checkProfileVerification(email: string) {
   // Accessing the "credentials" collection from the MongoDB database
   const collection = mongoose.connection.db.collection<credentailsFromTb>("credentials");
 

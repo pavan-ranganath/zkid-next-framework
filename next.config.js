@@ -6,6 +6,7 @@ const withPWAInit = require("next-pwa");
 
 /** @type {import('next-pwa').PWAConfig} */
 const withPWA = withPWAInit({
+  disable: isDev,
   dest: "public",
   // Solution: https://github.com/shadowwalker/next-pwa/issues/424#issuecomment-1399683017
   buildExcludes: ["app-build-manifest.json"],
@@ -70,10 +71,11 @@ const nextConfig = {
       layers: true,
       topLevelAwait: true,
     });
-    const entry = generateAppDirEntry(config.entry);
     const newConfig = { ...config }; // Create a copy of the 'config' object
-
-    newConfig.entry = () => entry;
+    if (!isDev) {
+      const entry = generateAppDirEntry(config.entry);
+      newConfig.entry = () => entry;
+    }
 
     return newConfig;
   },

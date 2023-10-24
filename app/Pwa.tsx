@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+const isDev = process.env.NODE_ENV !== "production";
 
 export default function Pwa() {
   let sw: ServiceWorkerContainer | undefined;
@@ -10,7 +11,7 @@ export default function Pwa() {
   }
 
   useEffect(() => {
-    if (sw) {
+    if (sw && isDev) {
       sw.register("/sw.js", { scope: "/" })
         .then((registration) => {
           console.log("Service Worker registration successful with scope: ", registration.scope);
@@ -19,7 +20,7 @@ export default function Pwa() {
           console.log("Service Worker registration failed: ", err);
         });
     }
-  }, [sw]);
+  }, [sw, isDev]);
 
   return <></>;
 }
