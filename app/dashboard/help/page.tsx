@@ -43,8 +43,7 @@ const FAQComponent = () => {
     {
       section: "More Questions",
       question: "Still work in progress",
-      answer:
-        "We are still working on this page. Please check back later for more questions and answers.",
+      answer: "We are still working on this page. Please check back later for more questions and answers.",
     },
   ];
 

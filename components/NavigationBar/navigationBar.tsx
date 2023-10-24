@@ -23,11 +23,14 @@ import Link from "next/link"; // Importing the Link component from Next.js for c
 
 import { signOut } from "next-auth/react"; // Importing the signOut function from the next-auth/react package for user sign out
 
-import { useTheme } from "next-themes"; // Importing the useTheme hook from the next-themes package for theme management
+import { useTheme as useNextTheme } from "next-themes"; // Importing the useTheme hook from next-themes with an alias
+
+import { useTheme as useMUITheme } from '@mui/material/styles'; // Importing the useTheme hook from MUI with an alias
 
 import { DEFAULT_THEME, getOtherTheme } from "@/app/theme"; // Importing custom theme-related functions from the "@/app/theme" module
-import { useRouter } from "next/navigation";
+import { usePathname } from 'next/navigation';
 import AppLogoSVG from "../appLogo";
+import { Palette } from "@mui/material/styles"
 
 // An array of page objects containing page information
 const pages: {
@@ -35,20 +38,20 @@ const pages: {
   friendlyName: string;
   href: string;
 }[] = [
-  { id: 1, friendlyName: "Home", href: "/dashboard" },
-  { id: 2, friendlyName: "Profile", href: "/dashboard/profile" },
-  { id: 3, friendlyName: "Help", href: "/dashboard/help" },
-  // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
-];
+    { id: 1, friendlyName: "Home", href: "/dashboard" },
+    { id: 2, friendlyName: "Profile", href: "/dashboard/profile" },
+    { id: 3, friendlyName: "Help", href: "/dashboard/help" },
+    // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
+  ];
 
 export default function NavigationBar() {
-  const { theme: themeState, setTheme } = useTheme(); // Using the useTheme hook to access the current theme and set the theme
+  const { theme: themeState, setTheme } = useNextTheme(); // Using the useTheme hook to access the current theme and set the theme
   const [themeName, setThemeName] = useState(DEFAULT_THEME); // State variable to store the name of the current theme
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null); // State variable for the anchor element of the navigation menu
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // State variable for the anchor element of the user menu
   const [selectedList, setSelectedList] = useState<number[]>([]); // State variable for the selected list items
-  const router = useRouter();
-
+  const muiTheme = useMUITheme(); // Using the useTheme hook to access the current theme
+  const currentPath = usePathname();
   // Event handler for opening the navigation menu
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -78,31 +81,31 @@ export default function NavigationBar() {
     friendlyName: string;
     onClick: () => Promise<void>;
   }[] = [
-    // {
-    //   id: 1,
-    //   friendlyName: `Profile`,
-    //   onClick: async () => {
-    //     router.push("/dashboard/profile");
-    //     handleCloseUserMenu();
-    //   },
-    // },
-    {
-      id: 2,
-      friendlyName: `Activate ${themeName} Theme`,
-      onClick: async () => {
-        setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
-        handleCloseUserMenu();
+      // {
+      //   id: 1,
+      //   friendlyName: `Profile`,
+      //   onClick: async () => {
+      //     router.push("/dashboard/profile");
+      //     handleCloseUserMenu();
+      //   },
+      // },
+      {
+        id: 2,
+        friendlyName: `Activate ${themeName} Theme`,
+        onClick: async () => {
+          setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
+          handleCloseUserMenu();
+        },
       },
-    },
-    {
-      id: 3,
-      friendlyName: "Logout",
-      onClick: async () => {
-        await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
-        handleCloseUserMenu();
+      {
+        id: 3,
+        friendlyName: "Logout",
+        onClick: async () => {
+          await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
+          handleCloseUserMenu();
+        },
       },
-    },
-  ];
+    ];
 
   return (
     <AppBar position="static" style={{ marginBottom: 20, paddingTop: 5, paddingBottom: 5 }}>
@@ -149,8 +152,11 @@ export default function NavigationBar() {
             >
               {/* Pages */}
               {pages.map((page) => (
-                <MenuItem key={page.id} component={Link} href={page.href} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page.friendlyName}</Typography>
+                <MenuItem key={page.id} component={Link} href={page.href} onClick={handleCloseNavMenu} sx={{
+                  color: currentPath === page.href ? muiTheme.palette.primary.main : "inherit", // Use primary color for the current page
+
+                }}>
+                  <Typography textAlign="center" sx={{ fontWeight: currentPath === page.href ? "bold" : "normal" }}>{page.friendlyName}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -170,7 +176,17 @@ export default function NavigationBar() {
           {/* Navigation Buttons (for medium and large screens) */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Button key={page.id} component={Link} href={page.href} sx={{ my: 2, color: "white", display: "block" }}>
+              <Button
+                key={page.id}
+                component={Link}
+                href={page.href}
+                sx={{
+                  my: 2,
+                  fontWeight: currentPath === page.href ? "bold" : "normal",
+                  // backgroundColor: currentPath === page.href ? muiTheme.palette.background.default : "transparent", // Use primary color as background for the current page
+                  color: currentPath === page.href ? muiTheme.palette.primary.main : muiTheme.palette.common.white, // Use white text color for the current page
+                }}
+              >
                 {page.friendlyName}
               </Button>
             ))}
@@ -212,3 +228,4 @@ export default function NavigationBar() {
     </AppBar>
   );
 }
+
