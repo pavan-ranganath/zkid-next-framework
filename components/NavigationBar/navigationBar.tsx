@@ -37,6 +37,7 @@ const pages: {
 }[] = [
     { id: 1, friendlyName: "Home", href: "/dashboard" },
     { id: 2, friendlyName: "Profile", href: "/dashboard/profile" },
+    { id: 3, friendlyName: "Help", href: "/dashboard/help" },
     // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
   ];
 
