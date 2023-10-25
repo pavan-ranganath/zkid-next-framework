@@ -65,18 +65,28 @@ export async function POST(req: NextRequest, context: any) {
       console.error("XML parsing failed");
       throw new Error("XML parsing failed");
     }
+    const userClaimDate = moment(claimDate).toDate();
+    const userDOBInDB = moment(dob.value).toDate();
+    // calulate age as per claim date and dob
+    const calculatedAge = moment(userClaimDate).diff(userDOBInDB, "years");
+    if (claimAge > calculatedAge) {
+      console.error("Claimed age and date mismatch");
+      return NextResponse.json({ error: "Claimed age and date mismatch" }, { status: 400 });
+    }
+
     const photo = xmlAadhar.extractPhtValue;
     if (!photo) {
       console.error("Photo not found");
       throw new Error("Photo not found");
     }
+
     const signedXmlCertificateWithZKproof = await generateProofForAgeverification(
-      moment(dob.value).toDate(),
+      userDOBInDB,
       fullName.value,
       userSystemID,
       photo,
       claimAge,
-      moment(claimDate).toDate(),
+      userClaimDate,
     );
 
     // store the xml certificate in db
