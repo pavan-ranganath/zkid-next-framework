@@ -23,13 +23,13 @@ export async function GET(req: NextRequest) {
   // Establishing a connection to the database
   await dbConnect();
 
-  const { email } = Object.fromEntries(req.nextUrl.searchParams.entries());
+  let { email } = Object.fromEntries(req.nextUrl.searchParams.entries());
 
   // Check if email parameter is provided
   if (!email) {
     return NextResponse.json({ error: "Email is required." }, { status: 400 });
   }
-
+  email = email.toLowerCase().trim();
   // Find the credentials associated with the provided email in the database
   const credentials = await mongoose.connection.db.collection<DbCredential>("credentials").findOne({
     userID: email,
