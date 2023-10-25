@@ -15,8 +15,8 @@ import {
   Typography,
 } from "@mui/material";
 import moment from "moment";
-import { AgeVerificatingCertificate } from "../lib/interfaces/Certificate.interface";
 import { epochToDate } from "@/lib/services/utils";
+import { AgeVerificatingCertificate } from "../lib/interfaces/Certificate.interface";
 
 function DigitalSignatureTag({
   certificate,
@@ -39,7 +39,7 @@ function DigitalSignatureTag({
   // display ageVerificationXMLCertificate signed info and digest info
   const signingCert =
     ageVerificationXMLCertificate.Certificate["ds:Signature"]["ds:Object"]["xades:QualifyingProperties"][
-    "xades:SignedProperties"
+      "xades:SignedProperties"
     ]["xades:SignedSignatureProperties"]["xades:SigningCertificate"]["xades:Cert"]["xades:IssuerSerial"];
   return (
     <div style={{ border: "1px solid", padding: "10px", borderRadius: "5px" }}>
@@ -96,7 +96,7 @@ function DigitalSignatureTag({
             <Typography variant="body2" style={{ wordBreak: "break-all" }}>
               {
                 ageVerificationXMLCertificate.Certificate["ds:Signature"]["ds:SignedInfo"]["ds:Reference"][0][
-                "ds:DigestValue"
+                  "ds:DigestValue"
                 ]
               }
             </Typography>
