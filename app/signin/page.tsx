@@ -69,10 +69,10 @@ export default function SignInComponent() {
   // Retrieve the session status and data using the useSession hook from next-auth/react.
   const { status } = useSession();
   const [loadingMessage, setLoadingMessage] = useState("");
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
-  const callbackUrl = searchParams.get('callbackUrl');
-  const error = searchParams.get('error');
+  const callbackUrl = searchParams.get("callbackUrl");
+  const error = searchParams.get("error");
 
   // Determine the user's authorization status based on the session status.
   const authorized = status === "authenticated";
@@ -100,9 +100,9 @@ export default function SignInComponent() {
   const onSubmit = async (data: { email: string }) => {
     try {
       setLoadingMessage("Signing in...");
-      await signInWithWebauthn(data.email, callbackUrl ? callbackUrl : "/dashboard"); // Call the signInWithWebauthn function to initiate WebAuthn authentication.
-    } catch (error) {
-      console.error(error);
+      await signInWithWebauthn(data.email, callbackUrl || "/dashboard"); // Call the signInWithWebauthn function to initiate WebAuthn authentication.
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoadingMessage("");
     }
@@ -285,6 +285,6 @@ async function signInWithWebauthn(email: any, redirectUrl: string = "/dashboard"
     id: credential.id,
     rawId: credential.rawId,
     type: credential.type,
-    callbackUrl: redirectUrl
+    callbackUrl: redirectUrl,
   });
 }
