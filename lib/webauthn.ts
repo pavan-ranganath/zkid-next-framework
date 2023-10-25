@@ -249,6 +249,9 @@ export const authOptions: AuthOptions = {
     }),
   ],
   pages: {
+    signIn: "/signin",
+    signOut: "/signout",
+    newUser: "/register",
     error: "/signin",
   },
   session: {

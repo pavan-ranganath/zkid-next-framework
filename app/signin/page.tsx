@@ -42,7 +42,7 @@ import { RedirectType } from "next/dist/client/components/redirect";
 
 // Importing the 'redirect' function from the 'next/navigation' package
 // It provides a way to programmatically navigate to different pages in Next.js applications
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 
 // Importing the 'useEffect' function from the 'react' package
 // It is a React Hook used to perform side effects in functional components
@@ -69,6 +69,10 @@ export default function SignInComponent() {
   // Retrieve the session status and data using the useSession hook from next-auth/react.
   const { status } = useSession();
   const [loadingMessage, setLoadingMessage] = useState("");
+  const searchParams = useSearchParams()
+
+  const callbackUrl = searchParams.get('callbackUrl');
+  const error = searchParams.get('error');
 
   // Determine the user's authorization status based on the session status.
   const authorized = status === "authenticated";
@@ -96,7 +100,7 @@ export default function SignInComponent() {
   const onSubmit = async (data: { email: string }) => {
     try {
       setLoadingMessage("Signing in...");
-      await signInWithWebauthn(data.email); // Call the signInWithWebauthn function to initiate WebAuthn authentication.
+      await signInWithWebauthn(data.email, callbackUrl ? callbackUrl : "/dashboard"); // Call the signInWithWebauthn function to initiate WebAuthn authentication.
     } catch (error) {
       console.error(error);
     } finally {
@@ -113,7 +117,10 @@ export default function SignInComponent() {
     if (authorized) {
       redirect("/dashboard", RedirectType.push);
     }
-  }, [loading, unAuthorized, status, authorized]);
+    if (error) {
+      toast.error(error);
+    }
+  }, [loading, unAuthorized, status, authorized, error]);
 
   // If the user refreshed the page or somehow navigated to the protected page,
   // show a loading spinner.
@@ -204,7 +211,7 @@ export default function SignInComponent() {
  * It utilizes the 'toast' function from the 'react-hot-toast' package to show error messages.
  * Overall, the signInWithWebauthn function provides a seamless integration with WebAuthn authentication for the sign-in process.
  */
-async function signInWithWebauthn(email: any) {
+async function signInWithWebauthn(email: any, redirectUrl: string = "/dashboard") {
   // Create the URL to fetch authentication options from the server.
   const url = new URL("/api/auth/authenticate", window.location.origin);
   url.search = new URLSearchParams({ email }).toString();
@@ -278,6 +285,6 @@ async function signInWithWebauthn(email: any) {
     id: credential.id,
     rawId: credential.rawId,
     type: credential.type,
-    callbackUrl: "/dashboard",
+    callbackUrl: redirectUrl
   });
 }
