@@ -208,10 +208,10 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
       {/* Separate section for verification status */}
       <List sx={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "16px" }}>
         <ListItem>
-          <ListItemText primary="Signature verification status" />
-          {isSignatureVerified === null && <Help sx={{ color: "gray", fontSize: "1.5rem" }} />}
-          {isSignatureVerified === true && <Check sx={{ color: "green", fontSize: "1.5rem" }} />}
-          {isSignatureVerified === false && <Close sx={{ color: "red", fontSize: "1.5rem" }} />}
+          <ListItemText primary="Proof verification status" />
+          {isProofVerified === null && <Help sx={{ color: "gray", fontSize: "1.5rem" }} />}
+          {isProofVerified === true && <Check sx={{ color: "green", fontSize: "1.5rem" }} />}
+          {isProofVerified === false && <Close sx={{ color: "red", fontSize: "1.5rem" }} />}
         </ListItem>
 
         <ListItem>
