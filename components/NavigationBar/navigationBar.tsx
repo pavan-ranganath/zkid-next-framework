@@ -189,8 +189,15 @@ export default function NavigationBar() {
                 sx={{
                   my: 2,
                   fontWeight: currentPath === page.href ? "bold" : "normal",
-                  backgroundColor: currentPath === page.href ? muiTheme.palette.common.white : "transparent", // Use primary color as background for the current page
+                  backgroundColor:
+                    currentPath === page.href
+                      ? muiTheme.palette.getContrastText(muiTheme.palette.primary.main)
+                      : "transparent", // Use primary color as background for the current page
                   color: currentPath === page.href ? muiTheme.palette.primary.main : muiTheme.palette.common.white, // Use white text color for the current page
+                  "&:hover": {
+                    color: muiTheme.palette.primary.main, // Change color on hover
+                    backgroundColor: muiTheme.palette.getContrastText(muiTheme.palette.primary.main), // Change background color on hover
+                  },
                 }}
               >
                 {page.friendlyName}
