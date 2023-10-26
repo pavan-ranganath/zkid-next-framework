@@ -47,35 +47,14 @@ export async function generateProofForAgeverification(
   // Serialize the proof and encode it in base64 format.
   const base64Proof = serializeProofAndEncodeToBase64(proof);
 
-  const inputDataForXMlCertificate: InputData = {
-    ZKID_ID: userId,
-    issueDate: moment().valueOf(),
-    expirydate: moment().add(1, "years").valueOf(),
-    person_name: name,
-    ZKPROOF: base64Proof,
-    Photo: photo,
-    ClaimedAge: ageThreshold,
-    ClaimedDate: currentDay.toDate().valueOf(),
-  };
-
-  const generatedXml = generateXml(inputDataForXMlCertificate);
-  const xades = new XadesClass();
-
-  const hash = "SHA-256";
-  const alg = {
-    name: "RSASSA-PKCS1-v1_5",
-    hash,
-  };
-  const signingCert = await readSigningCertificateFromFile();
-  const issuerCert = await readIssuerCertificateFromFile();
-  const XMLcertSigningkeyPair = await readCertificateSigningKeyPairFromFile();
-  const xmlCertificate = await xades.signXml(generatedXml, XMLcertSigningkeyPair, alg, {
-    keyValue: XMLcertSigningkeyPair.publicKey,
-    references: [{ hash, transforms: ["c14n", "enveloped"] }],
-    x509: [signingCert, issuerCert],
-    signingCertificate: signingCert,
-  });
-  return xmlCertificate;
+  return await generateXMLSignedCertificateForAgeVerificationProof(
+    userId,
+    name,
+    base64Proof,
+    photo,
+    ageThreshold,
+    currentDay,
+  );
 }
 
 export interface LoggerProps {
@@ -103,3 +82,50 @@ const Logger = () => {
 
   return logger;
 };
+
+async function generateXMLSignedCertificateForAgeVerificationProof(
+  userId: string,
+  name: string,
+  base64Proof: string,
+  photo: string,
+  ageThreshold: number,
+  currentDay: moment.Moment,
+) {
+  const inputDataForXMlCertificate: InputData = {
+    ZKID_ID: userId,
+    issueDate: moment().valueOf(),
+    expirydate: moment().add(1, "years").valueOf(),
+    person_name: name,
+    ZKPROOF: base64Proof,
+    Photo: photo,
+    ClaimedAge: ageThreshold,
+    ClaimedDate: currentDay.toDate().valueOf(),
+  };
+
+  const generatedXml = generateXml(inputDataForXMlCertificate);
+  const xades = new XadesClass();
+
+  const hash = "SHA-256";
+  const alg = {
+    name: "RSASSA-PKCS1-v1_5",
+    hash,
+  };
+  const signingCert = await readSigningCertificateFromFile();
+  const issuerCert = await readIssuerCertificateFromFile();
+  const XMLcertSigningkeyPair = await readCertificateSigningKeyPairFromFile();
+  const xmlCertificate = await xades.signXml(generatedXml, XMLcertSigningkeyPair, alg, {
+    keyValue: XMLcertSigningkeyPair.publicKey,
+    references: [{ hash, transforms: ["c14n", "enveloped"] }],
+    x509: [signingCert, issuerCert],
+    signingCertificate: signingCert,
+    productionPlace: {
+      country: "India",
+      state: "Karnataka",
+      city: "Bengaluru",
+    },
+    signerRole: {
+      claimed: ["Entrada nZKid signer"],
+    },
+  });
+  return xmlCertificate;
+}
