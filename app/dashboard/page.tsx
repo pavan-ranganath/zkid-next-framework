@@ -42,7 +42,7 @@ export default function Dashboard() {
   const getCertificateData = async () => {
     const response = await fetch("/api/proof");
     if (response.status !== 200) {
-      setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
+      setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => {} });
       return;
     }
     const data = await response.json();
@@ -54,7 +54,7 @@ export default function Dashboard() {
       setVertificateData(data);
       return;
     }
-    setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
+    setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => {} });
   };
 
   // display alert to navigate to profile page to verify profile if not verified
@@ -118,7 +118,7 @@ export default function Dashboard() {
       if (deleteProof.status === 200) {
         toast.success("Age verification proof deleted successfully");
         // if delete is successful, refresh page
-        setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
+        setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => {} });
       } else {
         const resp = await deleteProof.json();
         console.log("deleteProof error", resp);
