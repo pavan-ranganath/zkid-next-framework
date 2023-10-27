@@ -22,6 +22,15 @@ export class XadesClass {
     this.xadesjs = xadesjs;
   }
 
+  /**
+   * XMl signed certificate as per XAdES-BES standards
+   *
+   * @param xmlString XML string to sign
+   * @param keys public and private keys
+   * @param algorithm algorithm to use for signing
+   * @param optionalSign optional parameters for signing
+   * @returns signed XML string
+   */
   async signXml(xmlString: string, keys: CryptoKeyPair, algorithm: any, optionalSign: OptionsXAdES): Promise<string> {
     // const xmlDoc = new dom.DOMParser().parseFromString(xmlString, "application/xml");
     const xmlDoc = xadesjs.Parse(xmlString);
