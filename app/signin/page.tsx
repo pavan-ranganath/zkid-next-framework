@@ -166,6 +166,8 @@ export default function SignInComponent() {
         {/* Email input field */}
         <TextField
           label="Email"
+          type="email"
+          autoComplete="webauthn"
           {...register("email")} // Register the "email" field with react-hook-form.
           variant="outlined"
           color="primary"

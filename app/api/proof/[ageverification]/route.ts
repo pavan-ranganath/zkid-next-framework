@@ -71,11 +71,11 @@ export async function POST(req: NextRequest, context: any) {
     // calulate age as per claim date and dob
     // check if age is less than claimed age
     // if yes, then return error
-    // const calculatedAge = moment(userClaimDate).diff(userDOBInDB, "years");
-    // if (claimAge > calculatedAge) {
-    //   console.error("Claimed age and date mismatch");
-    //   return NextResponse.json({ error: "Claimed age and date mismatch" }, { status: 400 });
-    // }
+    const calculatedAge = moment(userClaimDate).diff(userDOBInDB, "years");
+    if (claimAge > calculatedAge) {
+      console.error("Claimed age and date mismatch");
+      return NextResponse.json({ error: "Claimed age and date mismatch" }, { status: 400 });
+    }
 
     const photo = xmlAadhar.extractPhtValue;
     if (!photo) {
