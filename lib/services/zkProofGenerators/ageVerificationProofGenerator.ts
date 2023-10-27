@@ -47,14 +47,7 @@ export async function generateProofForAgeverification(
   // Serialize the proof and encode it in base64 format.
   const base64Proof = serializeProofAndEncodeToBase64(proof);
 
-  return await generateXMLSignedCertificateForAgeVerificationProof(
-    userId,
-    name,
-    base64Proof,
-    photo,
-    ageThreshold,
-    currentDay,
-  );
+  return generateXMLSignedCertificateForAgeVerificationProof(userId, name, base64Proof, photo, ageThreshold, currentDay);
 }
 
 export interface LoggerProps {
