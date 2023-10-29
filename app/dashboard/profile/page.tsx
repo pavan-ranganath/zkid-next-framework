@@ -361,7 +361,7 @@ async function registerWebauthn() {
     // toast.error(`Registration failed. ${(err as Error).message}`);
   }
 }
-const _digiSignInUrlProvider = "/api/auth/digilocker";
+const _digiSignInUrlProvider = "/api/auth/simulateauth";
 const digiSignin = async () => {
   return fetch(_digiSignInUrlProvider, {
     method: "post",

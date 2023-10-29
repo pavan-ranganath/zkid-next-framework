@@ -39,7 +39,7 @@ export interface DbCredential {
     mobile: Field<string>; // The last name of the user
   };
   aadhaar?: {
-    aadhaar: string;
+    personData: string;
     digiLockerUserInfo: string;
   };
   photo?: string;

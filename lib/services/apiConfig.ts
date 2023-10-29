@@ -49,6 +49,19 @@ const API_CONFIG: ApiConfig = {
       },
     },
   },
+  SIMULATE_DL: {
+    apiUrl: "http://localhost:4002",
+    paths: {
+      getprofile: {
+        pathTemplate: "/api/v1/xml-certificate",
+        method: "GET",
+      },
+      deleteProfile: {
+        pathTemplate: "/api/profile",
+        method: "DELETE",
+      },
+    },
+  },
 };
 // Utility function to generate dynamic paths
 export function generateDynamicPath(

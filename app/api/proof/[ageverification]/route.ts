@@ -59,7 +59,7 @@ export async function POST(req: NextRequest, context: any) {
     }
     const { dob, fullName } = userInfo;
     // get photo from aadhar
-    const xmlAadhar = new AadhaarXmlParser(aadhaar!.aadhaar);
+    const xmlAadhar = new AadhaarXmlParser(aadhaar!.personData);
     await xmlAadhar.parseXml();
     if (!xmlAadhar) {
       console.error("XML parsing failed");

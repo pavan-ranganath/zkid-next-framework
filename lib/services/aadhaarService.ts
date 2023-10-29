@@ -2,11 +2,13 @@ import { XMLParser } from "fast-xml-parser";
 import { storeData, getData, updateData } from "./storage";
 import { DbCredential } from "../webauthn";
 import { epochToDate } from "./utils";
+import moment from "moment";
 
 export interface PersonInfo {
   dob: string;
-  gender: string;
   name: string;
+  email: string;
+  phone: string;
 }
 type GenderSynonyms = {
   [key: string]: string;
@@ -44,10 +46,10 @@ export const xmlParserOptions = {
   arrayMode: false,
   allowBooleanAttributes: true,
 };
-export const setDigilockerInfo = async (digilockerInfo: { aadhaar: string; digiLockerUserInfo: any }, userEmail: string) => {
-  return updateData(userEmail, digilockerInfo, "credentials", "aadhaar");
+export const setSimulatedDLPersonInfo = async (simulatedDLPersonInfo: { personData: string }, userEmail: string) => {
+  return updateData(userEmail, simulatedDLPersonInfo, "credentials", "aadhaar");
 };
-export const getDigilockerInfo = async (userEmail: string): Promise<any | null> => {
+export const getSimulatedDLPersonInfo = async (userEmail: string): Promise<any | null> => {
   const data = await getData(userEmail, "credentials");
   return data ? (data as any) : null;
 };
@@ -100,27 +102,31 @@ export class AadhaarXmlParser {
     return this.xmlObject;
   }
 
-  get extractPoiAttributes(): PersonInfo | null {
+  get extractPersonAttributes(): PersonInfo | null {
     try {
-      const poi = this.xmlObject.Certificate.CertificateData.KycRes.UidData.Poi;
-      if (!poi) {
+      const person = this.xmlObject.Certificate.IssuedTo.Person;
+      if (!person) {
         return null;
       }
       return {
-        dob: poi.dob,
-        gender: poi.gender,
-        name: poi.name,
+        dob: person.dob,
+        name: person.name,
+        email: person.email,
+        phone: person.phone,
       };
     } catch (error) {
-      console.error("Error extracting Poi attributes:", error);
+      console.error("Error extracting Person attributes:", error);
       return null;
     }
   }
 
-  get extractPoaAttributes(): any {
+  get extractPersonAddressAttributes(): any {
     try {
-      const poa = this.xmlObject.Certificate.CertificateData.KycRes.UidData.Poa;
-      return poa;
+      const personAddress = this.xmlObject.Certificate.IssuedTo.Person;
+      if (!personAddress || !personAddress.Address) {
+        return null;
+      }
+      return personAddress.Address;
     } catch (error) {
       console.error("Error extracting Poa attributes:", error);
       return null;
@@ -129,7 +135,7 @@ export class AadhaarXmlParser {
 
   get extractPhtValue(): string | null {
     try {
-      const phtValue = this.xmlObject.Certificate.CertificateData.KycRes.UidData.Pht;
+      const phtValue = this.xmlObject.Certificate.IssuedTo.Person.Photo["#text"];
       return phtValue || null;
     } catch (error) {
       console.error("Error extracting Pht value:", error);
@@ -137,19 +143,9 @@ export class AadhaarXmlParser {
     }
   }
 
-  get extractKycResAttributes(): any {
-    try {
-      const kycRes = this.xmlObject.Certificate.CertificateData.KycRes;
-      return kycRes;
-    } catch (error) {
-      console.error("Error extracting KycRes attributes:", error);
-      return null;
-    }
-  }
-
   get getCertificate(): any {
     try {
-      const cer = this.xmlObject.Certificate.Signature.KeyInfo.X509Data.X509Certificate[0];
+      const cer = this.xmlObject.Certificate["ds:Signature"]["ds:KeyInfo"]["ds:X509Data"]["ds:X509Certificate"];
       return cer;
     } catch (error) {
       console.error("Error extracting Certification attributes:", error);
@@ -159,7 +155,7 @@ export class AadhaarXmlParser {
 
   get getSignatureValue(): any {
     try {
-      const cer = this.xmlObject.Certificate.Signature.SignatureValue;
+      const cer = this.xmlObject.Certificate["ds:Signature"]["ds:SignatureValue"];
       return cer;
     } catch (error) {
       console.error("Error extracting Certification attributes:", error);
@@ -175,13 +171,14 @@ export const updateUserProfile = async (userProfile: DbCredential) => {
 export const matchFormDataAndAadharData = async (poi: PersonInfo, _user: DbCredential) => {
   try {
     const user = _user.userInfo!;
-    const userDateObject = user.dob.value ? epochToDate(user.dob.value.toString()) : new Date();
-    const formattedUserDate = `${userDateObject.getDate().toString().padStart(2, "0")}-${(userDateObject.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}-${userDateObject.getFullYear()}`;
+    // const userDateObject = user.dob.value ? epochToDate(user.dob.value.toString()) : new Date();
+    const userDateObjectInDB = moment(+user.dob.value);
+    const userDateObjectInPOI = moment.unix(+poi.dob);
+    console.log("poi", poi);
+    console.log("user", user);
 
     const isMatchingName = poi.name.toLowerCase() === user.fullName.value.toLowerCase();
-    const isMatchingDOB = poi.dob === formattedUserDate;
+    const isMatchingDOB = userDateObjectInDB.isSame(userDateObjectInPOI, "day");
 
     if (!isMatchingName) {
       console.log("Name does not match:", poi.name, user.fullName.value);

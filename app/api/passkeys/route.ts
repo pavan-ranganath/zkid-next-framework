@@ -6,7 +6,7 @@ import { getSession, removeSession } from "@/lib/sessionMgmt";
 import { OpenIDTokenEndpointResponse, getValidatedIdTokenClaims, protectedResourceRequest } from "oauth4webapi";
 import API_CONFIG from "@/lib/services/apiConfig";
 import { XadesClass } from "@/lib/services/XadesClass";
-import { AadhaarXmlParser, matchFormDataAndAadharData, setDigilockerInfo } from "@/lib/services/aadhaarService";
+import { AadhaarXmlParser, matchFormDataAndAadharData, setSimulatedDLPersonInfo } from "@/lib/services/aadhaarService";
 import { DbCredential, authOptions } from "@/lib/webauthn";
 import { checkDigiLockerID } from "@/lib/services/storage";
 import { credentailsFromTb } from "@/lib/services/userService";
@@ -43,16 +43,12 @@ export async function GET(req: NextRequest, context: any) {
     // check digilocker verification flag in session
     const digiLockerUserSession = getSession(req, "digiLockerUserSession") as any;
     breakme: if (digiLockerUserSession) {
-      const { token, idTokenClaims } = digiLockerUserSession;
+      console.log(digiLockerUserSession);
+      const { token } = digiLockerUserSession;
       const { access_token } = token;
-      const { method, pathTemplate } = API_CONFIG.DIGILOCKER.paths.eAadhaar;
-      const { apiUrl } = API_CONFIG.DIGILOCKER;
-      console.log("idTokenClaims", idTokenClaims);
-      const checkIfDigilockerIdExists = await checkDigiLockerID(idTokenClaims.user_sso_id, email);
-      if (checkIfDigilockerIdExists) {
-        error = "Digilocker already linked to an account";
-        break breakme;
-      }
+      const { method, pathTemplate } = API_CONFIG.SIMULATE_DL.paths.getprofile;
+      const { apiUrl } = API_CONFIG.SIMULATE_DL;
+
       const responseDigilockerAaadhaar = await protectedResourceRequest(
         access_token,
         method,
@@ -72,24 +68,25 @@ export async function GET(req: NextRequest, context: any) {
         console.error("Failed to fetch Aadhaar from Digilocker");
         break breakme;
       }
-      const xmlAadharString = await responseDigilockerAaadhaar.text();
+      const profileXMLString = await responseDigilockerAaadhaar.text();
 
-      console.log("xmlAadharString", xmlAadharString);
+      console.log("profileXMLString", profileXMLString);
       const xades = new XadesClass();
-      const xmlVerify = xmlAadharString ? await xades.verifyXml(xmlAadharString) : false;
-      if (!xmlVerify) {
+      const profileXMLVerify = profileXMLString ? await xades.verifyXml(profileXMLString) : false;
+      if (!profileXMLVerify) {
         error = "XML verification failed";
         console.error("XML verification failed");
         break breakme;
       }
-      const xmlAadhar = new AadhaarXmlParser(xmlAadharString);
+      const xmlAadhar = new AadhaarXmlParser(profileXMLString);
       await xmlAadhar.parseXml();
+      console.log("xmlAadhar.xmlAadhar", xmlAadhar.xmlAadhar);
       if (!xmlAadhar) {
         console.error("XML parsing failed");
         error = "XML parsing failed";
         break breakme;
       }
-      const poi = xmlAadhar.extractPoiAttributes;
+      const poi = xmlAadhar.extractPersonAttributes;
       if (!poi) {
         console.error("Poi extraction failed");
         throw new Error("Poi extraction failed");
@@ -106,16 +103,16 @@ export async function GET(req: NextRequest, context: any) {
       }
       const matched = await matchFormDataAndAadharData(poi, credentials);
       if (matched) {
-        const storedAadhar = await setDigilockerInfo({ aadhaar: xmlAadharString, digiLockerUserInfo: idTokenClaims }, email);
+        const storedAadhar = await setSimulatedDLPersonInfo({ personData: profileXMLString }, email);
         if (!storedAadhar) {
-          console.error("Aadhaar not stored");
-          error = "Aadhaar not stored";
+          console.error("Profile not stored");
+          error = "Profile not stored";
           break breakme;
         }
         await sendEmailVerification(email);
       } else {
-        console.error("Aadhaar data does not match");
-        error = "Aadhaar data does not match";
+        console.error("Profile data does not match");
+        error = "Profile data does not match";
         break breakme;
       }
     }
@@ -132,7 +129,7 @@ export async function GET(req: NextRequest, context: any) {
     }
     const { aadhaar } = data;
     if (aadhaar) {
-      const xmlAadhar = new AadhaarXmlParser(aadhaar.aadhaar);
+      const xmlAadhar = new AadhaarXmlParser(aadhaar.personData);
       await xmlAadhar.parseXml();
       if (xmlAadhar.extractPhtValue) {
         pht = xmlAadhar.extractPhtValue;
