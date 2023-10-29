@@ -18,10 +18,8 @@ export interface CertificateConfig {
   Organization_name?: string;
   certificateType?: string;
   status?: string;
-  cinNumber?: string;
-  gstinNumber?: string;
   address?: {
-    locality: string;
+    city: string;
     state: string;
     country: string;
   };
@@ -30,15 +28,13 @@ export interface CertificateConfig {
 
 const defaultConfig: CertificateConfig = {
   certificateName: "Age verification",
-  Organization_name: "Entrada Solutions Pvt Ltd",
+  Organization_name: "Entrada Global Solutions",
   certificateType: "nAgeVerify",
   status: "Active",
-  cinNumber: "U74994KA2017PTC105365",
-  gstinNumber: "29AAECE7440H1ZI",
   address: {
-    locality: "Bengaluru",
-    state: "Karnataka",
-    country: "IN",
+    city: "Cupertino",
+    state: "California",
+    country: "USA",
   },
   // ... Add any other static values here
 };
@@ -63,12 +59,12 @@ export function generateXml(input: InputData, config?: CertificateConfig): strin
         Organization: {
           "@name": mergedConfig.Organization_name,
           "@type": mergedConfig.certificateType,
-          CIN: {
-            "@number": mergedConfig.cinNumber,
-          },
-          GSTIN: {
-            "@number": mergedConfig.gstinNumber,
-          },
+          // CIN: {
+          //   "@number": mergedConfig.cinNumber,
+          // },
+          // GSTIN: {
+          //   "@number": mergedConfig.gstinNumber,
+          // },
           Address: mergedConfig.address,
         },
       },

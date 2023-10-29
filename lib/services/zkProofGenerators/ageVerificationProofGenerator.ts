@@ -117,7 +117,7 @@ async function generateXMLSignedCertificateForAgeVerificationProof(
       city: "Bengaluru",
     },
     signerRole: {
-      claimed: ["Entrada nZKid signer"],
+      claimed: ["EGS nZKid signer"],
     },
   });
   return xmlCertificate;

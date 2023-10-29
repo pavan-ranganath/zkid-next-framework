@@ -57,9 +57,9 @@ export default function Register(): JSX.Element {
     dob: yup.date().required("Date of birth is required").max(new Date(), "Date of birth must be in the past"),
     mobile: yup
       .string()
-      .phone("IN", "Please enter a valid mobile number")
+      // .phone("IN", "Please enter a valid mobile number")
       .required("A Mobile number is required")
-      .matches(/^\+91 [6-9]\d{4} \d{5}$/, "Please enter a valid mobile number"),
+    // .matches(/^\+91 [6-9]\d{4} \d{5}$/, "Please enter a valid mobile number"),
   };
 
   // Initializing React Hook Form with validation resolver
@@ -145,7 +145,7 @@ export default function Register(): JSX.Element {
           type="text"
           variant="outlined"
           color="primary"
-          label="Full Name"
+          label="Full Name (Firstname and Lastname)"
           fullWidth
           {...register("fullName")}
           error={touchedFields.fullName && Boolean(errors.fullName)}
@@ -157,7 +157,7 @@ export default function Register(): JSX.Element {
           type="date"
           variant="outlined"
           color="primary"
-          label="Date of Birth"
+          label="Date of Birth (DD/MM/YYYY)"
           InputLabelProps={{ shrink: true }}
           {...register("dob")}
           error={touchedFields.dob && Boolean(errors.dob)}
@@ -184,7 +184,7 @@ export default function Register(): JSX.Element {
           rules={{
             validate: (value) => {
               console.log("value", value);
-              return matchIsValidTel(value) || "Invalid mobile number1";
+              return matchIsValidTel(value) || "Invalid mobile number";
             },
           }}
           render={({ field: { ref, ...field } }) => (
@@ -194,11 +194,11 @@ export default function Register(): JSX.Element {
               inputProps={{ readOnly: false }}
               {...field}
               color="primary"
-              defaultCountry="IN"
-              forceCallingCode
-              focusOnSelectCountry
+              defaultCountry="US"
+
               variant="outlined"
-              onlyCountries={["IN"]}
+              // onlyCountries={["US", "IN"]}
+              // onlyCountries={["IN"]}
               label="Mobile Number"
               error={!!errors.mobile}
               helperText={errors.mobile?.message}

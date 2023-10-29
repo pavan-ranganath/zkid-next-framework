@@ -76,7 +76,7 @@ function DisplayUserCard({
           <Typography variant="h5" sx={{ textTransform: "capitalize" }}>
             nZKid Digital Identity
           </Typography>
-          <Typography>Issued By: Entrada Solutions Pvt Ltd</Typography>
+          <Typography>Issued By: Entrada Global Solutions</Typography>
           <Grid container spacing={2} style={styles.spacingBetween}>
             <Grid item xs={4} sx={styles.centeredContent}>
               <Image src={`data:image/jpeg;base64, ${userInfo.photo}`} alt="Person's Photo" width={100} height={100} />
