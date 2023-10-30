@@ -1,8 +1,8 @@
 import { XMLParser } from "fast-xml-parser";
+import moment from "moment";
 import { storeData, getData, updateData } from "./storage";
 import { DbCredential } from "../webauthn";
 import { epochToDate } from "./utils";
-import moment from "moment";
 
 export interface PersonInfo {
   dob: string;

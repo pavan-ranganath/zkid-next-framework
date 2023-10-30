@@ -193,10 +193,10 @@ async function GetPasskeys({
   }
   const handleVerifiedIconClick = (title: string, description: string) => {
     confirm({
-      title: title,
+      title,
       content: description,
       confirmationText: "Ok",
-      hideCancelButton: true
+      hideCancelButton: true,
     })
       .then(async () => {
         /* ... */
@@ -204,8 +204,7 @@ async function GetPasskeys({
       .catch(() => {
         /* ... */
       });
-
-  }
+  };
 
   // Displaying user info and passkeys
   return (
@@ -220,18 +219,40 @@ async function GetPasskeys({
               {/* Displaying user information */}
               <Typography gutterBottom variant="body1" component="div">
                 Email: {userInfo.userInfo?.email.value}
-                <EmailButton userInfo={userInfo} _verifyEmail={verifyEmail} handleVerifiedIconClick={handleVerifiedIconClick} />
+                <EmailButton
+                  userInfo={userInfo}
+                  _verifyEmail={verifyEmail}
+                  handleVerifiedIconClick={handleVerifiedIconClick}
+                />
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 Name: {userInfo.userInfo?.fullName.value}
-                {userInfo.userInfo?.fullName.verified ? <VerifiedIcon color="success" onClick={() => handleVerifiedIconClick("Name Verified", "Your name has been verified by Simulate-DL")} style={{ cursor: "pointer" }} /> : <></>}
+                {userInfo.userInfo?.fullName.verified ? (
+                  <VerifiedIcon
+                    color="success"
+                    onClick={() => handleVerifiedIconClick("Name Verified", "Your name has been verified by Simulate-DL")}
+                    style={{ cursor: "pointer" }}
+                  />
+                ) : (
+                  <></>
+                )}
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 Date of Birth:{" "}
                 {userInfo.userInfo?.dob.value
                   ? moment(epochToDate(userInfo.userInfo?.dob.value.toString())).format("MMMM Do YYYY")
                   : ""}
-                {userInfo.userInfo?.dob.verified ? <VerifiedIcon color="success" onClick={() => handleVerifiedIconClick("Date of Birth Verified (DOB)", "Your DOB has been verified by Simulate-DL")} style={{ cursor: "pointer" }} /> : <></>}
+                {userInfo.userInfo?.dob.verified ? (
+                  <VerifiedIcon
+                    color="success"
+                    onClick={() =>
+                      handleVerifiedIconClick("Date of Birth Verified (DOB)", "Your DOB has been verified by Simulate-DL")
+                    }
+                    style={{ cursor: "pointer" }}
+                  />
+                ) : (
+                  <></>
+                )}
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 Mobile:{userInfo.userInfo?.mobile.value}
@@ -392,8 +413,8 @@ const confirmationDialogMessage = () => {
       <List>
         <ListItem>
           <ListItemText>
-            To verify your identity, please click &quot;Verify Now&quot; in order to grant Simulate-DL access. This will allow
-            us to access your Profile information to verify your name, date of birth and send you a verification email.
+            To verify your identity, please click &quot;Verify Now&quot; in order to grant Simulate-DL access. This will
+            allow us to access your Profile information to verify your name, date of birth and send you a verification email.
           </ListItemText>
         </ListItem>
       </List>
@@ -404,9 +425,28 @@ const confirmationDialogMessage = () => {
   );
 };
 
-function EmailButton({ userInfo, _verifyEmail, handleVerifiedIconClick }: { userInfo: credentailsFromTb; _verifyEmail: () => void; handleVerifiedIconClick: (title: string, description: string) => void }) {
+function EmailButton({
+  userInfo,
+  _verifyEmail,
+  handleVerifiedIconClick,
+}: {
+  userInfo: credentailsFromTb;
+  _verifyEmail: () => void;
+  handleVerifiedIconClick: (title: string, description: string) => void;
+}) {
   if (userInfo.userInfo?.email.verified) {
-    return <VerifiedIcon color="success" onClick={() => handleVerifiedIconClick("Email Verified", "Your email has been successfully verified through the process of sending and confirming the email")} style={{ cursor: "pointer" }} />;
+    return (
+      <VerifiedIcon
+        color="success"
+        onClick={() =>
+          handleVerifiedIconClick(
+            "Email Verified",
+            "Your email has been successfully verified through the process of sending and confirming the email",
+          )
+        }
+        style={{ cursor: "pointer" }}
+      />
+    );
   }
   if (userInfo.userInfo?.fullName.verified) {
     return (

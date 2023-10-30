@@ -58,7 +58,7 @@ export default function Register(): JSX.Element {
     mobile: yup
       .string()
       // .phone("IN", "Please enter a valid mobile number")
-      .required("A Mobile number is required")
+      .required("A Mobile number is required"),
     // .matches(/^\+91 [6-9]\d{4} \d{5}$/, "Please enter a valid mobile number"),
   };
 
@@ -195,7 +195,6 @@ export default function Register(): JSX.Element {
               {...field}
               color="primary"
               defaultCountry="US"
-
               variant="outlined"
               // onlyCountries={["US", "IN"]}
               // onlyCountries={["IN"]}
