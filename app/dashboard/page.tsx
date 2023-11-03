@@ -6,6 +6,8 @@ import { UserInterface } from "@/lib/models/user.model";
 import { fetcher } from "@/lib/utils";
 import { Grid } from "@mui/material";
 import useSWR from "swr";
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import the CSS
 
 
 // Dashboard component
@@ -26,13 +28,21 @@ export default function Dashboard() {
   return (
     <>
       <PageTitle title="Home" />
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <Carousel
+        showArrows={true}
+        showStatus={false}
+        showIndicators={false}
+        showThumbs={false}
+        infiniteLoop={true}
+        selectedItem={0}
+        emulateTouch={true}
+      >
         {users.users.map((user, index) => (
-          <Grid item xs={12} md={6} sm={6} key={index}>
+          <div key={index}>
             <DisplayUserCard userInfo={user} />
-          </Grid>
+          </div>
         ))}
-      </Grid>
+      </Carousel>
     </>
   );
 }

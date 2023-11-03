@@ -2,14 +2,20 @@ import { Card, CardContent, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import useSWR from "swr";
 import Image from "next/image";
 import moment from "moment";
 import { UserInterface } from "@/lib/models/user.model";
 
 
+
 export function DisplayUserCard({ userInfo }: { userInfo: UserInterface }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
+  };
 
   return (
     <Box sx={styles.cardContainer}>
@@ -28,13 +34,41 @@ export function DisplayUserCard({ userInfo }: { userInfo: UserInterface }) {
               <Typography variant="body1">{userInfo.role}</Typography>
             </Grid>
           </Grid>
-          <Typography variant="body1" component="div" style={{ textAlign: "justify", marginTop: '10px' }}>{userInfo.description}</Typography>
-          <Typography variant="body1" component="div" style={{ textAlign: "justify" }}>{userInfo.extra}</Typography>
+          {/* <div style={{ marginTop: "10px" }}>
+            <div
+              style={{
+                maxHeight: expanded ? "none" : "6em",
+                overflow: "hidden",
+                position: "relative",
+              }}
+            >
+              <Typography variant="body1" component="div" style={{ textAlign: "justify" }}>
+                {userInfo.description}
+              </Typography>
+            </div>
+            {userInfo.description.length > 5 && (
+              <span
+                style={{ cursor: "pointer", color: "blue" }}
+                onClick={toggleExpanded}
+              >
+                {expanded ? "Show Less" : "Show More"}
+              </span>
+            )}
+          </div> */}
+          <div style={{ marginTop: "10px" }}>
+            <Typography variant="body1" component="div" style={{ textAlign: "justify" }}>
+              {userInfo.description}
+            </Typography>
+          </div>
+          <Typography variant="body1" component="div" style={{ textAlign: "justify" }}>
+            {userInfo.extra}
+          </Typography>
         </CardContent>
       </Card>
     </Box>
   );
 }
+
 const styles = {
   centeredContent: {
     display: "flex",
