@@ -30,6 +30,7 @@ import { useTheme as useMUITheme } from "@mui/material/styles"; // Importing the
 import { DEFAULT_THEME, getOtherTheme } from "@/app/theme"; // Importing custom theme-related functions from the "@/app/theme" module
 import { usePathname } from "next/navigation";
 import AppLogoSVG from "../appLogo";
+import Image from "next/image";
 
 // An array of page objects containing page information
 const pages: {
@@ -113,7 +114,8 @@ export default function NavigationBar() {
           {/* Logo */}
           <Link href="/dashboard">
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54, paddingRight: 2 }}>
-              <AppLogoSVG theme={themeName} />
+              {/* <AppLogoSVG theme={themeName} /> */}
+              <Image src="/logo.png" alt="Logo" width={150} height={100} />
             </Box>
           </Link>
 
@@ -175,7 +177,9 @@ export default function NavigationBar() {
                   justifyContent: "center", // Center the content horizontally
                 }}
               >
-                <AppLogoSVG theme={themeName} />
+                {/* <AppLogoSVG theme={themeName} /> */}
+                <Image src="/logo.png" alt="Logo" width={150} height={100} />
+
               </Box>
             </Link>
           </Box>

@@ -14,7 +14,7 @@ export interface UserInterface {
 var UserSchema = new mongoose.Schema({
   email: {
     type: String,
-    unique: true,
+    // unique: true,
     required: true,
   },
   name: {
@@ -46,7 +46,7 @@ var UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.statics.fieldsForJSON = ["id", "name", "email", "createdAt", "phone", "role", "photo"];
+UserSchema.statics.fieldsForJSON = ["id", "name", "email", "createdAt", "phone", "role", "photo", "description", "extra"];
 
 // Class methods
 UserSchema.methods.forJSON = function () {

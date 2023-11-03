@@ -10,7 +10,7 @@ import mongoose from "mongoose"; // Import Mongoose library for MongoDB database
 import { Sort } from "mongodb"; // Import MongoDB Sort interface for sorting query results
 import { dbConnect } from "@/lib/mongodb"; // Import custom function for connecting to MongoDB
 import { ColumnSort, ColumnFilter } from "@tanstack/table-core"; // Import interfaces for column sorting and filtering
-import { User } from "@/lib/models/user.model";
+import { User, UserInterface } from "@/lib/models/user.model";
 
 export const dynamic = "force-dynamic"; // to supress Error processing API request: DynamicServerError: Dynamic server usage: nextUrl.searchParams
 
@@ -26,9 +26,10 @@ export async function GET(req: NextRequest, context: any) {
   try {
     // Establishing a connection to the database
     await dbConnect();
-    let users: any[] = [];
+    let users: UserInterface[] = [];
     const _users = await User.find({});
     _users.forEach((user: any) => {
+      console.log("user", user);
       users.push(user.forJSON());
     });
     // Return the JSON response
