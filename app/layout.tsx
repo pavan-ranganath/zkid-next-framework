@@ -1,5 +1,3 @@
-import AuthProvider from "@/components/AuthProvider/AuthProvider";
-
 // Importing global styles from "./globals.css"
 // These styles are applied globally to the entire application
 import "./globals.css";

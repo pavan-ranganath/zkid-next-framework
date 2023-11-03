@@ -21,8 +21,6 @@ import MenuIcon from "@mui/icons-material/Menu"; // Importing a menu icon compon
 
 import Link from "next/link"; // Importing the Link component from Next.js for client-side navigation
 
-import { signOut } from "next-auth/react"; // Importing the signOut function from the next-auth/react package for user sign out
-
 import { useTheme as useNextTheme } from "next-themes"; // Importing the useTheme hook from next-themes with an alias
 
 import { useTheme as useMUITheme } from "@mui/material/styles"; // Importing the useTheme hook from MUI with an alias
