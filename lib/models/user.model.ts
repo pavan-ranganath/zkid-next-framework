@@ -1,5 +1,5 @@
-var mongoose = require("mongoose");
-var _ = require("lodash");
+const mongoose = require("mongoose");
+const _ = require("lodash");
 
 export interface UserInterface {
   email: string;
@@ -11,7 +11,7 @@ export interface UserInterface {
   createdAt: Date;
   photo: string;
 }
-var UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     // unique: true,

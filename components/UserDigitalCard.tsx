@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useConfirm } from "material-ui-confirm";
 import { useRouter } from "next/navigation";
@@ -8,8 +8,6 @@ import Image from "next/image";
 import moment from "moment";
 import { UserInterface } from "@/lib/models/user.model";
 
-
-
 export function DisplayUserCard({ userInfo }: { userInfo: UserInterface }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -18,54 +16,30 @@ export function DisplayUserCard({ userInfo }: { userInfo: UserInterface }) {
   };
   // Dynamically calculate the screen height
   const screenHeight = window.innerHeight;
+  let defaultImageHeight = 0.35;
+  // Calculate the image height based on screen height
+  if (screenHeight < 600) {
+    defaultImageHeight = 0.25;
+  }
+  const imageHeight = screenHeight * defaultImageHeight;
   return (
-    <Box sx={{ ...styles.cardContainer, height: screenHeight - 120, }} >
+    <Box sx={{ ...styles.cardContainer, height: screenHeight - 120 }}>
       <Card sx={{ ...styles.card }} variant="outlined">
-        <CardContent sx={styles.centeredContent}>
-          <Typography variant="h5" sx={{ textTransform: "capitalize" }}>
+        <CardContent sx={{ overflowY: "auto" }}>
+          <CardMedia component="img" src={`${userInfo.photo}`} sx={{ height: imageHeight }} title="green iguana" />
+
+          <Typography variant="h4" sx={{ textTransform: "capitalize" }} color="yellow">
             {userInfo.name}
           </Typography>
-          <Grid container spacing={2} style={styles.spacingBetween}>
-            <Grid item xs={4} sx={styles.centeredContent}>
-              <div style={{
-                width: "100%",
-                paddingTop: "100%", // This sets a 1:1 aspect ratio for the square container
-                position: "relative",
-              }}>
-                <Image
-                  src={`${userInfo.photo}`}
-                  alt="Person's Photo"
-                  layout="fill" // This makes the image cover the entire square container
-                  objectFit="cover" // This ensures the image covers the container while preserving its aspect ratio
-                />
-              </div>            </Grid>
-            <Grid item xs={8} sx={{ ...styles.centeredContent, alignItems: "start" }}>
-              <Typography variant="body1">{userInfo.phone}</Typography>
-              <Typography variant="body1">{userInfo.email}</Typography>
-              <Typography variant="body1">{userInfo.role}</Typography>
-            </Grid>
-          </Grid>
-          {/* <div style={{ marginTop: "10px" }}>
-            <div
-              style={{
-                maxHeight: expanded ? "none" : "6em",
-                overflow: "hidden",
-                position: "relative",
-              }}
-            >
-              <Typography variant="body1" component="div" style={{ textAlign: "justify" }}>
-                {userInfo.description}
-              </Typography>
-            </div>
-            {userInfo.description.length > 5 && (
-              <span
-                style={{ cursor: "pointer", color: "blue" }}
-                onClick={toggleExpanded}
-              >
-                {expanded ? "Show Less" : "Show More"}
-              </span>
-            )}
-          </div> */}
+          <Typography variant="h5" style={styles.spacingBetween} color="red">
+            {userInfo.role}
+          </Typography>
+          <Typography variant="body1" style={styles.spacingBetween}>
+            {userInfo.phone}
+          </Typography>
+          <Typography variant="body1" style={styles.spacingBetween}>
+            {userInfo.email}
+          </Typography>
           <div style={{ marginTop: "10px" }}>
             <Typography variant="body1" component="div" style={{ textAlign: "justify" }}>
               {userInfo.description}

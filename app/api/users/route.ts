@@ -26,14 +26,14 @@ export async function GET(req: NextRequest, context: any) {
   try {
     // Establishing a connection to the database
     await dbConnect();
-    let users: UserInterface[] = [];
+    const users: UserInterface[] = [];
     const _users = await User.find({});
     _users.forEach((user: any) => {
       console.log("user", user);
       users.push(user.forJSON());
     });
     // Return the JSON response
-    return NextResponse.json({ users: users }, { status: 200 });
+    return NextResponse.json({ users }, { status: 200 });
   } catch (error) {
     console.error("Error processing API request:", error);
     // Return an error response if any exception occurs

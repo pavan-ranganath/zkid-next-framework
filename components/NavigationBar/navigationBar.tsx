@@ -29,8 +29,8 @@ import { useTheme as useMUITheme } from "@mui/material/styles"; // Importing the
 
 import { DEFAULT_THEME, getOtherTheme } from "@/app/theme"; // Importing custom theme-related functions from the "@/app/theme" module
 import { usePathname } from "next/navigation";
-import AppLogoSVG from "../appLogo";
 import Image from "next/image";
+import AppLogoSVG from "../appLogo";
 
 // An array of page objects containing page information
 const pages: {
@@ -38,11 +38,11 @@ const pages: {
   friendlyName: string;
   href: string;
 }[] = [
-    { id: 1, friendlyName: "Home", href: "/dashboard" },
-    // { id: 2, friendlyName: "Profile", href: "/dashboard/profile" },
-    // { id: 3, friendlyName: "Help", href: "/dashboard/help" },
-    // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
-  ];
+  { id: 1, friendlyName: "Home", href: "/dashboard" },
+  // { id: 2, friendlyName: "Profile", href: "/dashboard/profile" },
+  // { id: 3, friendlyName: "Help", href: "/dashboard/help" },
+  // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
+];
 
 export default function NavigationBar() {
   const { theme: themeState, setTheme } = useNextTheme(); // Using the useTheme hook to access the current theme and set the theme
@@ -81,31 +81,31 @@ export default function NavigationBar() {
     friendlyName: string;
     onClick: () => Promise<void>;
   }[] = [
-      // {
-      //   id: 1,
-      //   friendlyName: `Profile`,
-      //   onClick: async () => {
-      //     router.push("/dashboard/profile");
-      //     handleCloseUserMenu();
-      //   },
-      // },
-      {
-        id: 2,
-        friendlyName: `Activate ${themeName} Theme`,
-        onClick: async () => {
-          setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
-          handleCloseUserMenu();
-        },
+    // {
+    //   id: 1,
+    //   friendlyName: `Profile`,
+    //   onClick: async () => {
+    //     router.push("/dashboard/profile");
+    //     handleCloseUserMenu();
+    //   },
+    // },
+    {
+      id: 2,
+      friendlyName: `Activate ${themeName} Theme`,
+      onClick: async () => {
+        setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
+        handleCloseUserMenu();
       },
-      // {
-      //   id: 3,
-      //   friendlyName: "Logout",
-      //   onClick: async () => {
-      //     await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
-      //     handleCloseUserMenu();
-      //   },
-      // },
-    ];
+    },
+    // {
+    //   id: 3,
+    //   friendlyName: "Logout",
+    //   onClick: async () => {
+    //     await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
+    //     handleCloseUserMenu();
+    //   },
+    // },
+  ];
 
   return (
     <AppBar position="static" style={{ marginBottom: 20, paddingTop: 5, paddingBottom: 5 }}>
@@ -179,7 +179,6 @@ export default function NavigationBar() {
               >
                 {/* <AppLogoSVG theme={themeName} /> */}
                 <Image src="/logo.png" alt="Logo" width={150} height={100} />
-
               </Box>
             </Link>
           </Box>

@@ -22,8 +22,6 @@ import Providers from "../Providers";
  * @returns The rendered DashboardLayout component.
  */
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-
-
   return (
     <>
       <Providers>
