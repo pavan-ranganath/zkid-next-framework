@@ -23,7 +23,7 @@ export default function Dashboard() {
   if (isLoading) return <div>loading...</div>;
   if (error) return <div>failed to load</div>;
   if (!users) return <div>No users...</div>;
-  if (!users.users) return <div>No users found</div>;
+  if (!users.users.length) return <div>No users found</div>;
   // Dynamically calculate the screen height
   return (
     <div
