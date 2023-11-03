@@ -12,7 +12,7 @@ const Index = () => (
 
     {/* MuiContent component */}
     {/* This component represents the main content of the index page */}
-    <MuiContent />
+    {/* <MuiContent /> */}
   </>
 );
 

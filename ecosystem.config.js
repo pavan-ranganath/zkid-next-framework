@@ -16,7 +16,7 @@ module.exports = {
       },
       env_prod: {
         APP_ENV: "production", // APP_ENV=prod
-        PORT: 8000, // Set the port for the production environment
+        PORT: 8001, // Set the port for the production environment
       },
     },
   ],

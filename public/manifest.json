@@ -453,7 +453,7 @@
   ],
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
-  "start_url": "/signin",
+  "start_url": "/dashboard",
   "display": "standalone",
   "orientation": "portrait"
 }
