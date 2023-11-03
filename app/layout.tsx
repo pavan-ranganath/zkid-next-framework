@@ -31,10 +31,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
         {/* Toaster component */}
         {/* This component is used for displaying toast notifications */}
         <Toaster />
-
+        {children}
         {/* AuthProvider component */}
         {/* This component is used for providing authentication context to its children */}
-        <AuthProvider>{children}</AuthProvider>
       </Providers>
       <Pwa />
     </body>
