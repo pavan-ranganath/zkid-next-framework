@@ -16,9 +16,10 @@ export function DisplayUserCard({ userInfo }: { userInfo: UserInterface }) {
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
-
+  // Dynamically calculate the screen height
+  const screenHeight = window.innerHeight;
   return (
-    <Box sx={styles.cardContainer}>
+    <Box sx={{ ...styles.cardContainer, height: screenHeight - 120, }} >
       <Card sx={{ ...styles.card }} variant="outlined">
         <CardContent sx={styles.centeredContent}>
           <Typography variant="h5" sx={{ textTransform: "capitalize" }}>
@@ -26,8 +27,18 @@ export function DisplayUserCard({ userInfo }: { userInfo: UserInterface }) {
           </Typography>
           <Grid container spacing={2} style={styles.spacingBetween}>
             <Grid item xs={4} sx={styles.centeredContent}>
-              <Image src={`${userInfo.photo}`} alt="Person's Photo" width={100} height={100} />
-            </Grid>
+              <div style={{
+                width: "100%",
+                paddingTop: "100%", // This sets a 1:1 aspect ratio for the square container
+                position: "relative",
+              }}>
+                <Image
+                  src={`${userInfo.photo}`}
+                  alt="Person's Photo"
+                  layout="fill" // This makes the image cover the entire square container
+                  objectFit="cover" // This ensures the image covers the container while preserving its aspect ratio
+                />
+              </div>            </Grid>
             <Grid item xs={8} sx={{ ...styles.centeredContent, alignItems: "start" }}>
               <Typography variant="body1">{userInfo.phone}</Typography>
               <Typography variant="body1">{userInfo.email}</Typography>
@@ -77,12 +88,14 @@ const styles = {
     justifyContent: "center",
   },
   cardContainer: {
-    perspective: "1000px",
+    // perspective: "1000px",
     width: "100%",
+    height: "100%",
     // minHeight: '300px',
     margin: "0 auto",
   },
   card: {
+    display: "flex",
     width: "100%",
     height: "100%",
     transformStyle: "preserve-3d",
