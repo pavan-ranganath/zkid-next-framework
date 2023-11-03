@@ -13,7 +13,7 @@ export function DisplayUserCard({ userInfo }: { userInfo: UserInterface }) {
 
   return (
     <Box sx={styles.cardContainer}>
-      <Card sx={{ ...styles.card }}>
+      <Card sx={{ ...styles.card }} variant="outlined">
         <CardContent sx={styles.centeredContent}>
           <Typography variant="h5" sx={{ textTransform: "capitalize" }}>
             {userInfo.name}
@@ -28,8 +28,8 @@ export function DisplayUserCard({ userInfo }: { userInfo: UserInterface }) {
               <Typography variant="body1">{userInfo.role}</Typography>
             </Grid>
           </Grid>
-          <Typography variant="body1">{userInfo.description}</Typography>
-          <Typography variant="body1">{userInfo.extra}</Typography>
+          <Typography variant="body1" component="div" style={{ textAlign: "justify", marginTop: '10px' }}>{userInfo.description}</Typography>
+          <Typography variant="body1" component="div" style={{ textAlign: "justify" }}>{userInfo.extra}</Typography>
         </CardContent>
       </Card>
     </Box>
