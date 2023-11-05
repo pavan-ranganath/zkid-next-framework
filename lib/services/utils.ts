@@ -59,3 +59,15 @@ export function utcTimestampToDateOfBirth(timestamp: number) {
 
   return dob;
 }
+export function dateOfBirthToUTCTimestamp(dateString: string) {
+  // Split the input date string into year, month, and day components
+  const [year, month, day] = dateString.split("-").map(Number);
+
+  // Create a Date object with UTC time
+  const dob = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+
+  // Get the UTC Unix timestamp (epoch time) for the date of birth
+  const timestamp = dob.getTime() / 1000;
+
+  return timestamp;
+}

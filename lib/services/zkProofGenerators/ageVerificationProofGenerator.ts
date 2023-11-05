@@ -36,12 +36,12 @@ export async function generateProofForAgeverification(
     DOBDay: moment(dob).date(),
     DOBMonth: moment(dob).month() + 1,
     DOBYear: moment(dob).year(),
-    ageThreshold,
+    ageThreshold: +ageThreshold,
     currentDay: currentDay.date(),
     currentMonth: currentDay.month() + 1,
     currentYear: currentDay.year(),
   };
-
+  console.log("ZKP INPUT: ", INPUT);
   const { proof, publicSignals } = await plonk.fullProve(INPUT, wasmFile, zkeyFile);
   console.log("Public signals: ", publicSignals);
   // Serialize the proof and encode it in base64 format.

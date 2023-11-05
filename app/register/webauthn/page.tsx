@@ -26,6 +26,7 @@ import LoadingSpinner from "@/components/Loading";
 import { time } from "console";
 import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 import moment from "moment";
+import { dateOfBirthToUTCTimestamp } from "@/lib/services/utils";
 /**
  * The Register component handles the user registration process.
  * It displays a registration form where users can enter their first name, last name, and email.
@@ -230,18 +231,6 @@ export default function Register(): JSX.Element {
       {loadingMessage && <LoadingSpinner message={loadingMessage} />}
     </>
   );
-}
-function dateOfBirthToUTCTimestamp(dateString: string) {
-  // Split the input date string into year, month, and day components
-  const [year, month, day] = dateString.split("-").map(Number);
-
-  // Create a Date object with UTC time
-  const dob = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
-
-  // Get the UTC Unix timestamp (epoch time) for the date of birth
-  const timestamp = dob.getTime() / 1000;
-
-  return timestamp;
 }
 
 // Function for registering WebAuthn credentials:

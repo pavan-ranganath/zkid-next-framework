@@ -11,6 +11,7 @@ import { fetcher } from "@/lib/services/apiService";
 import { credentailsFromTb } from "@/lib/services/userService";
 import { Button, Card, CardContent, CardHeader, Grid } from "@mui/material";
 import { ConfirmOptions, useConfirm } from "material-ui-confirm";
+import moment from "moment";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -35,6 +36,7 @@ export default function Dashboard() {
       return;
     }
     setLoadingMessage("Generating proof...");
+
     await generateProof(formData);
     setLoadingMessage("");
   };
