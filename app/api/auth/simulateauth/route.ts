@@ -89,7 +89,7 @@ export async function GET(req: NextRequest, context: any) {
     // }
     // const idTokenClaims = getValidatedIdTokenClaims(userToken);
     const userToken = await processAuthorizationCodeOAuth2Response(as, client, responseFromDigilocker);
-    const redirectUrl = new URL("/dashboard/profile", req.url);
+    const redirectUrl = new URL("/dashboard/profile", nextAuthAppUrl);
 
     const response = NextResponse.json({ redirect: true }, { status: 302, headers: { Location: redirectUrl.toString() } });
     setSession(response, { name: DIGILOCKER_USER_SESSION_NAME, value: { token: userToken } }, 600);
@@ -97,7 +97,7 @@ export async function GET(req: NextRequest, context: any) {
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "An error occured. Please check the logs for more details.";
-    const redirectUrl = new URL("/error", req.url);
+    const redirectUrl = new URL("/error", nextAuthAppUrl);
     redirectUrl.searchParams.set("error", errorMessage);
     const response = NextResponse.json({ redirect: true }, { status: 302, headers: { Location: redirectUrl.toString() } });
     return response;

@@ -54,15 +54,30 @@ export const sendEmail = async (to: any, subject: string, text: string, html: st
 
   const msg = { from: emailConfig.from, to, subject, html, text };
 
-  transport.sendMail(msg, (err, info: SmtpTransport.SentMessageInfo) => {
-    if (err) {
-      console.log(err);
-      throw new Error(err.message);
-    }
-    console.log(info.accepted, info.rejected, info.pending);
-    console.log("Message sent: %s", info.messageId);
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  await new Promise((resolve, reject) => {
+    // send mail
+    transport.sendMail(msg, (err, info) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+      } else {
+        console.log(info);
+        resolve(info);
+      }
+      console.log(info.accepted, info.rejected, info.pending);
+      console.log("Message sent: %s", info.messageId);
+      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    });
   });
+  // transport.sendMail(msg, (err, info: SmtpTransport.SentMessageInfo) => {
+  //   if (err) {
+  //     console.log(err);
+  //     throw new Error(err.message);
+  //   }
+  //   console.log(info.accepted, info.rejected, info.pending);
+  //   console.log("Message sent: %s", info.messageId);
+  //   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  // });
 };
 
 /**
@@ -142,5 +157,16 @@ export const sendVerificationEmail = async (to: any, token: any): Promise<any> =
   </html>
 `;
 
-  await sendEmail(to, subject, "", html);
+  // await new Promise((resolve, reject) => {
+  //   // send mail
+  //   sendEmail(to, subject, "", html).then((res) => {
+  //     console.log("res", res);
+  //     resolve(res);
+  //   }
+  //   ).catch((err) => {
+  //     console.log("err", err);
+  //     reject(err);
+  //   });
+  // });
+  return sendEmail(to, subject, "", html);
 };

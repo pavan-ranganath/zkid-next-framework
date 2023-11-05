@@ -43,7 +43,7 @@ import { apiRequest, fetcher } from "@/lib/services/apiService";
 import { useConfirm } from "material-ui-confirm";
 import PageTitle from "@/components/pageTitle";
 import Alert from "@mui/material/Alert";
-import { epochToDate } from "@/lib/services/utils";
+import { epochToDate, utcTimestampToDateOfBirth } from "@/lib/services/utils";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -239,8 +239,8 @@ async function GetPasskeys({
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
                 Date of Birth:{" "}
-                {userInfo.userInfo?.dob.value
-                  ? moment(epochToDate(userInfo.userInfo?.dob.value.toString())).format("MMMM Do YYYY")
+                {userInfo.userInfo?.dob.value !== undefined
+                  ? moment(utcTimestampToDateOfBirth(+userInfo.userInfo.dob.value)).format("MMMM Do YYYY")
                   : ""}
                 {userInfo.userInfo?.dob.verified ? (
                   <VerifiedIcon
