@@ -172,8 +172,8 @@ export const matchFormDataAndAadharData = async (poi: PersonInfo, _user: DbCrede
   try {
     const user = _user.userInfo!;
     // const userDateObject = user.dob.value ? epochToDate(user.dob.value.toString()) : new Date();
-    const userDateObjectInDB = moment(+user.dob.value);
-    const userDateObjectInPOI = moment.unix(+poi.dob);
+    const userDateObjectInDB = moment(+user.dob.value).startOf("day");
+    const userDateObjectInPOI = moment(+poi.dob).startOf("day");
     console.log("poi", poi);
     console.log("user", user);
 
@@ -184,9 +184,9 @@ export const matchFormDataAndAadharData = async (poi: PersonInfo, _user: DbCrede
       console.log("Name does not match:", poi.name, user.fullName.value);
       return;
     }
-
     if (!isMatchingDOB) {
       console.log("Date of birth does not match:", poi.dob, user.dob.value);
+      console.log("Date of birth does not match HR:", userDateObjectInPOI, userDateObjectInDB);
       return;
     }
     user.fullName.verified = true;

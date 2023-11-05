@@ -50,7 +50,7 @@ const API_CONFIG: ApiConfig = {
     },
   },
   SIMULATE_DL: {
-    apiUrl: "http://localhost:4002",
+    apiUrl: process.env.SIMULATE_DL_ISSUER_URL ? process.env.SIMULATE_DL_ISSUER_URL : "http://localhost4002",
     paths: {
       getprofile: {
         pathTemplate: "/api/v1/xml-certificate",

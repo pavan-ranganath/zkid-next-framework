@@ -30,7 +30,7 @@ import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 // Import the `getSession` and `setSession` functions from the "@/lib/sessionMgmt" module
 // Used to get and set session data in the server response
 import { getSession, setSession } from "@/lib/sessionMgmt";
-import { dateToEpoch, generateZKIDID } from "@/lib/services/utils";
+import { dateToEpoch, epochToDate, generateZKIDID } from "@/lib/services/utils";
 
 export const dynamic = "force-dynamic"; // to supress Error processing API request: DynamicServerError: Dynamic server usage: nextUrl.searchParams
 
@@ -270,7 +270,7 @@ export async function POST(req: NextRequest, context: any) {
     // Save the credentials for the user
     await saveCredentials({
       userID: user.email,
-      userSystemID: generateZKIDID(user.mobile, new Date(user.dob)),
+      userSystemID: generateZKIDID(user.mobile, epochToDate(user.dob)),
       passkeyInfo: [
         {
           friendlyName: `Passkey-${Math.floor(100000 + Math.random() * 900000)}`,
@@ -282,7 +282,7 @@ export async function POST(req: NextRequest, context: any) {
       userInfo: {
         email: { value: user.email, verified: false },
         fullName: { value: user.fullName, verified: false },
-        dob: { value: dateToEpoch(user.dob), verified: false },
+        dob: { value: user.dob, verified: false },
         mobile: { value: user.mobile, verified: false },
       },
     });

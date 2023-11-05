@@ -43,9 +43,19 @@ export function decodeBase64AndDeserializeProof(
 }
 
 export function dateToEpoch(date: string | Date): number {
-  return moment(date).valueOf();
+  return moment(date).unix();
 }
 
 export function epochToDate(epoch: string): Date {
   return moment.unix(+epoch / 1000).toDate(); // Convert seconds to milliseconds for Date object
+}
+
+export function utcTimestampToDateOfBirth(timestamp: number) {
+  // Convert the timestamp to milliseconds
+  const milliseconds = timestamp * 1000;
+
+  // Create a Date object with the UTC timestamp
+  const dob = new Date(milliseconds);
+
+  return dob;
 }
