@@ -109,7 +109,7 @@ async function GetPasskeys({
 
   async function verifyProfile(event: any): Promise<void> {
     confirm({
-      title: "Profile verification",
+      title: "Profile verification (using Digilocker)",
       content: confirmationDialogMessage(),
       confirmationText: "Verify Now",
       cancellationText: "Cancel",

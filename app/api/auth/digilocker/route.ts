@@ -73,6 +73,13 @@ export async function GET(req: NextRequest, context: any) {
     }
     const { code_verifier, state: stateInSession } = session;
     const currentUrl: URL = new URL(req.nextUrl);
+    const err = currentUrl.searchParams.get("error");
+    if (err) {
+      if (err === "access_denied") {
+        throw new Error("Access denied");
+      }
+      throw new Error(err);
+    }
     const params = validateAuthResponse(as, client, currentUrl, stateInSession);
     if (isOAuth2Error(params)) {
       throw new Error(params.error_description);
@@ -91,6 +98,9 @@ export async function GET(req: NextRequest, context: any) {
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "An error occured. Please check the logs for more details.";
-    return NextResponse.json({ message: errorMessage, ok: false }, { status: 503 });
+    const redirectUrl = new URL("/error", req.url);
+    redirectUrl.searchParams.set("error", errorMessage);
+    const response = NextResponse.json({ redirect: true }, { status: 302, headers: { Location: redirectUrl.toString() } });
+    return response;
   }
 }
