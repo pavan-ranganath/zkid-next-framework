@@ -8,7 +8,7 @@
 import { dbConnect } from "@/lib/mongodb";
 import { AadhaarXmlParser } from "@/lib/services/aadhaarService";
 import { checkProfileVerification } from "@/lib/services/userService";
-import { epochToDate } from "@/lib/services/utils";
+import { epochToDate, utcTimestampToDateOfBirth } from "@/lib/services/utils";
 import { generateProofForAgeverification } from "@/lib/services/zkProofGenerators/ageVerificationProofGenerator";
 import { authOptions } from "@/lib/webauthn";
 import { deleteCertificate, storeCertificate } from "@/lib/zkidCertificateService";
@@ -67,7 +67,8 @@ export async function POST(req: NextRequest, context: any) {
     }
 
     const userClaimDate = moment(claimDate).toDate();
-    const userDOBInDB = moment(dob.value).toDate();
+    const userDOBInDB = utcTimestampToDateOfBirth(dob.value);
+
     // calulate age as per claim date and dob
     // check if age is less than claimed age
     // if yes, then return error
