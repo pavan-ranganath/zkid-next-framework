@@ -9,17 +9,18 @@ import nodemailer from "nodemailer";
 import SmtpTransport from "nodemailer/lib/smtp-transport";
 
 // The 'emailConfig' object contains the SMTP configuration and the "from" address for the emails. It retrieves the necessary configuration values from environment variables.
-const emailConfig = {
-  smtp: {
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    auth: {
-      type: process.env.SMTP_AUTH_TYPE,
-      user: process.env.SMTP_USERNAME,
-      pass: process.env.SMTP_PASSWORD,
-    },
+const emailConfig: SmtpTransport.Options = {
+  name: process.env.SMTP_NAME,
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: true,
+  // logger: true,
+  // debug: true,
+  auth: {
+    type: process.env.SMTP_AUTH_TYPE as any,
+    user: process.env.SMTP_USERNAME,
+    pass: process.env.SMTP_PASSWORD,
   },
-  from: process.env.EMAIL_FROM,
 };
 
 /**
@@ -40,8 +41,13 @@ const emailConfig = {
  * @param {string} text - The text content of the email
  * @returns {Promise<any>}
  */
-export const sendEmail = async (to: any, subject: string, text: string, html: string): Promise<any> => {
-  const transport = nodemailer.createTransport(new SmtpTransport(emailConfig.smtp as any));
+export const sendEmail = async (
+  to: any,
+  subject: string,
+  text: string,
+  html: string,
+): Promise<SmtpTransport.SentMessageInfo> => {
+  const transport = nodemailer.createTransport(new SmtpTransport(emailConfig as SmtpTransport.Options));
 
   transport
     .verify()
@@ -52,23 +58,25 @@ export const sendEmail = async (to: any, subject: string, text: string, html: st
       throw new Error("Unable to connect to email server. Make sure you have configured the SMTP options in .env");
     });
 
-  const msg = { from: emailConfig.from, to, subject, html, text };
+  const msg = { from: process.env.EMAIL_FROM, to, subject, html, text };
 
-  await new Promise((resolve, reject) => {
-    // send mail
-    transport.sendMail(msg, (err, info) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-      } else {
-        console.log(info);
-        resolve(info);
-      }
-      console.log(info.accepted, info.rejected, info.pending);
-      console.log("Message sent: %s", info.messageId);
-      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-    });
-  });
+  return transport.sendMail(msg);
+  // const emailSend = await new Promise((resolve, reject) => {
+  //   // send mail
+  //   transport.sendMail(msg, (err, info) => {
+  //     if (err) {
+  //       console.error(err);
+  //       reject(err);
+  //     } else {
+  //       console.log(info);
+  //       console.log(info.accepted, info.rejected, info.pending);
+  //       console.log("Message sent: %s", info.messageId);
+  //       console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  //       resolve(info);
+  //     }
+  //   });
+  // });
+  // return emailSend;
   // transport.sendMail(msg, (err, info: SmtpTransport.SentMessageInfo) => {
   //   if (err) {
   //     console.log(err);
@@ -89,9 +97,9 @@ export const sendEmail = async (to: any, subject: string, text: string, html: st
  *
  * @param {string} to - The email address of the recipient
  * @param {string} token - The verification token
- * @returns {Promise<any>}
+ * @returns {Promise<SmtpTransport.SentMessageInfo>}
  */
-export const sendVerificationEmail = async (to: any, token: any): Promise<any> => {
+export const sendVerificationEmail = async (to: any, token: any): Promise<SmtpTransport.SentMessageInfo> => {
   const subject = "Email Verification";
   const verificationEmailUrl = `${process.env.NEXTAUTH_URL}/verification?token=${token}`;
   const logoUrl = "https://egstech.org/EGStech_logo.png";

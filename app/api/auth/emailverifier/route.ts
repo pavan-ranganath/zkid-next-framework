@@ -46,10 +46,19 @@ export async function POST(req: NextRequest, context: any) {
     // Generate a verification email token
     const verifyEmailToken = await generateVerifyEmailToken({ id: user?._id });
 
-    // Send the verification email to the user's email address
-    await sendVerificationEmail(user.userInfo?.email.value, verifyEmailToken);
+    // await new Promise((resolve, reject) => {
 
-    return NextResponse.json({ success: "Verification email sent" }, { status: 201 });
+    // Send the verification email to the user's email address
+    const resp = sendVerificationEmail(user.userInfo?.email.value, verifyEmailToken)
+      .then((res) => {
+        console.log("SentMessageInfo", res);
+        return NextResponse.json({ success: "Verification email sent" }, { status: 201 });
+      })
+      .catch((err) => {
+        console.log("SentMessageError", err);
+        return NextResponse.json({ error: err }, { status: 401 });
+      });
+    return resp;
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: (error as Error).message }, { status: 500 });
@@ -134,12 +143,16 @@ export const sendEmailVerification = async (email: string) => {
     const verifyEmailToken = await generateVerifyEmailToken({ id: user?._id });
 
     // Send the verification email to the user's email address
-    await sendVerificationEmail(user.userInfo?.email.value, verifyEmailToken);
-
-    return NextResponse.json(
-      { success: "Username and Date of birth field verified \n Verification email sent please check your email" },
-      { status: 201 },
-    );
+    sendVerificationEmail(user.userInfo?.email.value, verifyEmailToken)
+      .then((res) => {
+        return NextResponse.json(
+          { success: "Username and Date of birth field verified \n Verification email sent please check your email" },
+          { status: 201 },
+        );
+      })
+      .catch((err) => {
+        return NextResponse.json({ error: err }, { status: 401 });
+      });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: (error as Error).message }, { status: 500 });
