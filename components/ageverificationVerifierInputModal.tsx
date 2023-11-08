@@ -14,7 +14,7 @@ import * as yup from "yup"; // Yup library for form validation
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interface";
-import { epochToDate } from "@/lib/services/utils";
+import { dateOfBirthToUTCTimestamp, dateToEpoch, epochToDate, utcTimestampToDateOfBirth } from "@/lib/services/utils";
 import moment from "moment";
 
 interface AgeverificationVerifierInputModalProps {
@@ -61,8 +61,12 @@ export const AgeverificationVerifierInputModal: React.FC<AgeverificationVerifier
   // Form submission handler
   function onSubmit(dataFromUser: any) {
     console.log("data submitted", dataFromUser);
-    const issuedDate = moment.unix(+data.Certificate.CertificateData.ZKPROOF.claimedDate / 1000).startOf("day");
-    const dateRequirementFromUser = moment(dataFromUser.date).startOf("day");
+    // moment(epochToDate(certificateInfo.Certificate.issueDate)).format("DD, MMM, YYYY")
+    // epochToDate(data.Certificate.CertificateData.ZKPROOF.claimedDate)
+    const issuedDate = moment(epochToDate(data.Certificate.CertificateData.ZKPROOF.claimedDate)).startOf("day");
+    const dateRequirementFromUserFormatted = moment(dataFromUser.date).format("YYYY-MM-DD");
+    const dateRequirementFromUserTemp = dateToEpoch(dateRequirementFromUserFormatted)
+    const dateRequirementFromUser = moment(epochToDate((dateRequirementFromUserTemp * 1000).toString())).startOf("day");
     // check dateRequirementFromUser is less than or equal to issuedDate
     if (dateRequirementFromUser.isBefore(issuedDate)) {
       alert("This proof does not align with your specified requirements.");

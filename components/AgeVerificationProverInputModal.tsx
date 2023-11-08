@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
 import PropTypes from "prop-types";
-import { dateOfBirthToUTCTimestamp } from "@/lib/services/utils";
+import { dateOfBirthToUTCTimestamp, dateToEpoch } from "@/lib/services/utils";
 
 interface AgeverificationProverInputModalProps {
   open: boolean;
@@ -42,7 +42,7 @@ export const AgeverificationProverInputModal: React.FC<AgeverificationProverInpu
   function onSubmit(dataFromUser: any) {
     const dobFormatted = moment(watch("claimDate")).format("YYYY-MM-DD");
     const formData = {
-      claimDate: dateOfBirthToUTCTimestamp(dobFormatted),
+      claimDate: dateToEpoch(dobFormatted),
       claimAge: watch("claimAge"),
     };
     handleClose(formData);
