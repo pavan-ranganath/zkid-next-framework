@@ -53,6 +53,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import AppLogoSVG from "@/components/appLogo";
 import LoadingSpinner from "@/components/Loading";
+import ReusableDialog from "@/components/ReusableDialog";
+import { dialogContentOnLogoClick } from "@/lib/services/dialogContent";
 
 /*
   - The code provides a sign-in feature for users using WebAuthn authentication.
@@ -70,6 +72,7 @@ export default function SignInComponent() {
   const { status } = useSession();
   const [loadingMessage, setLoadingMessage] = useState("");
   const searchParams = useSearchParams();
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   const callbackUrl = searchParams.get("callbackUrl");
   const error = searchParams.get("error");
@@ -137,11 +140,32 @@ export default function SignInComponent() {
 
   // Dismiss any active toasts (notifications).
   // toast.dismiss();
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+
+
+  const dialogActions = [
+    // {
+    //   label: 'Cancel',
+    //   onClick: handleCloseDialog,
+    //   color: 'default',
+    // },
+    {
+      label: 'CLOSE',
+      onClick: handleCloseDialog,
+    },
+  ];
 
   return (
     <>
       {/* Display branding */}
-      <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+      <div style={{ textAlign: "center", marginBottom: "2rem" }} onClick={handleOpenDialog}>
         {/* <img
           src="/zkidLogo_v1.svg"
           alt="EGS Logo"
@@ -190,6 +214,13 @@ export default function SignInComponent() {
         </Link>
       </small>
       {loadingMessage && <LoadingSpinner message={loadingMessage} />}
+      <ReusableDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        title="nZKid"
+        content={dialogContentOnLogoClick}
+        actions={dialogActions}
+      />
     </>
   );
 }

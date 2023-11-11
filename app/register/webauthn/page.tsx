@@ -27,6 +27,8 @@ import { time } from "console";
 import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 import moment from "moment";
 import { dateOfBirthToUTCTimestamp } from "@/lib/services/utils";
+import ReusableDialog from "@/components/ReusableDialog";
+import { dialogContentOnLogoClick } from "@/lib/services/dialogContent";
 /**
  * The Register component handles the user registration process.
  * It displays a registration form where users can enter their first name, last name, and email.
@@ -43,6 +45,8 @@ export default function Register(): JSX.Element {
   const { status } = useSession();
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const confirm = useConfirm();
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+
   // Checking authorization status
   const authorized = status === "authenticated";
   const unAuthorized = status === "unauthenticated";
@@ -123,10 +127,31 @@ export default function Register(): JSX.Element {
   // Dismiss any active toasts
   toast.dismiss();
 
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+
+
+  const dialogActions = [
+    // {
+    //   label: 'Cancel',
+    //   onClick: handleCloseDialog,
+    //   color: 'default',
+    // },
+    {
+      label: 'CLOSE',
+      onClick: handleCloseDialog,
+    },
+  ];
   return (
     <>
       {/* Display branding */}
-      <div style={{ textAlign: "center", margin: "0 10% 5% 10%" }}>
+      <div style={{ textAlign: "center", margin: "0 10% 5% 10%" }} onClick={handleOpenDialog}>
         {/* <img
           src="/zkidLogo_v1.svg"
           alt="EGS Logo"
@@ -229,6 +254,13 @@ export default function Register(): JSX.Element {
         </Link>
       </small>
       {loadingMessage && <LoadingSpinner message={loadingMessage} />}
+      <ReusableDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        title="nZKid"
+        content={dialogContentOnLogoClick}
+        actions={dialogActions}
+      />
     </>
   );
 }

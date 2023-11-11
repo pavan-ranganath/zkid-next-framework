@@ -30,6 +30,8 @@ import { useTheme as useMUITheme } from "@mui/material/styles"; // Importing the
 import { DEFAULT_THEME, getOtherTheme } from "@/app/theme"; // Importing custom theme-related functions from the "@/app/theme" module
 import { usePathname } from "next/navigation";
 import AppLogoSVG from "../appLogo";
+import ReusableDialog from "../ReusableDialog";
+import { dialogContentOnLogoClick } from "@/lib/services/dialogContent";
 
 // An array of page objects containing page information
 const pages: {
@@ -37,11 +39,11 @@ const pages: {
   friendlyName: string;
   href: string;
 }[] = [
-  { id: 1, friendlyName: "Home", href: "/dashboard" },
-  { id: 2, friendlyName: "Profile", href: "/dashboard/profile" },
-  { id: 3, friendlyName: "Help", href: "/dashboard/help" },
-  // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
-];
+    { id: 1, friendlyName: "Home", href: "/dashboard" },
+    { id: 2, friendlyName: "Profile", href: "/dashboard/profile" },
+    { id: 3, friendlyName: "Help", href: "/dashboard/help" },
+    // { id: 2, friendlyName: "Users", href: "/dashboard/users" },
+  ];
 
 export default function NavigationBar() {
   const { theme: themeState, setTheme } = useNextTheme(); // Using the useTheme hook to access the current theme and set the theme
@@ -51,6 +53,8 @@ export default function NavigationBar() {
   const [selectedList, setSelectedList] = useState<number[]>([]); // State variable for the selected list items
   const muiTheme = useMUITheme(); // Using the useTheme hook to access the current theme
   const currentPath = usePathname();
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+
   // Event handler for opening the navigation menu
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -80,29 +84,52 @@ export default function NavigationBar() {
     friendlyName: string;
     onClick: () => Promise<void>;
   }[] = [
+      // {
+      //   id: 1,
+      //   friendlyName: `Profile`,
+      //   onClick: async () => {
+      //     router.push("/dashboard/profile");
+      //     handleCloseUserMenu();
+      //   },
+      // },
+      {
+        id: 2,
+        friendlyName: `Activate ${themeName} Theme`,
+        onClick: async () => {
+          setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
+          handleCloseUserMenu();
+        },
+      },
+      {
+        id: 3,
+        friendlyName: "Logout",
+        onClick: async () => {
+          await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
+          handleCloseUserMenu();
+        },
+      },
+    ];
+
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+
+
+  const dialogActions = [
     // {
-    //   id: 1,
-    //   friendlyName: `Profile`,
-    //   onClick: async () => {
-    //     router.push("/dashboard/profile");
-    //     handleCloseUserMenu();
-    //   },
+    //   label: 'Cancel',
+    //   onClick: handleCloseDialog,
+    //   color: 'default',
     // },
     {
-      id: 2,
-      friendlyName: `Activate ${themeName} Theme`,
-      onClick: async () => {
-        setTheme(getOtherTheme(themeState)); // Calling the setTheme function to switch to the other theme (light/dark)
-        handleCloseUserMenu();
-      },
-    },
-    {
-      id: 3,
-      friendlyName: "Logout",
-      onClick: async () => {
-        await signOut({ callbackUrl: "/signin" }); // Calling the signOut function to sign the user out and redirect to the sign-in page
-        handleCloseUserMenu();
-      },
+      label: 'CLOSE',
+      onClick: handleCloseDialog,
     },
   ];
 
@@ -111,11 +138,11 @@ export default function NavigationBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Logo */}
-          <Link href="/dashboard">
+          <div onClick={handleOpenDialog}>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54, paddingRight: 2 }}>
               <AppLogoSVG theme={themeName} />
             </Box>
-          </Link>
+          </div>
 
           {/* Navigation Menu (for small screens) */}
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -166,7 +193,7 @@ export default function NavigationBar() {
                 </MenuItem>
               ))}
             </Menu>
-            <Link href="/dashboard" style={{ flexGrow: 1, textAlign: "center" }}>
+            <div onClick={handleOpenDialog} style={{ flexGrow: 1, textAlign: "center" }}>
               <Box
                 sx={{
                   display: { xs: "flex", md: "none" },
@@ -177,7 +204,7 @@ export default function NavigationBar() {
               >
                 <AppLogoSVG theme={themeName} />
               </Box>
-            </Link>
+            </div>
           </Box>
           {/* Navigation Buttons (for medium and large screens) */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
@@ -238,6 +265,14 @@ export default function NavigationBar() {
           </Box>
         </Toolbar>
       </Container>
+      <ReusableDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        title="nZKid"
+        content={dialogContentOnLogoClick}
+        actions={dialogActions}
+      />
     </AppBar>
+
   );
 }
