@@ -65,7 +65,7 @@ export const AgeverificationVerifierInputModal: React.FC<AgeverificationVerifier
     // epochToDate(data.Certificate.CertificateData.ZKPROOF.claimedDate)
     const issuedDate = moment(epochToDate(data.Certificate.CertificateData.ZKPROOF.claimedDate)).startOf("day");
     const dateRequirementFromUserFormatted = moment(dataFromUser.date).format("YYYY-MM-DD");
-    const dateRequirementFromUserTemp = dateToEpoch(dateRequirementFromUserFormatted)
+    const dateRequirementFromUserTemp = dateToEpoch(dateRequirementFromUserFormatted);
     const dateRequirementFromUser = moment(epochToDate((dateRequirementFromUserTemp * 1000).toString())).startOf("day");
     // check dateRequirementFromUser is less than or equal to issuedDate
     if (dateRequirementFromUser.isBefore(issuedDate)) {

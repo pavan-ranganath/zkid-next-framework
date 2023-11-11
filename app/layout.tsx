@@ -5,9 +5,9 @@ import AuthProvider from "@/components/AuthProvider/AuthProvider";
 import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
+import Footer from "@/components/Footer";
 import Providers from "./Providers";
 import Pwa from "./Pwa";
-import Footer from "@/components/Footer";
 
 export const metadata = {
   manifest: "/manifest.json",

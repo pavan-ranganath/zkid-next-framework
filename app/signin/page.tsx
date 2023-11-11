@@ -54,7 +54,12 @@ import Link from "next/link";
 import AppLogoSVG from "@/components/appLogo";
 import LoadingSpinner from "@/components/Loading";
 import ReusableDialog from "@/components/ReusableDialog";
-import { dialogContentContactUs, dialogContentOnLogoClick, dialogContentRegistrationPage, dialogContentSignInPage } from "@/lib/services/dialogContent";
+import {
+  dialogContentContactUs,
+  dialogContentOnLogoClick,
+  dialogContentRegistrationPage,
+  dialogContentSignInPage,
+} from "@/lib/services/dialogContent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 /*
@@ -151,8 +156,6 @@ export default function SignInComponent() {
     setDialogOpen(false);
   };
 
-
-
   const dialogActions = [
     // {
     //   label: 'Cancel',
@@ -160,7 +163,7 @@ export default function SignInComponent() {
     //   color: 'default',
     // },
     {
-      label: 'CLOSE',
+      label: "CLOSE",
       onClick: handleCloseDialog,
     },
   ];
@@ -187,12 +190,15 @@ export default function SignInComponent() {
 
       {/* Display the sign-in form */}
       <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
-
         <Typography component="h1" variant="h5" sx={{ marginBottom: 0 }}>
           Sign In
         </Typography>
-        <InfoOutlinedIcon onClick={() => handleOpenDialog(dialogContentSignInPage)} color="primary" fontSize="small" sx={{ marginLeft: 1 }} />
-
+        <InfoOutlinedIcon
+          onClick={() => handleOpenDialog(dialogContentSignInPage)}
+          color="primary"
+          fontSize="small"
+          sx={{ marginLeft: 1 }}
+        />
       </Box>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         {/* Email input field */}

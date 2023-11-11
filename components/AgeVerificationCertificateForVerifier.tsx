@@ -25,6 +25,9 @@ import { Check, Close, Help } from "@mui/icons-material"; // Import icons from M
 import { XadesClass } from "@/lib/services/XadesClass";
 import { parseX509Certificate } from "@/lib/generateCertificate";
 import { pki } from "node-forge";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useConfirm } from "material-ui-confirm";
+import { dialogContentContactUs, dialogContentVerifyProof } from "@/lib/services/dialogContent";
 import DigitalSignatureTag from "./DigitalSignatureTag";
 import AlertMessageDialog from "./AlertMessageDialog";
 import { AgeverificationVerifierInputModal } from "./ageverificationVerifierInputModal";
@@ -33,9 +36,6 @@ import { CertificateDisplayProps } from "./AgeVerificateCertificateDisplay";
 // import { readFileSync } from 'fs';
 // import path from 'path';
 import LoadingSpinner from "./Loading";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { useConfirm } from "material-ui-confirm";
-import { dialogContentContactUs, dialogContentVerifyProof } from "@/lib/services/dialogContent";
 import ReusableDialog from "./ReusableDialog";
 
 const snarkjs = require("snarkjs") as typeof import("snarkjs");
@@ -137,7 +137,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
       signCert: x509Cert,
       signedDate: new Date(
         certificateInfo.Certificate["ds:Signature"]["ds:Object"]["xades:QualifyingProperties"]["xades:SignedProperties"][
-        "xades:SignedSignatureProperties"
+          "xades:SignedSignatureProperties"
         ]["xades:SigningTime"],
       ),
     });
@@ -165,8 +165,6 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
     setDialogOpen(false);
   };
 
-
-
   const dialogActions = [
     // {
     //   label: 'Cancel',
@@ -174,7 +172,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
     //   color: 'default',
     // },
     {
-      label: 'CLOSE',
+      label: "CLOSE",
       onClick: handleCloseDialog,
     },
   ];
@@ -185,13 +183,19 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
         <Card sx={{ ...styles.card }}>
           <CardContent sx={styles.centeredContent}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-
               <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
                 {certificateInfo.Certificate.name} proof
               </Typography>
-              <InfoOutlinedIcon color="primary" fontSize="small" sx={{ marginLeft: 1 }} onClick={() => handleOpenDialog(dialogContentVerifyProof)} />
+              <InfoOutlinedIcon
+                color="primary"
+                fontSize="small"
+                sx={{ marginLeft: 1 }}
+                onClick={() => handleOpenDialog(dialogContentVerifyProof)}
+              />
             </Box>
-            <Typography sx={{ marginBottom: 1 }}>Issued By: {certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
+            <Typography sx={{ marginBottom: 1 }}>
+              Issued By: {certificateInfo.Certificate.IssuedBy.Organization.name}
+            </Typography>
             <Grid container spacing={2}>
               <Grid item xs={4} sx={styles.centeredContent}>
                 <Image
@@ -253,7 +257,6 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
           {isSignatureVerified === false && <Close sx={{ color: "red", fontSize: "1.5rem" }} />}
         </ListItem>
       </List>
-
       {isSignatureVerified === true && (
         <DigitalSignatureTag certificate={signatureCertificate.signCert} ageVerificationXMLCertificate={certificateInfo} />
       )}
@@ -270,7 +273,10 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
       {/* Contact us link */}
       <small>
         Have questions?{" "}
-        <Link style={{ textDecoration: "underline", cursor: "pointer" }} onClick={() => handleOpenDialog(dialogContentContactUs)}>
+        <Link
+          style={{ textDecoration: "underline", cursor: "pointer" }}
+          onClick={() => handleOpenDialog(dialogContentContactUs)}
+        >
           Contact Us
         </Link>
       </small>

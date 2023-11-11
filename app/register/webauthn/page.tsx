@@ -28,7 +28,11 @@ import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 import moment from "moment";
 import { dateOfBirthToUTCTimestamp } from "@/lib/services/utils";
 import ReusableDialog from "@/components/ReusableDialog";
-import { dialogContentContactUs, dialogContentOnLogoClick, dialogContentRegistrationPage } from "@/lib/services/dialogContent";
+import {
+  dialogContentContactUs,
+  dialogContentOnLogoClick,
+  dialogContentRegistrationPage,
+} from "@/lib/services/dialogContent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 /**
@@ -138,8 +142,6 @@ export default function Register(): JSX.Element {
     setDialogOpen(false);
   };
 
-
-
   const dialogActions = [
     // {
     //   label: 'Cancel',
@@ -147,16 +149,18 @@ export default function Register(): JSX.Element {
     //   color: 'default',
     // },
     {
-      label: 'CLOSE',
+      label: "CLOSE",
       onClick: handleCloseDialog,
     },
   ];
 
-
   return (
     <>
       {/* Display branding */}
-      <div style={{ textAlign: "center", margin: "0 10% 5% 10%" }} onClick={() => handleOpenDialog(dialogContentOnLogoClick)}>
+      <div
+        style={{ textAlign: "center", margin: "0 10% 5% 10%" }}
+        onClick={() => handleOpenDialog(dialogContentOnLogoClick)}
+      >
         {/* <img
           src="/zkidLogo_v1.svg"
           alt="EGS Logo"
@@ -175,12 +179,15 @@ export default function Register(): JSX.Element {
 
       {/* Registration form */}
       <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
-
         <Typography component="h1" variant="h5" sx={{ marginBottom: 0 }}>
           Registration
         </Typography>
-        <InfoOutlinedIcon onClick={() => handleOpenDialog(dialogContentRegistrationPage)} color="primary" fontSize="small" sx={{ marginLeft: 1 }} />
-
+        <InfoOutlinedIcon
+          onClick={() => handleOpenDialog(dialogContentRegistrationPage)}
+          color="primary"
+          fontSize="small"
+          sx={{ marginLeft: 1 }}
+        />
       </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Full Name field */}

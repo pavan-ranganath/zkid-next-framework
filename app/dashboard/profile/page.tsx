@@ -50,10 +50,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import LoadingSpinner from "@/components/Loading";
 import { set } from "mongoose";
-import { credentailsFromTb } from "../../../lib/services/userService";
 import ReusableDialog from "@/components/ReusableDialog";
-import { dialogContentOnLogoClick, dialogContentPasskey, dialogContentProfilePage, homePageDialogContent } from "@/lib/services/dialogContent";
+import {
+  dialogContentOnLogoClick,
+  dialogContentPasskey,
+  dialogContentProfilePage,
+  homePageDialogContent,
+} from "@/lib/services/dialogContent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { credentailsFromTb } from "../../../lib/services/userService";
 
 // Dashboard component
 export default function Profile() {
@@ -226,23 +231,24 @@ async function GetPasskeys({
       });
   };
 
-
   // Displaying user info and passkeys
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
-
         <PageTitle title="Profile" />
-
       </Box>
       {warningDisplay && <Alert severity="error">{warningDisplay}</Alert>}
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12} md={6} sm={6}>
           <Card variant="outlined">
             <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
-
               <CardHeader title="User info" sx={{ paddingRight: 0 }} />
-              <InfoOutlinedIcon onClick={() => handleProfileInfoOpenDialog(dialogContentProfilePage)} color="primary" fontSize="small" sx={{ marginLeft: 1 }} />
+              <InfoOutlinedIcon
+                onClick={() => handleProfileInfoOpenDialog(dialogContentProfilePage)}
+                color="primary"
+                fontSize="small"
+                sx={{ marginLeft: 1 }}
+              />
             </Box>
             <CardContent>
               {/* Displaying user information */}
@@ -303,9 +309,13 @@ async function GetPasskeys({
         <Grid item xs={12} md={6} sm={6}>
           <Card variant="outlined">
             <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
-
               <CardHeader title="Passkeys" sx={{ paddingRight: 0 }} />
-              <InfoOutlinedIcon onClick={() => handleProfileInfoOpenDialog(dialogContentPasskey)} color="primary" fontSize="small" sx={{ marginLeft: 1 }} />
+              <InfoOutlinedIcon
+                onClick={() => handleProfileInfoOpenDialog(dialogContentPasskey)}
+                color="primary"
+                fontSize="small"
+                sx={{ marginLeft: 1 }}
+              />
             </Box>
             <CardContent>
               <List sx={{ width: "100%" }} component="nav">
