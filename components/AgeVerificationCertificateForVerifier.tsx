@@ -32,6 +32,10 @@ import { CertificateDisplayProps } from "./AgeVerificateCertificateDisplay";
 // import { readFileSync } from 'fs';
 // import path from 'path';
 import LoadingSpinner from "./Loading";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { useConfirm } from "material-ui-confirm";
+import { dialogContentVerifyProof } from "@/lib/services/dialogContent";
+import ReusableDialog from "./ReusableDialog";
 
 const snarkjs = require("snarkjs") as typeof import("snarkjs");
 
@@ -50,7 +54,8 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
   );
   const [certificateInfo, setCertificateInfo] = useState<AgeVerificatingCertificate>({} as AgeVerificatingCertificate);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
-
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [dialogContent, setDialogContent] = useState<any>(dialogContentVerifyProof);
   useEffect(() => {
     // Parse the XML data and extract the required information
     // You can use a library like xml2js for this stepxw
@@ -131,7 +136,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
       signCert: x509Cert,
       signedDate: new Date(
         certificateInfo.Certificate["ds:Signature"]["ds:Object"]["xades:QualifyingProperties"]["xades:SignedProperties"][
-          "xades:SignedSignatureProperties"
+        "xades:SignedSignatureProperties"
         ]["xades:SigningTime"],
       ),
     });
@@ -151,15 +156,41 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
       </>
     );
   }
+  const handleVerifierInfoOpenDialog = (dialogContent: any) => {
+    setDialogContent(dialogContent);
+    setDialogOpen(true);
+  };
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+
+
+  const dialogActions = [
+    // {
+    //   label: 'Cancel',
+    //   onClick: handleCloseDialog,
+    //   color: 'default',
+    // },
+    {
+      label: 'CLOSE',
+      onClick: handleCloseDialog,
+    },
+  ];
+
   return (
     <>
       <Box sx={styles.cardContainer}>
         <Card sx={{ ...styles.card }}>
           <CardContent sx={styles.centeredContent}>
-            <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
-              {certificateInfo.Certificate.name} proof
-            </Typography>
-            <Typography>Issued By: {certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+
+              <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
+                {certificateInfo.Certificate.name} proof
+              </Typography>
+              <InfoOutlinedIcon color="primary" fontSize="small" sx={{ marginLeft: 1 }} onClick={() => handleVerifierInfoOpenDialog(dialogContentVerifyProof)} />
+            </Box>
+            <Typography sx={{ marginBottom: 1 }}>Issued By: {certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
             <Grid container spacing={2}>
               <Grid item xs={4} sx={styles.centeredContent}>
                 <Image
@@ -226,6 +257,13 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
       )}
       <AlertMessageDialog ref={alertMessageDialogRef} /> {/* Render the alert component */}
       {loadingMessage && <LoadingSpinner message={loadingMessage} />}
+      <ReusableDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        title={dialogContent.title}
+        content={dialogContent.content}
+        actions={dialogActions}
+      />
     </>
   );
 };

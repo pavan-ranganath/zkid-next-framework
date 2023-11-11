@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, Typography, Box } from "@mui/material";
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 
 export const dialogContentOnLogoClick = {
@@ -81,7 +82,8 @@ export const dialogContentProfilePage = {
           Data submitted during creating of profile, has to be validated to ensure its accuracy and ensure its authenticity. Profile verifiaction is done using authoritative domain for this POC demo we are using simulated domain.
         </Typography>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          After verification of profile using Simulate-DL account, you'll receive an email with a link to verify your email address. Click on the link to complete the verification of account.
+          <VerifiedIcon color="success" />
+          Your information has been authenticated and verified by the authoritative domain. Clicking on the icon allows you to access the verification details.
         </Typography>
         <Typography variant="body1" >
           You can also delete your profile information by clicking the delete button.
@@ -106,3 +108,51 @@ export const dialogContentPasskey = {
     </>
   ),
 };
+export const dialogContentnZKpCertificates = {
+  title: "nZKP Certificates",
+  content: (
+    <>
+      <Box sx={{ padding: 2 }}>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          nZKP Certificates are digitally signed XML certificates containing zero-knowledge proofs.
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          The application allows you to generate various types of nZKP certificates. Currently, age verification is supported. Moreover, other verification options, such as address and membership, are also feasible using the same technology.
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          Once generated, sharing your certificate is effortless. Copy the link, send it as a message, or email it to those who need to verify your information.
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          Deleting your certificate is possible by clicking the delete button.
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          Downloading your certificate involves clicking the download button. The downloaded signed XML certificate is secure and tamper-evident, providing proof. The digital signature ensures the information's authenticity and integrity.
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          To generate proof, click the "Generate Proof" button. You'll be prompted to input the date and age you want to claim. Follow the steps, and nZKid will create a proof for you.
+        </Typography>
+      </Box>
+    </>
+  ),
+};
+
+export const dialogContentVerifyProof = {
+  title: "Verify Proof",
+  content: (
+    <>
+      <Box sx={{ padding: 2 }}>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          The "Verify Proof" button allows you to verify the proof within the nZKP XML signed certificate. You will be prompted to input the date and age for verification. Follow the steps, and nZKid will validate the proof for you.
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          The "Verify Signature" button enables you to confirm the signature of the nZKP XML signed certificate.
+          This verification ensures the certificate's authenticity and integrity.
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          After verifying the signature, clicking on "Signature" provides additional information about the signature.
+        </Typography>
+      </Box>
+    </>
+  ),
+};
+

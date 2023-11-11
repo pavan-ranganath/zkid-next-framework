@@ -8,7 +8,7 @@ import PageTitle from "@/components/pageTitle";
 import { useVerifyStatus } from "@/components/verificationStatusProvider";
 import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interface";
 import { fetcher } from "@/lib/services/apiService";
-import { dialogContentOnLogoClick, dialogContentSignInPage, homePageDialogContent } from "@/lib/services/dialogContent";
+import { dialogContentOnLogoClick, dialogContentSignInPage, dialogContentnZKpCertificates, homePageDialogContent } from "@/lib/services/dialogContent";
 import { credentailsFromTb } from "@/lib/services/userService";
 import { Box, Button, Card, CardContent, CardHeader, Grid } from "@mui/material";
 import { ConfirmOptions, useConfirm } from "material-ui-confirm";
@@ -157,6 +157,22 @@ export default function Dashboard() {
       onClick: handleCloseDialog,
     },
   ];
+  const handleCertificateInfoOpenDialog = (dialogContent: any) => {
+    // setDialogContent(dialogContent);
+    // setDialogOpen(true);
+    confirm({
+      title: dialogContent.title,
+      content: dialogContent.content,
+      confirmationText: "CLOSE",
+      hideCancelButton: true,
+    })
+      .then(async () => {
+        /* ... */
+      })
+      .catch(() => {
+        /* ... */
+      });
+  };
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
@@ -182,7 +198,11 @@ export default function Dashboard() {
           </Grid>
           <Grid item xs={12} md={6} sm={6}>
             <Card variant="outlined">
-              <CardHeader title="nZKP Certificates" />
+              <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
+
+                <CardHeader title="nZKP Certificates" sx={{ paddingRight: 0 }} />
+                <InfoOutlinedIcon onClick={() => handleCertificateInfoOpenDialog(dialogContentnZKpCertificates)} color="primary" fontSize="small" sx={{ marginLeft: 1 }} />
+              </Box>
               <CardContent>
                 {vertificateData !== null ? (
                   <CertificateDisplay
