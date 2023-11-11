@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, Typography, Box } from "@mui/material";
+import { Dialog, DialogContent, Typography, Box, Link } from "@mui/material";
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 
@@ -156,3 +156,24 @@ export const dialogContentVerifyProof = {
   ),
 };
 
+export const dialogContentContactUs = {
+  title: "Contact Us",
+  content: (
+    <>
+      <Box sx={{ padding: 2 }}>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          If you have any questions or concerns, feel free to reach out to us:
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          Email: <Link href="mailto:support@egstech.org">support@egstech.org</Link>
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          Phone: <Link href="tel:+1-408-799-1807">+1-408-799-1807</Link>
+        </Typography>
+        <Typography variant="body1">
+          We are here to assist you and address any inquiries you may have.
+        </Typography>
+      </Box>
+    </>
+  ),
+};

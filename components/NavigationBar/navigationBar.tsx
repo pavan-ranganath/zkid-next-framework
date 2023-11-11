@@ -31,7 +31,7 @@ import { DEFAULT_THEME, getOtherTheme } from "@/app/theme"; // Importing custom 
 import { usePathname } from "next/navigation";
 import AppLogoSVG from "../appLogo";
 import ReusableDialog from "../ReusableDialog";
-import { dialogContentOnLogoClick } from "@/lib/services/dialogContent";
+import { dialogContentContactUs, dialogContentOnLogoClick } from "@/lib/services/dialogContent";
 
 // An array of page objects containing page information
 const pages: {
@@ -54,6 +54,7 @@ export default function NavigationBar() {
   const muiTheme = useMUITheme(); // Using the useTheme hook to access the current theme
   const currentPath = usePathname();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [dialogContent, setDialogContent] = useState<any>(dialogContentOnLogoClick);
 
   // Event handler for opening the navigation menu
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
@@ -84,14 +85,14 @@ export default function NavigationBar() {
     friendlyName: string;
     onClick: () => Promise<void>;
   }[] = [
-      // {
-      //   id: 1,
-      //   friendlyName: `Profile`,
-      //   onClick: async () => {
-      //     router.push("/dashboard/profile");
-      //     handleCloseUserMenu();
-      //   },
-      // },
+      {
+        id: 1,
+        friendlyName: `Contact Us`,
+        onClick: async () => {
+          handleOpenDialog(dialogContentContactUs)
+          handleCloseUserMenu();
+        },
+      },
       {
         id: 2,
         friendlyName: `Activate ${themeName} Theme`,
@@ -111,7 +112,8 @@ export default function NavigationBar() {
     ];
 
 
-  const handleOpenDialog = () => {
+  const handleOpenDialog = (dialogContent: any) => {
+    setDialogContent(dialogContent);
     setDialogOpen(true);
   };
 
@@ -138,7 +140,7 @@ export default function NavigationBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Logo */}
-          <div onClick={handleOpenDialog}>
+          <div onClick={() => handleOpenDialog(dialogContentOnLogoClick)}>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54, paddingRight: 2 }}>
               <AppLogoSVG theme={themeName} />
             </Box>
@@ -268,8 +270,8 @@ export default function NavigationBar() {
       <ReusableDialog
         open={dialogOpen}
         onClose={handleCloseDialog}
-        title={dialogContentOnLogoClick.title}
-        content={dialogContentOnLogoClick.content}
+        title={dialogContent.title}
+        content={dialogContent.content}
         actions={dialogActions}
       />
     </AppBar>

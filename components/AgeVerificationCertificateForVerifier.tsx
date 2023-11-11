@@ -8,6 +8,7 @@ import {
   CardHeader,
   CircularProgress,
   Grid,
+  Link,
   List,
   ListItem,
   ListItemText,
@@ -34,7 +35,7 @@ import { CertificateDisplayProps } from "./AgeVerificateCertificateDisplay";
 import LoadingSpinner from "./Loading";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useConfirm } from "material-ui-confirm";
-import { dialogContentVerifyProof } from "@/lib/services/dialogContent";
+import { dialogContentContactUs, dialogContentVerifyProof } from "@/lib/services/dialogContent";
 import ReusableDialog from "./ReusableDialog";
 
 const snarkjs = require("snarkjs") as typeof import("snarkjs");
@@ -156,7 +157,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
       </>
     );
   }
-  const handleVerifierInfoOpenDialog = (dialogContent: any) => {
+  const handleOpenDialog = (dialogContent: any) => {
     setDialogContent(dialogContent);
     setDialogOpen(true);
   };
@@ -188,7 +189,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
               <Typography variant="h4" sx={{ textTransform: "capitalize" }}>
                 {certificateInfo.Certificate.name} proof
               </Typography>
-              <InfoOutlinedIcon color="primary" fontSize="small" sx={{ marginLeft: 1 }} onClick={() => handleVerifierInfoOpenDialog(dialogContentVerifyProof)} />
+              <InfoOutlinedIcon color="primary" fontSize="small" sx={{ marginLeft: 1 }} onClick={() => handleOpenDialog(dialogContentVerifyProof)} />
             </Box>
             <Typography sx={{ marginBottom: 1 }}>Issued By: {certificateInfo.Certificate.IssuedBy.Organization.name}</Typography>
             <Grid container spacing={2}>
@@ -252,6 +253,7 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
           {isSignatureVerified === false && <Close sx={{ color: "red", fontSize: "1.5rem" }} />}
         </ListItem>
       </List>
+
       {isSignatureVerified === true && (
         <DigitalSignatureTag certificate={signatureCertificate.signCert} ageVerificationXMLCertificate={certificateInfo} />
       )}
@@ -264,6 +266,14 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
         content={dialogContent.content}
         actions={dialogActions}
       />
+      {/* <br /> */}
+      {/* Contact us link */}
+      <small>
+        Have questions?{" "}
+        <Link style={{ textDecoration: "underline", cursor: "pointer" }} onClick={() => handleOpenDialog(dialogContentContactUs)}>
+          Contact Us
+        </Link>
+      </small>
     </>
   );
 };

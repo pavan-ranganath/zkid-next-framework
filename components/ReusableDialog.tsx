@@ -1,6 +1,6 @@
 // ReusableDialog.tsx
 
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, ButtonPropsColorOverrides } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, ButtonPropsColorOverrides, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { OverridableStringUnion } from '@mui/types';
 

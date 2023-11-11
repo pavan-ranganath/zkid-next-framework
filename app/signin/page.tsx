@@ -54,7 +54,7 @@ import Link from "next/link";
 import AppLogoSVG from "@/components/appLogo";
 import LoadingSpinner from "@/components/Loading";
 import ReusableDialog from "@/components/ReusableDialog";
-import { dialogContentOnLogoClick, dialogContentRegistrationPage, dialogContentSignInPage } from "@/lib/services/dialogContent";
+import { dialogContentContactUs, dialogContentOnLogoClick, dialogContentRegistrationPage, dialogContentSignInPage } from "@/lib/services/dialogContent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 /*
@@ -219,6 +219,14 @@ export default function SignInComponent() {
         Do not have an account?{" "}
         <Link style={{ textDecoration: "underline" }} href="/register/webauthn">
           Register Here
+        </Link>
+      </small>
+      <br />
+      {/* Contact us link */}
+      <small>
+        Have questions?{" "}
+        <Link style={{ textDecoration: "underline" }} href={""} onClick={() => handleOpenDialog(dialogContentContactUs)}>
+          Contact Us
         </Link>
       </small>
       {loadingMessage && <LoadingSpinner message={loadingMessage} />}

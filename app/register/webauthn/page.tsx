@@ -28,7 +28,7 @@ import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 import moment from "moment";
 import { dateOfBirthToUTCTimestamp } from "@/lib/services/utils";
 import ReusableDialog from "@/components/ReusableDialog";
-import { dialogContentOnLogoClick, dialogContentRegistrationPage } from "@/lib/services/dialogContent";
+import { dialogContentContactUs, dialogContentOnLogoClick, dialogContentRegistrationPage } from "@/lib/services/dialogContent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 /**
@@ -261,6 +261,14 @@ export default function Register(): JSX.Element {
         Already have an account?{" "}
         <Link style={{ textDecoration: "underline" }} href="/signin">
           Sign in Here
+        </Link>
+      </small>
+      <br />
+      {/* Contact us link */}
+      <small>
+        Have questions?{" "}
+        <Link style={{ textDecoration: "underline" }} href={""} onClick={() => handleOpenDialog(dialogContentContactUs)}>
+          Contact Us
         </Link>
       </small>
       {loadingMessage && <LoadingSpinner message={loadingMessage} />}
