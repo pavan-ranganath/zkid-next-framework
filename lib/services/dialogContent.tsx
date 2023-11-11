@@ -55,8 +55,8 @@ export const homePageDialogContent = {
     <>
       <Box sx={{ padding: 2 }}>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          Welcome to your landing page on nZKid. On the left, you'll find a menu button for navigation (Help, Profile, and
-          Home).
+          Welcome to your landing page on nZKid. On the left, you&apos;ll find a menu button for navigation (Help, Profile,
+          and Home).
         </Typography>
 
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
@@ -64,7 +64,7 @@ export const homePageDialogContent = {
         </Typography>
 
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          Here, you can view your digital identity and find a button to generate proof if you haven't done so already.
+          Here, you can view your digital identity and find a button to generate proof if you haven&apos;t done so already.
         </Typography>
 
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
@@ -81,8 +81,8 @@ export const dialogContentProfilePage = {
     <>
       <Box sx={{ padding: 2 }}>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          Here you can view your profile information. If you haven't verified your profile yet, you will see verify profile
-          button to initiate the verification process.
+          Here you can view your profile information. If you haven&apos;t verified your profile yet, you will see verify
+          profile button to initiate the verification process.
         </Typography>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
           Data submitted during creating of profile, has to be validated to ensure its accuracy and ensure its authenticity.
@@ -136,11 +136,12 @@ export const dialogContentnZKpCertificates = {
         </Typography>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
           Downloading your certificate involves clicking the download button. The downloaded signed XML certificate is secure
-          and tamper-evident, providing proof. The digital signature ensures the information's authenticity and integrity.
+          and tamper-evident, providing proof. The digital signature ensures the information&apos;s authenticity and
+          integrity.
         </Typography>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          To generate proof, click the "Generate Proof" button. You'll be prompted to input the date and age you want to
-          claim. Follow the steps, and nZKid will create a proof for you.
+          To generate proof, click the &quot;Generate Proof&quot; button. You&apos;ll be prompted to input the date and age
+          you want to claim. Follow the steps, and nZKid will create a proof for you.
         </Typography>
       </Box>
     </>
@@ -153,15 +154,17 @@ export const dialogContentVerifyProof = {
     <>
       <Box sx={{ padding: 2 }}>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          The "Verify Proof" button allows you to verify the proof within the nZKP XML signed certificate. You will be
-          prompted to input the date and age for verification. Follow the steps, and nZKid will validate the proof for you.
+          The &quot;Verify Proof&quot; button allows you to verify the proof within the nZKP XML signed certificate. You will
+          be prompted to input the date and age for verification. Follow the steps, and nZKid will validate the proof for
+          you.
         </Typography>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          The "Verify Signature" button enables you to confirm the signature of the nZKP XML signed certificate. This
-          verification ensures the certificate's authenticity and integrity.
+          The &quot;Verify Signature&quot; button enables you to confirm the signature of the nZKP XML signed certificate.
+          This verification ensures the certificate&apos;s authenticity and integrity.
         </Typography>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
-          After verifying the signature, clicking on "Signature" provides additional information about the signature.
+          After verifying the signature, clicking on &quot;Signature&quot; provides additional information about the
+          signature.
         </Typography>
       </Box>
     </>

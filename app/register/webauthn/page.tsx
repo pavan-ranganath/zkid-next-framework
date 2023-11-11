@@ -133,8 +133,8 @@ export default function Register(): JSX.Element {
   // Dismiss any active toasts
   toast.dismiss();
 
-  const handleOpenDialog = (dialogContent: any) => {
-    setDialogContent(dialogContent);
+  const handleOpenDialog = (_dialogContent: any) => {
+    setDialogContent(_dialogContent);
     setDialogOpen(true);
   };
 
@@ -157,7 +157,7 @@ export default function Register(): JSX.Element {
   return (
     <>
       {/* Display branding */}
-      <div
+      <Box
         style={{ textAlign: "center", margin: "0 10% 5% 10%" }}
         onClick={() => handleOpenDialog(dialogContentOnLogoClick)}
       >
@@ -175,7 +175,7 @@ export default function Register(): JSX.Element {
         {/* <Typography variant="h4" component="h2">
           zKID
         </Typography> */}
-      </div>
+      </Box>
 
       {/* Registration form */}
       <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>

@@ -140,8 +140,8 @@ export default function Dashboard() {
       setLoadingMessage("");
     });
   };
-  const handleOpenDialog = (dialogContent: any) => {
-    setDialogContent(dialogContent);
+  const handleOpenDialog = (_dialogContent: any) => {
+    setDialogContent(_dialogContent);
     setDialogOpen(true);
   };
 
@@ -160,8 +160,8 @@ export default function Dashboard() {
       onClick: handleCloseDialog,
     },
   ];
-  const handleCertificateInfoOpenDialog = (dialogContent: any) => {
-    // setDialogContent(dialogContent);
+  const handleCertificateInfoOpenDialog = (_dialogContent: any) => {
+    // setDialogContent(_dialogContent);
     // setDialogOpen(true);
     confirm({
       title: dialogContent.title,

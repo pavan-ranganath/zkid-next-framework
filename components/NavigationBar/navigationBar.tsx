@@ -111,8 +111,8 @@ export default function NavigationBar() {
     },
   ];
 
-  const handleOpenDialog = (dialogContent: any) => {
-    setDialogContent(dialogContent);
+  const handleOpenDialog = (_dialogContent: any) => {
+    setDialogContent(_dialogContent);
     setDialogOpen(true);
   };
 
@@ -137,8 +137,11 @@ export default function NavigationBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Logo */}
-          <div onClick={() => handleOpenDialog(dialogContentOnLogoClick)}>
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54, paddingRight: 2 }}>
+          <div>
+            <Box
+              onClick={() => handleOpenDialog(dialogContentOnLogoClick)}
+              sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, height: 54, paddingRight: 2 }}
+            >
               <AppLogoSVG theme={themeName} />
             </Box>
           </div>
@@ -192,8 +195,9 @@ export default function NavigationBar() {
                 </MenuItem>
               ))}
             </Menu>
-            <div onClick={handleOpenDialog} style={{ flexGrow: 1, textAlign: "center" }}>
+            <div style={{ flexGrow: 1, textAlign: "center" }}>
               <Box
+                onClick={() => handleOpenDialog(dialogContentOnLogoClick)}
                 sx={{
                   display: { xs: "flex", md: "none" },
                   mr: 1,

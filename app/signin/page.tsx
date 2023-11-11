@@ -147,8 +147,8 @@ export default function SignInComponent() {
 
   // Dismiss any active toasts (notifications).
   // toast.dismiss();
-  const handleOpenDialog = (dialogContent: any) => {
-    setDialogContent(dialogContent);
+  const handleOpenDialog = (_dialogContent: any) => {
+    setDialogContent(_dialogContent);
     setDialogOpen(true);
   };
 
@@ -171,7 +171,7 @@ export default function SignInComponent() {
   return (
     <>
       {/* Display branding */}
-      <div style={{ textAlign: "center", marginBottom: "2rem" }} onClick={() => handleOpenDialog(dialogContentOnLogoClick)}>
+      <Box style={{ textAlign: "center", marginBottom: "2rem" }} onClick={() => handleOpenDialog(dialogContentOnLogoClick)}>
         {/* <img
           src="/zkidLogo_v1.svg"
           alt="EGS Logo"
@@ -186,7 +186,7 @@ export default function SignInComponent() {
         {/* <Typography variant="h5" component="h2">
           Entrada Solutions
         </Typography> */}
-      </div>
+      </Box>
 
       {/* Display the sign-in form */}
       <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>

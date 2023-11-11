@@ -23,6 +23,7 @@
     "@mui/icons-material": "^5.14.15",
     "@mui/material": "^5.14.15",
     "@mui/system": "^5.14.15",
+    "@mui/types": "^7.2.8",
     "@peculiar/webcrypto": "^1.4.3",
     "@simplewebauthn/browser": "^8.3.4",
     "@simplewebauthn/server": "^8.3.5",

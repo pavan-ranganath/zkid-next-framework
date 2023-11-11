@@ -157,8 +157,8 @@ export const CertificateDisplayForVerifier = (displayProps: CertificateDisplayPr
       </>
     );
   }
-  const handleOpenDialog = (dialogContent: any) => {
-    setDialogContent(dialogContent);
+  const handleOpenDialog = (_dialogContent: any) => {
+    setDialogContent(_dialogContent);
     setDialogOpen(true);
   };
   const handleCloseDialog = () => {

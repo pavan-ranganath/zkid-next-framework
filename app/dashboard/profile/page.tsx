@@ -214,12 +214,12 @@ async function GetPasskeys({
         /* ... */
       });
   };
-  const handleProfileInfoOpenDialog = (dialogContent: any) => {
-    // setDialogContent(dialogContent);
+  const handleProfileInfoOpenDialog = (_dialogContent: any) => {
+    // setDialogContent(_dialogContent);
     // setDialogOpen(true);
     confirm({
-      title: dialogContent.title,
-      content: dialogContent.content,
+      title: _dialogContent.title,
+      content: _dialogContent.content,
       confirmationText: "CLOSE",
       hideCancelButton: true,
     })
