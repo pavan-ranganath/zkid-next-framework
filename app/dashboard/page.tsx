@@ -8,14 +8,16 @@ import PageTitle from "@/components/pageTitle";
 import { useVerifyStatus } from "@/components/verificationStatusProvider";
 import { AgeVerificatingCertificate } from "@/lib/interfaces/Certificate.interface";
 import { fetcher } from "@/lib/services/apiService";
+import { dialogContentOnLogoClick, dialogContentSignInPage, homePageDialogContent } from "@/lib/services/dialogContent";
 import { credentailsFromTb } from "@/lib/services/userService";
-import { Button, Card, CardContent, CardHeader, Grid } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, Grid } from "@mui/material";
 import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import useSWR from "swr";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import ReusableDialog from "@/components/ReusableDialog";
 // Dashboard component
 export default function Dashboard() {
   const [isAgeverificationProverInputModalOpen, setAgeverificationProverInputModalOpen] = useState(false);
@@ -27,6 +29,9 @@ export default function Dashboard() {
   // const [error, setError] = useState<any>(null);
   // const [userInfoIsLoading, setUserInfoIsLoading] = useState<any>(null);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [dialogContent, setDialogContent] = useState<any>(dialogContentOnLogoClick);
+
   const handleAgeverificationProverInputCloseModal = async (formData: { claimAge: string; claimDate: number }) => {
     setAgeverificationProverInputModalOpen(false);
     if (!formData) {
@@ -44,7 +49,7 @@ export default function Dashboard() {
   const getCertificateData = async () => {
     const response = await fetch("/api/proof");
     if (response.status !== 200) {
-      setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => {} });
+      setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
       return;
     }
     const data = await response.json();
@@ -56,7 +61,7 @@ export default function Dashboard() {
       setVertificateData(data);
       return;
     }
-    setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => {} });
+    setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
   };
 
   // display alert to navigate to profile page to verify profile if not verified
@@ -120,7 +125,7 @@ export default function Dashboard() {
       if (deleteProof.status === 200) {
         toast.success("Age verification proof deleted successfully");
         // if delete is successful, refresh page
-        setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => {} });
+        setVertificateData({ certificateData: "", shareUrl: "", deleteButton: () => { } });
       } else {
         const resp = await deleteProof.json();
         console.log("deleteProof error", resp);
@@ -130,9 +135,36 @@ export default function Dashboard() {
       setLoadingMessage("");
     });
   };
+  const handleOpenDialog = (dialogContent: any) => {
+    setDialogContent(dialogContent);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+
+
+  const dialogActions = [
+    // {
+    //   label: 'Cancel',
+    //   onClick: handleCloseDialog,
+    //   color: 'default',
+    // },
+    {
+      label: 'CLOSE',
+      onClick: handleCloseDialog,
+    },
+  ];
   return (
     <>
-      <PageTitle title="Home" />
+      <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
+
+        <PageTitle title="Home" />
+        <InfoOutlinedIcon onClick={() => handleOpenDialog(homePageDialogContent)} color="primary" fontSize="small" sx={{ marginLeft: 1 }} />
+
+      </Box>
       {!verifyStatus && (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
           <div style={{ textAlign: "center", flex: "1" }}>
@@ -176,6 +208,13 @@ export default function Dashboard() {
         onClose={handleAgeverificationProverInputCloseModal}
       />
       {loadingMessage && <LoadingSpinner message={loadingMessage} />}
+      <ReusableDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        title={dialogContent.title}
+        content={dialogContent.content}
+        actions={dialogActions}
+      />
     </>
   );
 }
