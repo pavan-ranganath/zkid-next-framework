@@ -268,8 +268,8 @@ export default function NavigationBar() {
       <ReusableDialog
         open={dialogOpen}
         onClose={handleCloseDialog}
-        title="nZKid"
-        content={dialogContentOnLogoClick}
+        title={dialogContentOnLogoClick.title}
+        content={dialogContentOnLogoClick.content}
         actions={dialogActions}
       />
     </AppBar>

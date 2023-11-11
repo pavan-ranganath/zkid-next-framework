@@ -10,7 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 // Importing specific components from the '@mui/material' package
 // These components are part of the Material-UI library, which provides pre-designed UI components for React applications
-import { Backdrop, CircularProgress, Typography, TextField, Button } from "@mui/material";
+import { Backdrop, CircularProgress, Typography, TextField, Button, Box } from "@mui/material";
 
 // Importing the 'signIn' and 'useSession' functions from the 'next-auth/react' package
 // These functions are used for authentication and session management in Next.js applications using NextAuth.js
@@ -54,7 +54,8 @@ import Link from "next/link";
 import AppLogoSVG from "@/components/appLogo";
 import LoadingSpinner from "@/components/Loading";
 import ReusableDialog from "@/components/ReusableDialog";
-import { dialogContentOnLogoClick } from "@/lib/services/dialogContent";
+import { dialogContentOnLogoClick, dialogContentRegistrationPage, dialogContentSignInPage } from "@/lib/services/dialogContent";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 /*
   - The code provides a sign-in feature for users using WebAuthn authentication.
@@ -73,6 +74,7 @@ export default function SignInComponent() {
   const [loadingMessage, setLoadingMessage] = useState("");
   const searchParams = useSearchParams();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [dialogContent, setDialogContent] = useState<any>(dialogContentOnLogoClick);
 
   const callbackUrl = searchParams.get("callbackUrl");
   const error = searchParams.get("error");
@@ -140,7 +142,8 @@ export default function SignInComponent() {
 
   // Dismiss any active toasts (notifications).
   // toast.dismiss();
-  const handleOpenDialog = () => {
+  const handleOpenDialog = (dialogContent: any) => {
+    setDialogContent(dialogContent);
     setDialogOpen(true);
   };
 
@@ -165,7 +168,7 @@ export default function SignInComponent() {
   return (
     <>
       {/* Display branding */}
-      <div style={{ textAlign: "center", marginBottom: "2rem" }} onClick={handleOpenDialog}>
+      <div style={{ textAlign: "center", marginBottom: "2rem" }} onClick={() => handleOpenDialog(dialogContentOnLogoClick)}>
         {/* <img
           src="/zkidLogo_v1.svg"
           alt="EGS Logo"
@@ -183,9 +186,14 @@ export default function SignInComponent() {
       </div>
 
       {/* Display the sign-in form */}
-      <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
-        Sign In
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
+
+        <Typography component="h1" variant="h5" sx={{ marginBottom: 0 }}>
+          Sign In
+        </Typography>
+        <InfoOutlinedIcon onClick={() => handleOpenDialog(dialogContentSignInPage)} color="primary" fontSize="small" sx={{ marginLeft: 1 }} />
+
+      </Box>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         {/* Email input field */}
         <TextField
@@ -217,8 +225,8 @@ export default function SignInComponent() {
       <ReusableDialog
         open={dialogOpen}
         onClose={handleCloseDialog}
-        title="nZKid"
-        content={dialogContentOnLogoClick}
+        title={dialogContent.title}
+        content={dialogContent.content}
         actions={dialogActions}
       />
     </>

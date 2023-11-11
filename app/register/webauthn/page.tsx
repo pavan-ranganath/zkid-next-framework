@@ -18,7 +18,7 @@ import { handleRegistrationError } from "@/lib/webauthn";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 // MUI library imports
-import { Backdrop, Button, CircularProgress, TextField, Typography } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
 import "yup-phone-lite";
 import AppLogoSVG from "@/components/appLogo";
@@ -28,7 +28,9 @@ import { ConfirmOptions, useConfirm } from "material-ui-confirm";
 import moment from "moment";
 import { dateOfBirthToUTCTimestamp } from "@/lib/services/utils";
 import ReusableDialog from "@/components/ReusableDialog";
-import { dialogContentOnLogoClick } from "@/lib/services/dialogContent";
+import { dialogContentOnLogoClick, dialogContentRegistrationPage } from "@/lib/services/dialogContent";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+
 /**
  * The Register component handles the user registration process.
  * It displays a registration form where users can enter their first name, last name, and email.
@@ -46,7 +48,7 @@ export default function Register(): JSX.Element {
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const confirm = useConfirm();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-
+  const [dialogContent, setDialogContent] = useState<any>(dialogContentOnLogoClick);
   // Checking authorization status
   const authorized = status === "authenticated";
   const unAuthorized = status === "unauthenticated";
@@ -127,7 +129,8 @@ export default function Register(): JSX.Element {
   // Dismiss any active toasts
   toast.dismiss();
 
-  const handleOpenDialog = () => {
+  const handleOpenDialog = (dialogContent: any) => {
+    setDialogContent(dialogContent);
     setDialogOpen(true);
   };
 
@@ -148,10 +151,12 @@ export default function Register(): JSX.Element {
       onClick: handleCloseDialog,
     },
   ];
+
+
   return (
     <>
       {/* Display branding */}
-      <div style={{ textAlign: "center", margin: "0 10% 5% 10%" }} onClick={handleOpenDialog}>
+      <div style={{ textAlign: "center", margin: "0 10% 5% 10%" }} onClick={() => handleOpenDialog(dialogContentOnLogoClick)}>
         {/* <img
           src="/zkidLogo_v1.svg"
           alt="EGS Logo"
@@ -169,9 +174,14 @@ export default function Register(): JSX.Element {
       </div>
 
       {/* Registration form */}
-      <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
-        Registration
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
+
+        <Typography component="h1" variant="h5" sx={{ marginBottom: 0 }}>
+          Registration
+        </Typography>
+        <InfoOutlinedIcon onClick={() => handleOpenDialog(dialogContentRegistrationPage)} color="primary" fontSize="small" sx={{ marginLeft: 1 }} />
+
+      </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Full Name field */}
         <TextField
@@ -257,8 +267,8 @@ export default function Register(): JSX.Element {
       <ReusableDialog
         open={dialogOpen}
         onClose={handleCloseDialog}
-        title="nZKid"
-        content={dialogContentOnLogoClick}
+        title={dialogContent.title}
+        content={dialogContent.content}
         actions={dialogActions}
       />
     </>
