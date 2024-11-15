@@ -32,14 +32,14 @@ NOTE: Give localhost to `CN` or in `SAN` for mongodb to connect while developing
 1. Generate the CA Key and Certificate:
 
    ```bash
-   openssl genpkey -algorithm RSA -out ca.key
+   openssl genpkey -algorithm ed25519 -out ca.key
    openssl req -new -x509 -key ca.key -out ca.crt
    ```
 
 2. Generate the Server Key and Certificate Signing Request (CSR):
 
    ```bash
-   openssl genpkey -algorithm RSA -out server.key
+   openssl genpkey -algorithm ed25519 -out server.key
    openssl req -new -key server.key -out server.csr
    ```
 
@@ -52,7 +52,7 @@ NOTE: Give localhost to `CN` or in `SAN` for mongodb to connect while developing
 4. Generate the Client Key and Certificate Signing Request (CSR):
 
    ```bash
-   openssl genpkey -algorithm RSA -out client1.key
+   openssl genpkey -algorithm ed25519 -out client1.key
    openssl req -new -key client1.key -out client1.csr
    ```
 
@@ -63,6 +63,7 @@ NOTE: Give localhost to `CN` or in `SAN` for mongodb to connect while developing
    ```
 
 6. Create the MongoDB PEM files:
+
    ```bash
    cat server.crt server.key > mongod.pem
    cat client1.crt client1.key > client1_cert.pem
